@@ -1,0 +1,56 @@
+/* Import the existing CSS files */
+@import url('./style.css');
+@import url('./pages.css');
+
+/* Additional React-specific styles */
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading spinner */
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.5rem;
+  color: var(--clay-dark);
+}
+
+.spinner {
+  border: 4px solid var(--sand);
+  border-top: 4px solid var(--terracotta);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .filter-bar {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .filter-group {
+    width: 100%;
+  }
+  
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
