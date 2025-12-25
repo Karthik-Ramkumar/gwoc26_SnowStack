@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ProductList = ({ products, loading }) => {
   const addToCart = (productId, productName, price) => {
@@ -20,6 +21,10 @@ const ProductList = ({ products, loading }) => {
     }
     
     localStorage.setItem('basho_cart', JSON.stringify(cart));
+    
+    // Dispatch custom event to notify cart component of changes
+    window.dispatchEvent(new CustomEvent('cartUpdated'));
+    
     alert(`${productName} added to cart!`);
   };
 
@@ -49,7 +54,7 @@ const ProductList = ({ products, loading }) => {
               >
                 <div className="product-image">
                   <img 
-                    src={product.image_url_full || product.image || '/images/products/placeholder.jpg'} 
+                    src={product.image_url_full || product.image || '/images/products/placeholder.svg'} 
                     alt={product.name}
                     className="placeholder-img"
                   />
@@ -61,7 +66,9 @@ const ProductList = ({ products, loading }) => {
                   )}
                 </div>
                 <div className="product-info">
-                  <h3 className="product-name">{product.name}</h3>
+                  <h3 className="product-name">
+                    <Link to={`/product/${product.id}`}>{product.name}</Link>
+                  </h3>
                   <div className="product-meta">
                     {product.tags && product.tags.map((tag, index) => (
                       <span key={index} className="meta-tag">{tag}</span>

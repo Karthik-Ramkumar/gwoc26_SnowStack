@@ -9,6 +9,11 @@ from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from .models import Product, CustomOrder
 from .serializers import ProductSerializer, CustomOrderSerializer
+from .email_utils import (
+    send_order_confirmation_email,
+    send_order_status_update_email,
+    send_admin_new_order_notification
+)
 
 
 # ====================
@@ -89,28 +94,53 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """
-        Create new custom order
+        Create new custom order and send confirmation emails
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         custom_order = serializer.save()
-        
-        # TODO: Send email notifications
-        # from django.core.mail import send_mail
-        # send_mail(
-        #     subject=f'New Custom Order: {custom_order.order_number}',
-        #     message=f'New order from {custom_order.name}\n\nDetails:\n{custom_order.description}',
-        #     from_email='noreply@bashobyshivangi.com',
-        #     recipient_list=['hello@bashobyshivangi.com'],
-        #     fail_silently=False,
-        # )
-        
+
+        # Send confirmation email to customer
+        send_order_confirmation_email(custom_order)
+
+        # Send notification email to admin
+        send_admin_new_order_notification(custom_order)
+
         return Response({
             'success': True,
             'order_number': custom_order.order_number,
             'message': 'Custom order request received. We will contact you within 24 hours.',
             'data': serializer.data
         }, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=['patch'])
+    def update_status(self, request, pk=None):
+        """
+        Update order status and send status update email to customer
+        """
+        custom_order = self.get_object()
+        old_status = custom_order.status
+
+        # Update status
+        new_status = request.data.get('status')
+        if new_status and new_status in dict(CustomOrder.STATUS_CHOICES):
+            custom_order.status = new_status
+            custom_order.save()
+
+            # Send status update email if status actually changed
+            if old_status != new_status:
+                send_order_status_update_email(custom_order)
+
+            return Response({
+                'success': True,
+                'message': f'Order status updated to {custom_order.get_status_display()}',
+                'data': CustomOrderSerializer(custom_order).data
+            })
+        else:
+            return Response({
+                'success': False,
+                'message': 'Invalid status provided'
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 
 # ====================
