@@ -89,21 +89,73 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """
-        Create new custom order
+        Create new custom order and send email notifications
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         custom_order = serializer.save()
         
-        # TODO: Send email notifications
-        # from django.core.mail import send_mail
-        # send_mail(
-        #     subject=f'New Custom Order: {custom_order.order_number}',
-        #     message=f'New order from {custom_order.name}\n\nDetails:\n{custom_order.description}',
-        #     from_email='noreply@bashobyshivangi.com',
-        #     recipient_list=['hello@bashobyshivangi.com'],
-        #     fail_silently=False,
-        # )
+        # Send email notification to admin
+        try:
+            from django.core.mail import send_mail
+            from django.conf import settings
+            
+            # Email to admin
+            admin_subject = f'New Custom Order: {custom_order.order_number}'
+            admin_message = f'''
+New Custom Order Received
+
+Order Number: {custom_order.order_number}
+Customer: {custom_order.name}
+Email: {custom_order.email}
+Phone: {custom_order.phone}
+Project Type: {custom_order.get_project_type_display()}
+Budget: {custom_order.get_budget_display() if custom_order.budget else 'Not specified'}
+
+Description:
+{custom_order.description}
+
+Login to admin panel to review: http://127.0.0.1:8000/admin/products/customorder/{custom_order.id}/
+            '''
+            
+            send_mail(
+                subject=admin_subject,
+                message=admin_message,
+                from_email=settings.COMPANY_EMAIL,
+                recipient_list=[settings.COMPANY_EMAIL],
+                fail_silently=True,  # Don't crash if email fails
+            )
+            
+            # Email confirmation to customer
+            customer_subject = f'Order Confirmation - {custom_order.order_number}'
+            customer_message = f'''
+Dear {custom_order.name},
+
+Thank you for your custom order request at Basho By Shivangi!
+
+Order Number: {custom_order.order_number}
+Project Type: {custom_order.get_project_type_display()}
+
+We have received your request and will contact you within 24 hours to discuss your project in detail.
+
+If you have any immediate questions, please contact us at:
+Email: {settings.COMPANY_EMAIL}
+Phone: {settings.COMPANY_PHONE}
+
+Best regards,
+Basho By Shivangi Team
+            '''
+            
+            send_mail(
+                subject=customer_subject,
+                message=customer_message,
+                from_email=settings.COMPANY_EMAIL,
+                recipient_list=[custom_order.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            # Log the error but don't fail the request
+            print(f"Email sending failed: {str(e)}")
         
         return Response({
             'success': True,
