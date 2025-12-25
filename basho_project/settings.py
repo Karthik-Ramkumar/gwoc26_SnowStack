@@ -146,3 +146,13 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
 }
+
+# Email Configuration (for custom orders and notifications)
+# For development: Console backend (prints emails to terminal)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Company Information
+COMPANY_NAME = 'Basho By Shivangi'
+COMPANY_EMAIL = 'bashobyshivangi@gmail.com'
+COMPANY_PHONE = '+91 XXXXX XXXXX'
+COMPANY_ADDRESS = 'Pottery Studio, India'
