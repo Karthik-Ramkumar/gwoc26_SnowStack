@@ -144,3 +144,18 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 12,
 }
+
+# Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'vinanthp@gmail.com'  # Replace with your Gmail address
+EMAIL_HOST_PASSWORD = 'pudd wqdo ygnh qnyq'  # Replace with Gmail app password (NOT your regular password)
+DEFAULT_FROM_EMAIL = 'Basho Pottery <your-email@gmail.com>'
+
+# Custom order settings
+COMPANY_NAME = 'Basho Pottery'
+COMPANY_EMAIL = 'orders@bashopottery.com'
+COMPANY_PHONE = '+91 XXXXX XXXXX'
+COMPANY_ADDRESS = 'Clay Studio, Pottery Lane, Creative District'
