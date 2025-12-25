@@ -1,4 +1,5 @@
 import React from 'react';
+import Cart from './Cart';
 
 const Navigation = () => {
   return (
@@ -13,6 +14,7 @@ const Navigation = () => {
         <ul className="nav-menu" id="navMenu">
           <li><a href="/" className="active">Collections</a></li>
         </ul>
+        <Cart />
       </div>
     </nav>
   );
