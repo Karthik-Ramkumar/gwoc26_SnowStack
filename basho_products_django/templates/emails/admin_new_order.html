@@ -87,7 +87,7 @@
             <div class="action-buttons">
                 <a href="mailto:{{ customer_email }}?subject=Custom Order {{ order_number }} - Design Consultation" class="button">📧 Contact Customer</a>
                 <a href="tel:{{ customer_phone }}" class="button">📞 Call Customer</a>
-                <a href="/admin/products/customorder/{{ order.id }}/change/" class="button secondary">👀 View in Admin</a>
+                <a href="{% url 'admin:products_customorder_change' order.id %}" class="button secondary">👀 View in Admin</a>
             </div>
 
             <h2>Next Steps</h2>
@@ -104,7 +104,7 @@
         <div class="footer">
             <p><strong>{{ company_name }} Admin Notification</strong><br>
             This is an automated message for new custom orders<br>
-            <a href="/admin/">Admin Panel</a> | <a href="mailto:{{ company_email }}">Company Email</a></p>
+            <a href="{% url 'admin:index' %}">Admin Panel</a> | <a href="mailto:{{ company_email }}">Company Email</a></p>
         </div>
     </div>
 </body>

@@ -111,7 +111,7 @@ const CustomOrderForm = () => {
               */}
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/wedding-set.jpg" alt="Wedding Dinnerware Set" />
+                  <img src="/images/custom/wedding-set.jpg" alt="Wedding Dinnerware Set" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Wedding Set</span>
                   </div>
@@ -128,7 +128,7 @@ const CustomOrderForm = () => {
 
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/corporate-planters.jpg" alt="Corporate Planters" />
+                  <img src="/images/custom/corporate-planters.jpg" alt="Corporate Planters" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Corporate</span>
                   </div>
@@ -145,7 +145,7 @@ const CustomOrderForm = () => {
 
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/art-installation.jpg" alt="Art Installation" />
+                  <img src="/images/custom/art-installation.jpg" alt="Art Installation" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Art Installation</span>
                   </div>
@@ -162,7 +162,7 @@ const CustomOrderForm = () => {
 
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/family-heirloom.jpg" alt="Family Heirloom Set" />
+                  <img src="/images/custom/family-heirloom.jpg" alt="Family Heirloom Set" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Heirloom</span>
                   </div>
@@ -179,7 +179,7 @@ const CustomOrderForm = () => {
 
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/personalized-mugs.jpg" alt="Personalized Coffee Mugs" />
+                  <img src="/images/custom/personalized-mugs.jpg" alt="Personalized Coffee Mugs" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Personalized</span>
                   </div>
@@ -196,7 +196,7 @@ const CustomOrderForm = () => {
 
               <div className="showcase-item">
                 <div className="showcase-image">
-                  <img src="/images/custom/sculptural-vase.jpg" alt="Sculptural Vase" />
+                  <img src="/images/custom/sculptural-vase.jpg" alt="Sculptural Vase" onError={(e) => { e.currentTarget.src = '/images/custom/placeholder.svg'; }} />
                   <div className="showcase-overlay">
                     <span className="showcase-category">Sculptural Art</span>
                   </div>

@@ -4,19 +4,26 @@
 
 ### 1. Configure Email Settings
 
-Update the email settings in `basho_backend/settings.py`:
+Email settings are loaded from environment variables in `basho_backend/settings.py`. Do not hardcode credentials.
+
+Set the following variables in your environment (e.g., `.env` file or deployment secrets):
+
+```env
+# Required
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=true
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-gmail-app-password
+
+# Optional
+DEFAULT_FROM_EMAIL=Basho Pottery <your-email@gmail.com>
+```
+
+Company information can remain in settings as non-sensitive values:
 
 ```python
-# Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # or your email provider
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'your-email@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'your-app-password'  # Use app password for Gmail
-DEFAULT_FROM_EMAIL = 'Basho Pottery <your-email@gmail.com>'
-
-# Company information
 COMPANY_NAME = 'Basho Pottery'
 COMPANY_EMAIL = 'orders@bashopottery.com'
 COMPANY_PHONE = '+91 XXXXX XXXXX'
@@ -111,11 +118,7 @@ This will automatically send a status update email to the customer.
 4. **Emails Going to Spam**: This is normal for development; use a dedicated email service in production
 
 **Debug Mode:**
-Add this to settings for debugging:
-```python
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-```
-This will print emails to console instead of sending them.
+You can set `EMAIL_BACKEND=django.core.mail.backends.console.EmailBackend` in your environment to print emails to console during development instead of sending them.
 
 ### 9. Production Considerations
 

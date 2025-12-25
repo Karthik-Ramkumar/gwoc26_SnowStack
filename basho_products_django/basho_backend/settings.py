@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -145,14 +146,17 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
 }
 
-# Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'vinanthp@gmail.com'  # Replace with your Gmail address
-EMAIL_HOST_PASSWORD = 'pudd wqdo ygnh qnyq'  # Replace with Gmail app password (NOT your regular password)
-DEFAULT_FROM_EMAIL = 'Basho Pottery <your-email@gmail.com>'
+# Email settings (use environment variables; never hardcode secrets)
+# Configure in your environment or .env:
+# EMAIL_BACKEND, EMAIL_HOST, EMAIL_PORT, EMAIL_USE_TLS, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, DEFAULT_FROM_EMAIL
+
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', '587'))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'true').lower() in ['1', 'true', 'yes']
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', '')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', f"Basho Pottery <{EMAIL_HOST_USER}>" if EMAIL_HOST_USER else 'Basho Pottery <no-reply@localhost>')
 
 # Custom order settings
 COMPANY_NAME = 'Basho Pottery'
