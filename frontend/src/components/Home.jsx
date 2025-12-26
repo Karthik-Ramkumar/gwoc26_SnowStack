@@ -1,3 +1,5 @@
+import Inspiration from "./Inspiration";
+import Founder from "./Founder";
 import "./Home.css";
 
 function Home({ onNavigate }) {
@@ -62,6 +64,12 @@ function Home({ onNavigate }) {
           </div>
         </div>
       </section>
+
+      {/* JAPANESE INSPIRATION SCROLL STORY */}
+      <Inspiration />
+
+      {/* FOUNDER STORY */}
+      <Founder />
 
     </div>
   );

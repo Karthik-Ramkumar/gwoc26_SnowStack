@@ -80,6 +80,9 @@
 
 .whatisbasho-section {
   width: 100%;
+  position: sticky;
+  top: 0;
+  z-index: 5;
   height: 100vh;
   /* force full viewport height */
 
@@ -121,4 +124,22 @@
 .whatisbasho-text p {
   font-size: 1.05rem;
   line-height: 1.9;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 900px) {
+  .whatisbasho-section {
+    background-position: center top;
+  }
+
+  .whatisbasho-inner {
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .whatisbasho-text {
+    text-align: left;
+    max-width: 90%;
+  }
 }
