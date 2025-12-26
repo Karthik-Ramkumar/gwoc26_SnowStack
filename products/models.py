@@ -37,7 +37,7 @@ class Product(models.Model):
     short_description = models.CharField(max_length=300, blank=True, help_text="Brief description for cards")
     
     # Pricing
-    price = models.DecimalField(
+    price = models.DecimalField(    
         max_digits=10, 
         decimal_places=2,
         validators=[MinValueValidator(0)],

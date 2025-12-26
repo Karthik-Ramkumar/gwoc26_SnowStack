@@ -5,7 +5,6 @@
 - first_name (CharField)
 - last_name (CharField)
 - phone (CharField)
-- is_active (BooleanField)
 - is_staff (BooleanField)
 - date_joined (DateTimeField)
 - last_login (DateTimeField)
@@ -39,7 +38,6 @@
 - image (ImageField)
 - image_url (URLField)
 - created_at (DateTimeField)
-- updated_at (DateTimeField)
 
 ## Review
 
