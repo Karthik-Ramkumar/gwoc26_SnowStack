@@ -1,6 +1,4 @@
 import { useEffect, useRef } from "react";
-import Inspiration from "./Inspiration";
-import Founder from "./Founder";
 import "./Home.css";
 
 function Home({ onNavigate }) {
@@ -65,6 +63,18 @@ function Home({ onNavigate }) {
             reflects a moment in time, embracing subtle imperfections and
             quiet rhythm, inviting a deeper connection between the maker,
             the object, and the space it belongs to.
+          </p>
+        </div>
+      </section>
+
+      {/* JAPANESE INSPIRATION SECTION */}
+      <section className="japanese-inspiration">
+        <div className="container">
+          <h2>Inspiration from Japanese Culture</h2>
+          <p>
+            Rooted in the philosophy of Wabi-sabi, we embrace the beauty of imperfection.
+            Like the cherry blossoms that bloom fleetingly, our creations remind us to cherish
+            the present moment and find harmony in nature's simple forms.
           </p>
         </div>
       </section>
