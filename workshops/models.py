@@ -29,6 +29,7 @@ class Workshop(models.Model):
     max_participants = models.IntegerField(validators=[MinValueValidator(1)])
     min_age = models.IntegerField(default=12)
     image = models.ImageField(upload_to='workshops/', blank=True, null=True)
+    image_url = models.URLField(blank=True, help_text="Alternative: external image URL")
     
     # Availability
     is_active = models.BooleanField(default=True)

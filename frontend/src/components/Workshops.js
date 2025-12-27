@@ -50,8 +50,8 @@ const Workshops = () => {
   const WorkshopCard = ({ workshop }) => (
     <div className="workshop-card" onClick={() => handleWorkshopClick(workshop)}>
       <div className="workshop-image">
-        {workshop.image ? (
-          <img src={workshop.image} alt={workshop.name} />
+        {workshop.image_url ? (
+          <img src={workshop.image_url} alt={workshop.name} />
         ) : (
           <div className="workshop-placeholder">
             <span className="workshop-icon">🎨</span>
@@ -101,8 +101,8 @@ const Workshops = () => {
           <button className="modal-close" onClick={onClose}>×</button>
           <div className="modal-content">
             <div className="modal-image">
-              {workshop.image ? (
-                <img src={workshop.image} alt={workshop.name} />
+              {workshop.image_url ? (
+                <img src={workshop.image_url} alt={workshop.name} />
               ) : (
                 <div className="workshop-placeholder-large">
                   <span className="workshop-icon">🎨</span>
@@ -319,61 +319,89 @@ const Workshops = () => {
 
   return (
     <div className="workshops-page">
-      <header className="workshops-header">
-        <h1>Pottery Workshops & Experiences</h1>
+      {/* HEADER - 1/3 screen with pattern and Japanese text */}
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/images/gallery/pattern-brown.jpg.png')" }}>
+        <h1>
+          <span className="japanese-accent">ワークショップ</span>
+          Pottery Workshops & Experiences
+        </h1>
         <p>Create, Learn, and Connect Through the Art of Pottery</p>
       </header>
 
-      <div className="workshops-filter">
-        <button
-          className={selectedType === 'all' ? 'active' : ''}
-          onClick={() => setSelectedType('all')}
-        >
-          All Workshops
-        </button>
-        <button
-          className={selectedType === 'group' ? 'active' : ''}
-          onClick={() => setSelectedType('group')}
-        >
-          Group Workshops
-        </button>
-        <button
-          className={selectedType === 'one-on-one' ? 'active' : ''}
-          onClick={() => setSelectedType('one-on-one')}
-        >
-          One-on-One
-        </button>
-        <button
-          className={selectedType === 'couple' ? 'active' : ''}
-          onClick={() => setSelectedType('couple')}
-        >
-          Couple Dates
-        </button>
-        <button
-          className={selectedType === 'birthday' ? 'active' : ''}
-          onClick={() => setSelectedType('birthday')}
-        >
-          Birthday Parties
-        </button>
-        <button
-          className={selectedType === 'party' ? 'active' : ''}
-          onClick={() => setSelectedType('party')}
-        >
-          Mini Parties
-        </button>
-      </div>
-
-      <div className="workshops-grid">
-        {filteredWorkshops.map(workshop => (
-          <WorkshopCard key={workshop.id} workshop={workshop} />
-        ))}
-      </div>
-
-      {filteredWorkshops.length === 0 && (
-        <div className="no-workshops">
-          <p>No workshops available in this category.</p>
+      {/* DESCRIPTION SECTION - 2/3 screen, collage layout */}
+      <section className="workshops-description-section">
+        <div className="workshops-collage-left">
+          <img src="/images/gallery/Workshop Pieces (1).png" alt="Workshop Piece 1" />
+          <img src="/images/gallery/Workshop Pieces (2).png" alt="Workshop Piece 2" />
+          <img src="/images/gallery/Workshop Pieces (3).png" alt="Workshop Piece 3" />
+          <img src="/images/gallery/Workshop Pieces (4).png" alt="Workshop Piece 4" />
         </div>
-      )}
+        <div className="workshops-description-center">
+          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7 }}>
+            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create meaningful pieces through shared experience.
+          </p>
+        </div>
+        <div className="workshops-collage-right">
+          <img src="/images/gallery/Workshop Pieces (5).png" alt="Workshop Piece 5" />
+          <img src="/images/gallery/Workshop Pieces (6).png" alt="Workshop Piece 6" />
+          <img src="/images/gallery/Workshop Pieces (7).png" alt="Workshop Piece 7" />
+          <img src="/images/gallery/Workshop Pieces (8).png" alt="Workshop Piece 8" />
+        </div>
+      </section>
+
+      {/* WORKSHOPS LIST SECTION - Slides up from bottom while scrolling */}
+      <section className="workshops-list-section">
+        <div className="workshops-filter">
+          <button
+            className={selectedType === 'all' ? 'active' : ''}
+            onClick={() => setSelectedType('all')}
+          >
+            All Workshops
+          </button>
+          <button
+            className={selectedType === 'group' ? 'active' : ''}
+            onClick={() => setSelectedType('group')}
+          >
+            Group Workshops
+          </button>
+          <button
+            className={selectedType === 'one-on-one' ? 'active' : ''}
+            onClick={() => setSelectedType('one-on-one')}
+          >
+            One-on-One
+          </button>
+          <button
+            className={selectedType === 'couple' ? 'active' : ''}
+            onClick={() => setSelectedType('couple')}
+          >
+            Couple Dates
+          </button>
+          <button
+            className={selectedType === 'birthday' ? 'active' : ''}
+            onClick={() => setSelectedType('birthday')}
+          >
+            Birthday Parties
+          </button>
+          <button
+            className={selectedType === 'party' ? 'active' : ''}
+            onClick={() => setSelectedType('party')}
+          >
+            Mini Parties
+          </button>
+        </div>
+
+        <div className="workshops-grid">
+          {filteredWorkshops.map(workshop => (
+            <WorkshopCard key={workshop.id} workshop={workshop} />
+          ))}
+        </div>
+
+        {filteredWorkshops.length === 0 && (
+          <div className="no-workshops">
+            <p>No workshops available in this category.</p>
+          </div>
+        )}
+      </section>
 
       {selectedWorkshop && !showRegistrationForm && (
         <WorkshopDetails

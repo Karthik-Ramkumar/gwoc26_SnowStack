@@ -25,6 +25,7 @@ SAMPLE_PRODUCTS = [
         'stock_quantity': 15,
         'is_featured': True,
         'is_bestseller': True,
+        'image_url': '/images/gallery/product-1.jpg',
     },
     {
         'product_id': 'plate-1',
@@ -38,6 +39,7 @@ SAMPLE_PRODUCTS = [
         'in_stock': True,
         'stock_quantity': 12,
         'is_featured': True,
+        'image_url': '/images/gallery/product-2.jpg',
     },
     {
         'product_id': 'cup-1',
@@ -50,6 +52,7 @@ SAMPLE_PRODUCTS = [
         'dimensions': '3.5 inches diameter, holds 180ml',
         'in_stock': True,
         'stock_quantity': 20,
+        'image_url': '/images/gallery/product-3.jpg',
     },
     {
         'product_id': 'vase-1',
@@ -63,6 +66,7 @@ SAMPLE_PRODUCTS = [
         'in_stock': True,
         'stock_quantity': 5,
         'is_featured': True,
+        'image_url': '/images/gallery/product-4.jpg',
     },
     {
         'product_id': 'planter-1',
@@ -75,6 +79,7 @@ SAMPLE_PRODUCTS = [
         'dimensions': '5 inches diameter',
         'in_stock': True,
         'stock_quantity': 8,
+        'image_url': '/images/gallery/product-5.jpg',
     },
 ]
 
@@ -101,6 +106,11 @@ def load_sample_products():
             print(f"✓ Created: {product.name}")
         else:
             print(f"- Already exists: {product.name}")
+            # Update image_url if not set
+            if not product.image_url:
+                product.image_url = product_data.get('image_url', '')
+                product.save()
+                print(f"  Updated image_url for: {product.name}")
     
     print(f"\nTotal products in database: {Product.objects.count()}")
     print("Done!")

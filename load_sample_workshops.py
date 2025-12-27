@@ -30,6 +30,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': True,
         'is_popular': True,
         'available_slots': 5,
+        'image_url': '/images/gallery/workshop-1.jpg',
     },
     {
         'workshop_id': 'wheel-throwing-101',
@@ -48,6 +49,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': True,
         'is_popular': False,
         'available_slots': 4,
+        'image_url': '/images/gallery/workshop-2.jpg',
     },
     {
         'workshop_id': 'private-session',
@@ -66,6 +68,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': False,
         'is_popular': True,
         'available_slots': 8,
+        'image_url': '/images/gallery/workshop-3.jpg',
     },
     {
         'workshop_id': 'couple-pottery-date',
@@ -84,6 +87,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': True,
         'is_popular': True,
         'available_slots': 6,
+        'image_url': '/images/gallery/workshop-4.jpg',
     },
     {
         'workshop_id': 'birthday-celebration',
@@ -102,6 +106,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': False,
         'is_popular': True,
         'available_slots': 3,
+        'image_url': '/images/gallery/workshop-5.jpg',
     },
     {
         'workshop_id': 'mini-party',
@@ -120,6 +125,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': False,
         'is_popular': False,
         'available_slots': 2,
+        'image_url': '/images/gallery/workshop-6.jpg',
     },
     {
         'workshop_id': 'advanced-glazing',
@@ -138,6 +144,7 @@ SAMPLE_WORKSHOPS = [
         'is_featured': False,
         'is_popular': False,
         'available_slots': 4,
+        'image_url': '/images/gallery/workshop-1.jpg',
     },
 ]
 
@@ -166,6 +173,11 @@ def load_workshops():
                 )
         else:
             print(f"  Workshop already exists: {workshop.name}")
+            # Update image_url if not set
+            if not workshop.image_url:
+                workshop.image_url = workshop_data.get('image_url', '')
+                workshop.save()
+                print(f"  Updated image_url for: {workshop.name}")
     
     print(f"\nTotal workshops in database: {Workshop.objects.count()}")
     print("Done!")
