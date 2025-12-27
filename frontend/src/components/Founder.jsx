@@ -35,8 +35,8 @@ const Founder = () => {
                 <div className="founder-pimage-wrapper fade-in">
                     <div className="founder-frame">
                         <img
-                            src="/images/gallery/founder.png"
-                            alt="Shivangi, Founder of Basho"
+                            src="/static/images/gallery/founder.png"
+                            alt="Shivangi - Founder of Basho"
                             className="founder-img"
                         />
                     </div>
