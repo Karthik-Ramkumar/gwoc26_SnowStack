@@ -246,15 +246,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--clay-dark);
+    background: #C85428;
     color: var(--washi-white);
     border: none;
+    border-radius: 8px;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .btn-icon:hover {
-    background: var(--terracotta);
+    background: #a84420;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200, 84, 40, 0.3);
 }
 
 .product-meta {
