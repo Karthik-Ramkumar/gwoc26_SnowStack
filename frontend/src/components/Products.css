@@ -1,0 +1,343 @@
+/* Products Page Styles */
+
+.products-page {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Hero Section */
+.products-hero {
+  position: relative;
+  height: 35vh;
+  min-height: 280px;
+  background: linear-gradient(135deg, var(--earth-dark) 0%, var(--earth-light) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 50%, rgba(200, 84, 40, 0.2), transparent 70%);
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  color: #E8B67A;
+  padding: 2rem;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.hero-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.japanese-accent {
+  font-size: 1.8rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  opacity: 0.9;
+  color: #E8B67A;
+}
+
+.main-title {
+  font-size: 2.5rem;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #E8B67A !important;
+}
+
+.hero-subtitle {
+  font-size: 1.3rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  opacity: 0.85;
+  color: #E8B67A;
+}
+
+/* Hero Pottery Decorations */
+.pottery-hero-1,
+.pottery-hero-2 {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  color: rgba(237, 216, 180, 0.15);
+  pointer-events: none;
+  animation: float 12s ease-in-out infinite;
+}
+
+.pottery-hero-1 {
+  top: 10%;
+  left: 8%;
+}
+
+.pottery-hero-2 {
+  bottom: 15%;
+  right: 10%;
+  animation-delay: -3s;
+}
+
+
+/* Custom Order Background Wrapper */
+.custom-order-background-wrapper {
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Products Main Section */
+.products-main {
+  position: relative;
+  min-height: 100vh;
+  padding: 4rem 0;
+}
+
+/* Background with Image */
+.products-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+/* Caramel Overlay */
+.caramel-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(237, 216, 180, 0.92) 0%,
+    rgba(253, 246, 233, 0.88) 25%,
+    rgba(237, 216, 180, 0.90) 50%,
+    rgba(245, 240, 232, 0.87) 75%,
+    rgba(237, 216, 180, 0.91) 100%
+  );
+  backdrop-filter: blur(1px);
+}
+
+/* Pottery Decorations in Main Section */
+.pottery-deco {
+  position: absolute;
+  color: rgba(61, 46, 36, 0.18);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pottery-deco-1 {
+  width: 120px;
+  height: 150px;
+  top: 8%;
+  left: 5%;
+  animation: float 10s ease-in-out infinite;
+}
+
+.pottery-deco-2 {
+  width: 140px;
+  height: 160px;
+  top: 25%;
+  right: 7%;
+  animation: float 13s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+.pottery-deco-3 {
+  width: 110px;
+  height: 140px;
+  top: 45%;
+  left: 8%;
+  animation: float 11s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+.pottery-deco-4 {
+  width: 130px;
+  height: 130px;
+  top: 60%;
+  right: 10%;
+  animation: float 14s ease-in-out infinite;
+  animation-delay: -6s;
+}
+
+.pottery-deco-5 {
+  width: 100px;
+  height: 130px;
+  top: 75%;
+  left: 6%;
+  animation: float 12s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.pottery-deco-6 {
+  width: 140px;
+  height: 120px;
+  top: 88%;
+  right: 8%;
+  animation: float 13s ease-in-out infinite;
+  animation-delay: -7s;
+}
+
+.pottery-deco-7 {
+  width: 100px;
+  height: 140px;
+  top: 35%;
+  right: 15%;
+  animation: float 11s ease-in-out infinite;
+  animation-delay: -5s;
+}
+
+.pottery-deco-8 {
+  width: 120px;
+  height: 120px;
+  top: 15%;
+  left: 12%;
+  animation: float 14s ease-in-out infinite;
+  animation-delay: -1s;
+}
+
+/* Float Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(2deg);
+  }
+}
+
+/* Products Content */
+.products-content {
+  position: relative;
+  z-index: 2;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+/* Filter Section */
+.filter-section {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.filter-container {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--earth-dark);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.filter-group select {
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--cream);
+  border-radius: 8px;
+  background: white;
+  color: var(--earth-dark);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.filter-group select:hover {
+  border-color: var(--terra-cotta);
+}
+
+.filter-group select:focus {
+  outline: none;
+  border-color: var(--terra-cotta);
+  box-shadow: 0 0 0 3px rgba(200, 84, 40, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-title {
+    font-size: 2.5rem;
+  }
+
+  .japanese-accent {
+    font-size: 1.8rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .products-hero {
+    height: 30vh;
+    min-height: 240px;
+  }
+
+  .filter-container {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .filter-group {
+    width: 100%;
+  }
+
+  .pottery-deco-1,
+  .pottery-deco-2,
+  .pottery-deco-3,
+  .pottery-deco-4,
+  .pottery-deco-5,
+  .pottery-deco-6,
+  .pottery-deco-7,
+  .pottery-deco-8 {
+    width: 80px;
+    height: auto;
+  }
+
+  .pottery-hero-1,
+  .pottery-hero-2 {
+    width: 100px;
+    height: 100px;
+  }
+
+  .products-content {
+    padding: 0 1rem;
+  }
+
+  .filter-section {
+    padding: 1.5rem;
+  }
+}

@@ -3,9 +3,7 @@ import axios from "axios";
 import "./App.css";
 
 import Home from "./components/Home";
-import ProductList from "./components/ProductList";
-import CustomOrderForm from "./components/CustomOrderForm";
-import ProductCare from "./components/ProductCare";
+import Products from "./components/Products";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 import Workshops from "./components/Workshops";
@@ -20,40 +18,10 @@ const API_BASE_URL = "/api";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("home");
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("featured");
-
-  useEffect(() => {
-    if (currentPage !== "products") return;
-
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const params = {
-          category: category !== "all" ? category : undefined,
-          sort: sortBy,
-        };
-
-        const response = await axios.get(
-          `${API_BASE_URL}/products/`,
-          { params }
-        );
-
-        setProducts(response.data.results || response.data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [category, sortBy, currentPage]);
 
   const handleNavigate = (page) => {
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
