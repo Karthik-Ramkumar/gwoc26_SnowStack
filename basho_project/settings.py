@@ -147,9 +147,15 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 12,
 }
 
-# Email Configuration (for custom orders and notifications)
-# For development: Console backend (prints emails to terminal)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email Configuration
+# Gmail SMTP settings for sending real emails
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'vinanthp@gmail.com'
+EMAIL_HOST_PASSWORD = 'pudd wqdo ygnh qnyq'  # Gmail app password
+DEFAULT_FROM_EMAIL = 'Basho Pottery <vinanthp@gmail.com>'
 
 # Company Information
 COMPANY_NAME = 'Basho By Shivangi'

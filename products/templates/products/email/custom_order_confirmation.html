@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #3d2e24; background-color: #faf8f3; margin: 0; padding: 0; }
+  .email-container { max-width: 600px; margin: 0 auto; background-color: #ffffff; border: 1px solid #e5e5e5; border-radius: 12px; overflow: hidden; margin-top: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+  .header { background-color: #3d2e24; color: #ffffff; padding: 30px 20px; text-align: center; }
+  .header h1 { margin: 0; font-family: 'Georgia', serif; font-weight: normal; font-size: 28px; letter-spacing: 1px; }
+  .subheader { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; opacity: 0.8; margin-top: 5px; }
+  .content { padding: 40px 30px; }
+  .order-card { background-color: #fdfbf7; border: 1px solid #f0e6d2; padding: 25px; border-radius: 8px; margin: 25px 0; }
+  .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #8b7268; margin-bottom: 5px; display: block; font-weight: 600; }
+  .value { color: #3d2e24; font-size: 16px; margin-bottom: 20px; display: block; font-weight: 500; }
+  .value:last-child { margin-bottom: 0; }
+  .footer { background-color: #f5f0e6; padding: 30px 20px; text-align: center; font-size: 12px; color: #8b7268; border-top: 1px solid #e8dcc4; }
+  .button { display: inline-block; padding: 14px 28px; background: linear-gradient(135deg, #5a3825 0%, #b86039 100%); color: #ffffff; text-decoration: none; border-radius: 30px; font-weight: 600; margin-top: 10px; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(184, 96, 57, 0.3); }
+  .divider { height: 1px; background-color: #e5e5e5; margin: 25px 0; }
+  .accent-text { color: #C85428; }
+</style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>BASHO</h1>
+      <div class="subheader">Japanese-Inspired Pottery</div>
+    </div>
+    
+    <div class="content">
+      <p style="font-size: 18px; margin-top: 0;">Dear {{ custom_order.name }},</p>
+      <p>Thank you for choosing Basho! We have received your custom order request and are excited to review your vision.</p>
+      
+      <div class="order-card">
+        <span class="label">Order Number</span>
+        <span class="value" style="font-family: monospace; color: #C85428;">#{{ custom_order.order_number }}</span>
+        
+        <span class="label">Project Type</span>
+        <span class="value">{{ custom_order.get_project_type_display }}</span>
+        
+        <span class="label">Estimated Budget</span>
+        <span class="value">{{ custom_order.get_budget_display|default:"Not specified" }}</span>
+        
+        <span class="label">Description</span>
+        <span class="value" style="font-size: 14px; line-height: 1.6;">{{ custom_order.description }}</span>
+      </div>
+
+      <h3 style="color: #3d2e24; margin-top: 30px;">What Happens Next?</h3>
+      <p>Our team will review your request within 24-48 hours. If your project aligns with our studio's capabilities, we will reach out to schedule a consultation.</p>
+      
+      <p style="margin-bottom: 30px;">For any immediate questions, feel free to reply to this email.</p>
+
+      <div style="text-align: center;">
+        <a href="http://localhost:3000" class="button">Visit Our Studio</a>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>&copy; 2024 Basho By Shivangi. All rights reserved.</p>
+      <p style="margin-bottom: 0;">Handcrafted with intention.</p>
+    </div>
+  </div>
+</body>
+</html>

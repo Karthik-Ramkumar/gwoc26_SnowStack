@@ -101,58 +101,56 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
             from django.conf import settings
             
             # Email to admin
+            # Email to admin
             admin_subject = f'New Custom Order: {custom_order.order_number}'
-            admin_message = f'''
-New Custom Order Received
-
-Order Number: {custom_order.order_number}
-Customer: {custom_order.name}
-Email: {custom_order.email}
-Phone: {custom_order.phone}
-Project Type: {custom_order.get_project_type_display()}
-Budget: {custom_order.get_budget_display() if custom_order.budget else 'Not specified'}
-
-Description:
-{custom_order.description}
-
-Login to admin panel to review: http://127.0.0.1:8000/admin/products/customorder/{custom_order.id}/
-            '''
+            
+            # Common imports for templates are already handled or will be imported
+            from django.template.loader import render_to_string
+            from django.utils.html import strip_tags
+            
+            # Context for template
+            admin_context = {
+                'custom_order': custom_order,
+                'settings': settings,
+            }
+            
+            admin_html = render_to_string('products/email/admin_new_order.html', admin_context)
+            admin_plain = strip_tags(admin_html)
             
             send_mail(
                 subject=admin_subject,
-                message=admin_message,
+                message=admin_plain,
                 from_email=settings.COMPANY_EMAIL,
                 recipient_list=[settings.COMPANY_EMAIL],
+                html_message=admin_html,
                 fail_silently=True,  # Don't crash if email fails
             )
             
             # Email confirmation to customer
             customer_subject = f'Order Confirmation - {custom_order.order_number}'
-            customer_message = f'''
-Dear {custom_order.name},
-
-Thank you for your custom order request at Basho By Shivangi!
-
-Order Number: {custom_order.order_number}
-Project Type: {custom_order.get_project_type_display()}
-
-We have received your request and will contact you within 24 hours to discuss your project in detail.
-
-If you have any immediate questions, please contact us at:
-Email: {settings.COMPANY_EMAIL}
-Phone: {settings.COMPANY_PHONE}
-
-Best regards,
-Basho By Shivangi Team
-            '''
+            
+            # Context for template
+            context = {
+                'custom_order': custom_order,
+                'settings': settings,
+                'domain': 'localhost:3000',  # Replace with actual domain in production
+            }
+            
+            from django.template.loader import render_to_string
+            from django.utils.html import strip_tags
+            
+            html_message = render_to_string('products/email/custom_order_confirmation.html', context)
+            plain_message = strip_tags(html_message)
             
             send_mail(
                 subject=customer_subject,
-                message=customer_message,
+                message=plain_message,
                 from_email=settings.COMPANY_EMAIL,
                 recipient_list=[custom_order.email],
+                html_message=html_message,
                 fail_silently=True,
             )
+
         except Exception as e:
             # Log the error but don't fail the request
             print(f"Email sending failed: {str(e)}")

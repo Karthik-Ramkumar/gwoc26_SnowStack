@@ -47,12 +47,20 @@ class ProductSerializer(serializers.ModelSerializer):
         return obj.get_tags()
     
     def get_image_url_full(self, obj):
-        """Return full image URL"""
+        """Return full image URL with fallback to placeholder"""
+        # If ImageField has a file, return the full URL
         if obj.image:
             request = self.context.get('request')
             if request:
                 return request.build_absolute_uri(obj.image.url)
-        return obj.image_url or None
+        # If external URL is provided, use it
+        if obj.image_url:
+            return obj.image_url
+        # Fallback to placeholder
+        request = self.context.get('request')
+        if request:
+            return request.build_absolute_uri('/images/products/placeholder.jpg')
+        return '/images/products/placeholder.jpg'
 
 
 class CustomOrderSerializer(serializers.ModelSerializer):
