@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 
 import Home from "./components/Home";
@@ -11,31 +11,36 @@ import Studio from "./components/Studio";
 import Corporate from "./components/Corporate";
 import Media from "./components/Media";
 
-const API_BASE_URL = "/api";
+// Component to scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-
-  const handleNavigate = (page) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <div className="App">
-      <Navigation currentPage={currentPage} onNavigate={handleNavigate} />
+    <Router>
+      <div className="App">
+        <ScrollToTop />
+        <Navigation />
 
-      {currentPage === "home" && <Home onNavigate={handleNavigate} />}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/workshops" element={<Workshops />} />
+          <Route path="/studio" element={<Studio />} />
+          <Route path="/corporate" element={<Corporate />} />
+          <Route path="/media" element={<Media />} />
+        </Routes>
 
-      {currentPage === "products" && <Products />}
-
-      {currentPage === "workshops" && <Workshops />}
-      {currentPage === "studio" && <Studio />}
-      {currentPage === "corporate" && <Corporate />}
-      {currentPage === "media" && <Media />}
-
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </Router>
   );
 }
 

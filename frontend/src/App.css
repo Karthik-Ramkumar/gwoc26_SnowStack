@@ -37,6 +37,7 @@ body {
   gap: 28px;
 }
 
+.nav-links a,
 .nav-links span {
   position: relative;
   cursor: pointer;
@@ -44,9 +45,12 @@ body {
   font-weight: 599;
   color: #111;
   padding-bottom: 6px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* underline from center */
+.nav-links a::after,
 .nav-links span::after {
   content: "";
   position: absolute;
@@ -59,10 +63,12 @@ body {
   transition: width 0.3s ease;
 }
 
+.nav-links a:hover::after,
 .nav-links span:hover::after {
   width: 100%;
 }
 
+.nav-links a.active::after,
 .nav-links span.active::after {
   width: 100%;
 }

@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Inspiration from "./Inspiration";
 import Founder from "./Founder";
 import "./Home.css";
 
-function Home({ onNavigate }) {
+function Home() {
   const paperRef = useRef(null);
+  const navigate = useNavigate();
 
   /* Scroll effect is now handled by CSS sticky positioning */
 
@@ -37,10 +39,10 @@ function Home({ onNavigate }) {
           </p>
 
           <div className="home-actions">
-            <button onClick={() => onNavigate("products")}>
+            <button onClick={() => navigate("/products")}>
               Explore Products
             </button>
-            <button onClick={() => onNavigate("workshops")}>
+            <button onClick={() => navigate("/workshops")}>
               View Workshops
             </button>
           </div>

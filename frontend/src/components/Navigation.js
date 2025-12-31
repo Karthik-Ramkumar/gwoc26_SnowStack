@@ -1,54 +1,55 @@
-function Navigation({ currentPage, onNavigate }) {
+import { Link, useLocation } from "react-router-dom";
+
+function Navigation() {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <nav className="navbar">
       {/* Logo */}
-      <div
-        className="logo"
-        onClick={() => onNavigate("home")}
-        style={{ cursor: "pointer" }}
-      >
+      <Link to="/" className="logo" style={{ cursor: "pointer", textDecoration: "none" }}>
         <img
           src="https://i.postimg.cc/nLh2w8mP/transbashologo.png"
           alt="Basho Logo"
         />
-      </div>
+      </Link>
 
       {/* Navigation Links */}
       <div className="nav-links">
-        <span
-          className={currentPage === "products" ? "active" : ""}
-          onClick={() => onNavigate("products")}
+        <Link
+          to="/products"
+          className={currentPath === "/products" ? "active" : ""}
         >
           Collections
-        </span>
+        </Link>
 
-        <span
-          className={currentPage === "workshops" ? "active" : ""}
-          onClick={() => onNavigate("workshops")}
+        <Link
+          to="/workshops"
+          className={currentPath === "/workshops" ? "active" : ""}
         >
           Workshops
-        </span>
+        </Link>
 
-        <span
-          className={currentPage === "studio" ? "active" : ""}
-          onClick={() => onNavigate("studio")}
+        <Link
+          to="/studio"
+          className={currentPath === "/studio" ? "active" : ""}
         >
           Studio
-        </span>
+        </Link>
 
-        <span
-          className={currentPage === "corporate" ? "active" : ""}
-          onClick={() => onNavigate("corporate")}
+        <Link
+          to="/corporate"
+          className={currentPath === "/corporate" ? "active" : ""}
         >
           Corporate
-        </span>
+        </Link>
 
-        <span
-          className={currentPage === "media" ? "active" : ""}
-          onClick={() => onNavigate("media")}
+        <Link
+          to="/media"
+          className={currentPath === "/media" ? "active" : ""}
         >
           Media
-        </span>
+        </Link>
       </div>
     </nav>
   );

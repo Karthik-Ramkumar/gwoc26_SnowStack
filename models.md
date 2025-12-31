@@ -7,7 +7,7 @@
 - phone (CharField)
 - is_staff (BooleanField)
 - date_joined (DateTimeField)
-- last_login (DateTimeField)
+- last_login (DateTimeField)  ??
 
 ## Customer
 
