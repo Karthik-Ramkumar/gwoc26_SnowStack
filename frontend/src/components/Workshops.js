@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Gauge, Users, ChartBar } from 'lucide-react';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -71,43 +72,60 @@ const Workshops = () => {
   };
 
   const WorkshopCard = ({ workshop }) => (
-    <div className="workshop-card" onClick={() => handleWorkshopClick(workshop)}>
-      <div className="workshop-image">
-        {workshop.image_url ? (
-          <img src={workshop.image_url} alt={workshop.name} />
-        ) : (
-          <div className="workshop-placeholder">
-            <span className="workshop-icon">🎨</span>
-          </div>
-        )}
-        {workshop.is_featured && <span className="workshop-badge featured">Featured</span>}
-        {workshop.is_popular && <span className="workshop-badge popular">Popular</span>}
-      </div>
+    <div 
+      className="workshop-card" 
+      onClick={() => handleWorkshopClick(workshop)}
+      style={{
+        backgroundImage: workshop.image_url ? `url(${workshop.image_url})` : 'none'
+      }}
+    >
+      <div className="workshop-card-overlay"></div>
+      {!workshop.image_url && (
+        <div className="workshop-placeholder-bg">
+          <span className="workshop-icon">🎨</span>
+        </div>
+      )}
+      {workshop.is_featured && <span className="workshop-badge featured">Featured</span>}
+      {workshop.is_popular && <span className="workshop-badge popular">Popular</span>}
+      
       <div className="workshop-content">
-        <h3>{workshop.name}</h3>
-        <p className="workshop-type">{workshop.workshop_type_display}</p>
-        <p className="workshop-description">{workshop.short_description}</p>
-        <div className="workshop-info">
-          <span className="workshop-duration">⏱️ {workshop.duration_hours}h</span>
-          <span className="workshop-difficulty">📊 {workshop.difficulty_level_display}</span>
-          <span className="workshop-participants">👥 Max {workshop.max_participants}</span>
+        <div className="workshop-content-top">
+          <h3>{workshop.name}</h3>
+          <p className="workshop-type">{workshop.workshop_type_display}</p>
         </div>
-        <div className="workshop-footer">
-          <span className="workshop-price">₹{workshop.price}</span>
-          <span className="workshop-availability">
-            {workshop.available_slots > 0 ? `${workshop.available_slots} slots` : 'Sold Out'}
-          </span>
+        
+        <div className="workshop-content-bottom">
+          <p className="workshop-description">{workshop.short_description}</p>
+          <div className="workshop-info">
+            <span className="workshop-duration">
+              <Gauge color="#EDD8B4" strokeWidth={2.5} size={16} /> {workshop.duration_hours}h
+            </span>
+            <span className="workshop-difficulty">
+              <ChartBar color="#EDD8B4" strokeWidth={2.5} size={16} /> {workshop.difficulty_level_display}
+            </span>
+            <span className="workshop-participants">
+              <Users color="#EDD8B4" strokeWidth={2.5} size={16} /> Max {workshop.max_participants}
+            </span>
+          </div>
+          <div className="workshop-footer">
+            <span className="workshop-price">₹{workshop.price}</span>
+            <span className="workshop-availability">
+              {workshop.available_slots > 0 ? `${workshop.available_slots} slots` : 'Sold Out'}
+            </span>
+          </div>
+          <button 
+            className="workshop-register-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRegisterClick(workshop);
+            }}
+            disabled={workshop.available_slots === 0}
+          >
+            <span className="button_top">
+              {workshop.available_slots > 0 ? 'Register Now' : 'Fully Booked'}
+            </span>
+          </button>
         </div>
-        <button 
-          className="workshop-register-btn"
-          onClick={(e) => {
-            e.stopPropagation();
-            handleRegisterClick(workshop);
-          }}
-          disabled={workshop.available_slots === 0}
-        >
-          {workshop.available_slots > 0 ? 'Register Now' : 'Fully Booked'}
-        </button>
       </div>
     </div>
   );

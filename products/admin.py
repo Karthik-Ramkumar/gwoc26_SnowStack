@@ -6,7 +6,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.db.models import Q
-from .models import Product, CustomOrder, CartItem
+from .models import Product, CustomOrder, CartItem, Order, OrderItem
 
 
 # ====================
@@ -384,3 +384,216 @@ class CartItemAdmin(admin.ModelAdmin):
         """Show total price for this cart item"""
         return format_html('<strong>₹{}</strong>', f'{obj.get_total_price():,.2f}')
     total_price.short_description = 'Total Price'
+
+
+# ====================
+# ORDER ITEM INLINE
+# ====================
+class OrderItemInline(admin.TabularInline):
+    """
+    Display order items within the order form
+    """
+    model = OrderItem
+    extra = 0
+    fields = ['product', 'product_name', 'product_price', 'quantity', 'item_total']
+    readonly_fields = ['item_total']
+    
+    def item_total(self, obj):
+        """Display total for this line item"""
+        if obj.pk:
+            return format_html('<strong>₹{}</strong>', f'{obj.get_total_price():,.2f}')
+        return '-'
+    item_total.short_description = 'Line Total'
+
+
+# ====================
+# ORDER ADMIN
+# ====================
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    """
+    Comprehensive order management interface
+    Track all customer purchases and order history
+    """
+    
+    list_display = [
+        'order_number',
+        'customer_name',
+        'customer_phone',
+        'status_badge',
+        'payment_badge',
+        'total_display',
+        'item_count_display',
+        'created_at',
+        'payment_method',
+    ]
+    
+    list_filter = [
+        'status',
+        'payment_status',
+        'payment_method',
+        'created_at',
+        'shipping_state',
+    ]
+    
+    search_fields = [
+        'order_number',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'tracking_number',
+    ]
+    
+    readonly_fields = [
+        'order_number',
+        'created_at',
+        'updated_at',
+        'item_count_display',
+        'order_summary',
+    ]
+    
+    list_per_page = 25
+    date_hierarchy = 'created_at'
+    
+    inlines = [OrderItemInline]
+    
+    fieldsets = (
+        ('📋 Order Information', {
+            'fields': ('order_number', 'status', 'created_at', 'updated_at'),
+        }),
+        ('👤 Customer Details', {
+            'fields': ('customer_name', 'customer_email', 'customer_phone'),
+        }),
+        ('📦 Shipping Address', {
+            'fields': ('shipping_address', 'shipping_city', 'shipping_state', 'shipping_pincode'),
+        }),
+        ('🏢 Billing Address (Optional)', {
+            'fields': ('billing_address', 'gst_number'),
+            'classes': ('collapse',),
+        }),
+        ('💰 Payment & Pricing', {
+            'fields': (
+                'payment_method',
+                'payment_status',
+                'subtotal',
+                'shipping_charge',
+                'tax_amount',
+                'discount_amount',
+                'total_amount',
+            ),
+        }),
+        ('🚚 Shipping & Tracking', {
+            'fields': ('tracking_number', 'courier_service', 'delivered_at'),
+        }),
+        ('📝 Notes', {
+            'fields': ('order_notes', 'internal_notes'),
+        }),
+        ('📊 Order Summary', {
+            'fields': ('order_summary', 'item_count_display'),
+        }),
+    )
+    
+    # Custom displays
+    def status_badge(self, obj):
+        """Show order status with colored badge"""
+        colors = {
+            'pending': '#FF9800',
+            'confirmed': '#2196F3',
+            'processing': '#9C27B0',
+            'shipped': '#00BCD4',
+            'delivered': '#4CAF50',
+            'cancelled': '#F44336',
+            'refunded': '#757575',
+        }
+        color = colors.get(obj.status, '#757575')
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 600;">{}</span>',
+            color, obj.get_status_display()
+        )
+    status_badge.short_description = 'Status'
+    
+    def payment_badge(self, obj):
+        """Show payment status"""
+        if obj.payment_status:
+            return format_html('<span style="color: #4CAF50; font-weight: 600;">✓ Paid</span>')
+        return format_html('<span style="color: #F44336; font-weight: 600;">✗ Unpaid</span>')
+    payment_badge.short_description = 'Payment'
+    
+    def total_display(self, obj):
+        """Show total amount"""
+        return format_html('<strong>₹{}</strong>', f'{obj.total_amount:,.2f}')
+    total_display.short_description = 'Total Amount'
+    total_display.admin_order_field = 'total_amount'
+    
+    def item_count_display(self, obj):
+        """Show number of items in order"""
+        if obj.pk:
+            count = obj.get_item_count()
+            return format_html('<strong>{}</strong> items', count)
+        return '-'
+    item_count_display.short_description = 'Items'
+    
+    def order_summary(self, obj):
+        """Show detailed order summary"""
+        if not obj.pk:
+            return '-'
+        
+        html = '<div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">'
+        html += f'<strong>Order Items:</strong><br>'
+        
+        for item in obj.items.all():
+            html += f'• {item.product_name} x {item.quantity} = ₹{item.get_total_price():,.2f}<br>'
+        
+        html += '<br><strong>Pricing Breakdown:</strong><br>'
+        html += f'Subtotal: ₹{obj.subtotal:,.2f}<br>'
+        if obj.shipping_charge > 0:
+            html += f'Shipping: ₹{obj.shipping_charge:,.2f}<br>'
+        if obj.tax_amount > 0:
+            html += f'Tax: ₹{obj.tax_amount:,.2f}<br>'
+        if obj.discount_amount > 0:
+            html += f'Discount: -₹{obj.discount_amount:,.2f}<br>'
+        html += f'<strong>Total: ₹{obj.total_amount:,.2f}</strong>'
+        html += '</div>'
+        
+        return format_html(html)
+    order_summary.short_description = 'Summary'
+    
+    # Bulk actions
+    actions = [
+        'mark_confirmed',
+        'mark_processing',
+        'mark_shipped',
+        'mark_delivered',
+        'mark_payment_received',
+    ]
+    
+    def mark_confirmed(self, request, queryset):
+        """Mark orders as confirmed"""
+        updated = queryset.update(status='confirmed')
+        self.message_user(request, f'✅ {updated} order(s) marked as CONFIRMED')
+    mark_confirmed.short_description = "✅ Mark as CONFIRMED"
+    
+    def mark_processing(self, request, queryset):
+        """Mark orders as processing"""
+        updated = queryset.update(status='processing')
+        self.message_user(request, f'⚙️ {updated} order(s) marked as PROCESSING')
+    mark_processing.short_description = "⚙️ Mark as PROCESSING"
+    
+    def mark_shipped(self, request, queryset):
+        """Mark orders as shipped"""
+        updated = queryset.update(status='shipped')
+        self.message_user(request, f'🚚 {updated} order(s) marked as SHIPPED')
+    mark_shipped.short_description = "🚚 Mark as SHIPPED"
+    
+    def mark_delivered(self, request, queryset):
+        """Mark orders as delivered"""
+        from django.utils import timezone
+        updated = queryset.update(status='delivered', delivered_at=timezone.now())
+        self.message_user(request, f'📦 {updated} order(s) marked as DELIVERED')
+    mark_delivered.short_description = "📦 Mark as DELIVERED"
+    
+    def mark_payment_received(self, request, queryset):
+        """Mark payment as received"""
+        updated = queryset.update(payment_status=True, status='confirmed')
+        self.message_user(request, f'💰 {updated} order(s) marked as PAID')
+    mark_payment_received.short_description = "💰 Mark PAYMENT RECEIVED"

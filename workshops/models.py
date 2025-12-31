@@ -83,6 +83,9 @@ class WorkshopRegistration(models.Model):
     workshop = models.ForeignKey(Workshop, on_delete=models.CASCADE, related_name='registrations')
     slot = models.ForeignKey(WorkshopSlot, on_delete=models.CASCADE, related_name='registrations', null=True, blank=True)
     
+    # Registration Number
+    registration_number = models.CharField(max_length=50, unique=True, editable=False, default='WS-TEMP')
+    
     # Participant Information
     full_name = models.CharField(max_length=200)
     email = models.EmailField()
@@ -103,11 +106,18 @@ class WorkshopRegistration(models.Model):
     
     class Meta:
         ordering = ['-registered_at']
+        verbose_name = 'Workshop Registration'
+        verbose_name_plural = 'Workshops - Registrations (Purchases)'
     
     def __str__(self):
-        return f"{self.full_name} - {self.workshop.name}"
+        return f"{self.registration_number} - {self.full_name}"
     
     def save(self, *args, **kwargs):
+        # Auto-generate registration number
+        if not self.registration_number:
+            from datetime import datetime
+            self.registration_number = f"WS-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        
         # Calculate total amount
         if not self.total_amount:
             self.total_amount = self.workshop.price * self.number_of_participants
