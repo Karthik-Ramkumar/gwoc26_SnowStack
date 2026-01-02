@@ -11,10 +11,9 @@ import Workshops from "./components/Workshops";
 import Studio from "./components/Studio";
 import Corporate from "./components/Corporate";
 import Media from "./components/Media";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
-import ForgotPassword from "./components/auth/ForgotPassword";
-import UserProfile from "./components/auth/UserProfile";
+import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
+import { CartProvider } from "./context/CartContext";
 
 // Component to scroll to top on route change
 function ScrollToTop() {
@@ -29,8 +28,8 @@ function ScrollToTop() {
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <CartProvider>
         <div className="App">
           <ScrollToTop />
           <Navigation />
@@ -42,16 +41,14 @@ function App() {
             <Route path="/studio" element={<Studio />} />
             <Route path="/corporate" element={<Corporate />} />
             <Route path="/media" element={<Media />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/profile" element={<UserProfile />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
 
           <Footer />
         </div>
-      </Router>
-    </AuthProvider>
+      </CartProvider>
+    </Router>
   );
 }
 

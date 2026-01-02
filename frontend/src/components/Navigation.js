@@ -1,47 +1,13 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useState, useRef, useEffect } from "react";
-import { useAuth } from "../contexts/AuthContext";
-import { User, LogOut, UserCircle } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { ShoppingCart } from "lucide-react";
+import { useCart } from "../context/CartContext";
 
 function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
   const currentPath = location.pathname;
-  const { currentUser, logout } = useAuth();
-  const [showDropdown, setShowDropdown] = useState(false);
-  const dropdownRef = useRef(null);
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowDropdown(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setShowDropdown(false);
-      navigate('/');
-    } catch (err) {
-      console.error('Failed to log out:', err);
-    }
-  };
-
-  // Get user initials for avatar
-  const getInitials = (name) => {
-    if (!name) return currentUser?.email[0].toUpperCase();
-    const names = name.split(' ');
-    if (names.length >= 2) {
-      return (names[0][0] + names[names.length - 1][0]).toUpperCase();
-    }
-    return name[0].toUpperCase();
-  };
+  const { getCartCount } = useCart();
+  const cartCount = getCartCount();
 
   return (
     <nav className="navbar">
@@ -90,55 +56,16 @@ function Navigation() {
           Media
         </Link>
 
-        {/* Authentication UI */}
-        {currentUser ? (
-          <div className="user-menu" ref={dropdownRef}>
-            <button
-              className="user-avatar"
-              onClick={() => setShowDropdown(!showDropdown)}
-              aria-label="User menu"
-            >
-              {currentUser.photoURL ? (
-                <img src={currentUser.photoURL} alt="Profile" />
-              ) : (
-                <span className="user-initials">
-                  {getInitials(currentUser.displayName)}
-                </span>
-              )}
-            </button>
-
-            {showDropdown && (
-              <div className="user-dropdown">
-                <div className="dropdown-header">
-                  <p className="user-name">
-                    {currentUser.displayName || 'Basho Member'}
-                  </p>
-                  <p className="user-email">{currentUser.email}</p>
-                </div>
-                <div className="dropdown-divider"></div>
-                <button
-                  className="dropdown-item"
-                  onClick={() => {
-                    navigate('/profile');
-                    setShowDropdown(false);
-                  }}
-                >
-                  <UserCircle size={18} />
-                  <span>My Profile</span>
-                </button>
-                <button className="dropdown-item" onClick={handleLogout}>
-                  <LogOut size={18} />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <Link to="/login" className="login-button">
-            <User size={18} />
-            <span>Login</span>
-          </Link>
-        )}
+        <Link
+          to="/cart"
+          className={`cart-icon ${currentPath === "/cart" ? "active" : ""}`}
+          style={{ position: "relative" }}
+        >
+          <ShoppingCart size={24} color="#652810" strokeWidth={2} />
+          {cartCount > 0 && (
+            <span className="cart-badge">{cartCount}</span>
+          )}
+        </Link>
       </div>
     </nav>
   );
