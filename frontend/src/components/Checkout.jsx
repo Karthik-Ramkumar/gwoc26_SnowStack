@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import './Cart.css';
+import './Checkout.css';
+import './Checkout.css';
 
 function Checkout() {
   const navigate = useNavigate();
@@ -146,9 +148,7 @@ function Checkout() {
                   />
                   {errors.lastName && <span className="error-message">{errors.lastName}</span>}
                 </div>
-              </div>
 
-              <div className="form-row">
                 <div className="form-group">
                   <label htmlFor="phone">Phone Number *</label>
                   <input
@@ -162,7 +162,9 @@ function Checkout() {
                   />
                   {errors.phone && <span className="error-message">{errors.phone}</span>}
                 </div>
+              </div>
 
+              <div className="form-row two-col">
                 <div className="form-group">
                   <label htmlFor="email">Email Address *</label>
                   <input
@@ -176,20 +178,20 @@ function Checkout() {
                   />
                   {errors.email && <span className="error-message">{errors.email}</span>}
                 </div>
-              </div>
 
-              <div className="form-group">
-                <label htmlFor="address">Delivery Address *</label>
-                <textarea
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  rows="3"
-                  placeholder="House/Flat No., Street, Locality"
-                  className={errors.address ? 'error' : ''}
-                />
-                {errors.address && <span className="error-message">{errors.address}</span>}
+                <div className="form-group">
+                  <label htmlFor="address">Delivery Address *</label>
+                  <textarea
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleChange}
+                    rows="2"
+                    placeholder="House/Flat No., Street, Locality"
+                    className={errors.address ? 'error' : ''}
+                  />
+                  {errors.address && <span className="error-message">{errors.address}</span>}
+                </div>
               </div>
 
               <div className="form-row">

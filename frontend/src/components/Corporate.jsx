@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Corporate.css';
+import './Workshops.css';
 
 function Corporate() {
   const [formData, setFormData] = useState({
@@ -50,26 +51,21 @@ function Corporate() {
 
   return (
     <div className="corporate-page">
-      {/* Hero Section */}
-      <section className="corporate-hero-new">
-        <div className="hero-background">
-          {/* TODO: Add hero background image here */}
-          <div className="hero-overlay"></div>
-        </div>
-        <div className="hero-content-wrapper">
-          <div className="hero-content-inner">
-            <span className="hero-badge">Corporate Services</span>
-            <h1 className="hero-title-new">
-              Elevate Your <br /> Corporate Culture
-            </h1>
-            <p className="hero-subtitle-new">
-              Bring the warmth of artisanal heritage to your team and clients through curated experiences, sustainable gifts, and meaningful collaborations.
-            </p>
-            <div className="hero-actions">
-              <button className="btn-primary">Explore Offerings</button>
-              <button className="btn-secondary">View Portfolio</button>
-            </div>
-          </div>
+      {/* HEADER - 1/3 screen with pattern and Japanese text */}
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/pattern-brown.jpg.png')" }}>
+        <h1>
+          <span className="japanese-accent">法人</span>
+          Corporate Services
+        </h1>
+        <p>Elevate Your Corporate Culture with Artisanal Excellence</p>
+      </header>
+
+      {/* DESCRIPTION SECTION - Clean centered text */}
+      <section className="workshops-description-section">
+        <div className="workshops-description-center">
+          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
+            Bring the warmth of artisanal heritage to your team and clients through curated experiences, sustainable gifts, and meaningful collaborations. We bridge traditional craftsmanship with modern business needs to create connections that last.
+          </p>
         </div>
       </section>
 

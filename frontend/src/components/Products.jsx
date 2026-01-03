@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./Products.css";
+import "./Workshops.css";
 import ProductList from "./ProductList";
 import CustomOrderForm from "./CustomOrderForm";
 import ProductCare from "./ProductCare";
@@ -39,26 +40,22 @@ function Products() {
 
   return (
     <div className="products-page">
-      {/* Hero Section */}
-      <section className="products-hero">
-        <div className="hero-overlay"></div>
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="japanese-accent">陶器</span>
-            <span className="main-title">Our Collections</span>
-          </h1>
-          <p className="hero-subtitle">Handcrafted pottery for mindful living</p>
-        </div>
+      {/* HEADER - 1/3 screen with pattern and Japanese text */}
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/pattern-brown.jpg.png')" }}>
+        <h1>
+          <span className="japanese-accent">陶器</span>
+          Collections
+        </h1>
+        <p>Handcrafted Pottery for Mindful Living</p>
+      </header>
 
-        {/* Pottery SVG Decorations */}
-        <svg className="pottery-hero-1" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 20 Q20 30, 20 50 L20 90 Q20 110, 40 110 L60 110 Q80 110, 80 90 L80 50 Q80 30, 70 20 L30 20" 
-                stroke="currentColor" strokeWidth="2" fill="none"/>
-        </svg>
-        <svg className="pottery-hero-2" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="30" stroke="currentColor" strokeWidth="2" fill="none"/>
-          <ellipse cx="50" cy="30" rx="30" ry="8" stroke="currentColor" strokeWidth="2" fill="none"/>
-        </svg>
+      {/* DESCRIPTION SECTION - Clean centered text */}
+      <section className="workshops-description-section">
+        <div className="workshops-description-center">
+          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
+            Explore our curated collections of handcrafted pottery, where each piece embodies the philosophy of wabi-sabi — finding beauty in imperfection and celebrating the natural character of clay. From functional everyday items to decorative statement pieces, our collections bring mindful artistry into your space.
+          </p>
+        </div>
       </section>
 
       {/* Products Section with Background */}

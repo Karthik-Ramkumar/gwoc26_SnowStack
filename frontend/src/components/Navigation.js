@@ -1,12 +1,24 @@
-import { Link, useLocation } from "react-router-dom";
-import { ShoppingCart } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ShoppingCart, User, LogOut } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../contexts/AuthContext";
 
 function Navigation() {
   const location = useLocation();
+  const navigate = useNavigate();
   const currentPath = location.pathname;
   const { getCartCount } = useCart();
+  const { currentUser, logout } = useAuth();
   const cartCount = getCartCount();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -65,6 +77,22 @@ function Navigation() {
             <span className="cart-badge">{cartCount}</span>
           )}
         </Link>
+
+        {currentUser ? (
+          <div className="user-menu">
+            <span className="user-name">{currentUser.displayName || currentUser.email}</span>
+            <button onClick={handleLogout} className="logout-btn" title="Logout">
+              <LogOut size={20} color="#652810" strokeWidth={2} />
+            </button>
+          </div>
+        ) : (
+          <Link
+            to="/login"
+            className={`login-link ${currentPath === "/login" ? "active" : ""}`}
+          >
+            <User size={24} color="#652810" strokeWidth={2} />
+          </Link>
+        )}
       </div>
     </nav>
   );
