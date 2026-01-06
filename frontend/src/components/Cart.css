@@ -186,6 +186,21 @@
   margin-bottom: 8px;
 }
 
+.workshop-details {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.workshop-slot-info {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .item-price {
   color: #666;
   font-size: 0.95rem;
@@ -199,6 +214,14 @@
   background-color: #f8f8f8;
   padding: 8px 12px;
   border-radius: 8px;
+}
+
+.quantity-fixed {
+  min-width: 80px;
+  text-align: center;
+  font-weight: 600;
+  color: #652810;
+  font-size: 0.9rem;
 }
 
 .quantity-btn {

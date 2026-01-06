@@ -311,3 +311,163 @@ def create_user(request):
         return Response({
             'error': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ====================
+# RAZORPAY PAYMENT INTEGRATION
+# ====================
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def create_razorpay_order(request):
+    """
+    Create Razorpay order for payment
+    
+    Request body: {
+        "amount": 5000,  // Amount in rupees
+        "customer_name": "John Doe",
+        "customer_email": "john@example.com",
+        "customer_phone": "9876543210"
+    }
+    
+    Response: {
+        "order_id": "order_xyz123",
+        "amount": 500000,  // Amount in paise
+        "currency": "INR",
+        "key": "rzp_test_xxxxx"
+    }
+    """
+    try:
+        import razorpay
+        from django.conf import settings
+        
+        # Initialize Razorpay client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        # Get amount from request (in rupees)
+        amount_rupees = float(request.data.get('amount', 0))
+        
+        if amount_rupees <= 0:
+            return Response({
+                'error': 'Amount must be greater than 0'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Convert to paise (Razorpay accepts amount in smallest currency unit)
+        amount_paise = int(amount_rupees * 100)
+        
+        # Create Razorpay order
+        order_data = {
+            'amount': amount_paise,
+            'currency': 'INR',
+            'payment_capture': 1,  # Auto capture payment
+            'notes': {
+                'customer_name': request.data.get('customer_name', ''),
+                'customer_email': request.data.get('customer_email', ''),
+                'customer_phone': request.data.get('customer_phone', '')
+            }
+        }
+        
+        razorpay_order = client.order.create(data=order_data)
+        
+        return Response({
+            'success': True,
+            'order_id': razorpay_order['id'],
+            'amount': razorpay_order['amount'],
+            'currency': razorpay_order['currency'],
+            'key': settings.RAZORPAY_KEY_ID
+        }, status=status.HTTP_201_CREATED)
+        
+    except Exception as e:
+        return Response({
+            'error': f'Failed to create Razorpay order: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_payment(request):
+    """
+    Verify Razorpay payment signature
+    
+    Request body: {
+        "razorpay_order_id": "order_xyz123",
+        "razorpay_payment_id": "pay_abc456",
+        "razorpay_signature": "signature_hash",
+        "order_data": {
+            // All order fields for creating Order in database
+        }
+    }
+    """
+    try:
+        import razorpay
+        from django.conf import settings
+        
+        # Initialize Razorpay client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        
+        # Get payment details
+        razorpay_order_id = request.data.get('razorpay_order_id')
+        razorpay_payment_id = request.data.get('razorpay_payment_id')
+        razorpay_signature = request.data.get('razorpay_signature')
+        
+        if not all([razorpay_order_id, razorpay_payment_id, razorpay_signature]):
+            return Response({
+                'error': 'Missing payment verification parameters'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verify payment signature
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': razorpay_payment_id,
+            'razorpay_signature': razorpay_signature
+        }
+        
+        try:
+            client.utility.verify_payment_signature(params_dict)
+            payment_verified = True
+        except razorpay.errors.SignatureVerificationError:
+            payment_verified = False
+            return Response({
+                'success': False,
+                'error': 'Payment verification failed'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # If payment verified, create order in database
+        if payment_verified:
+            order_data = request.data.get('order_data', {})
+            
+            # Update order data with payment info
+            order_data['payment_method'] = 'razorpay'
+            order_data['payment_status'] = True
+            order_data['shipping_charge'] = 0  # Shipping is 0 for now
+            
+            # Create order
+            from .serializers import OrderSerializer
+            serializer = OrderSerializer(data=order_data)
+            
+            if serializer.is_valid():
+                order = serializer.save()
+                
+                # Store payment details in order notes
+                order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
+                order.save()
+                
+                return Response({
+                    'success': True,
+                    'message': 'Payment verified and order created successfully',
+                    'order_number': order.order_number,
+                    'order_id': order.id,
+                    'payment_id': razorpay_payment_id
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    'success': False,
+                    'error': 'Failed to create order',
+                    'details': serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+    except Exception as e:
+        return Response({
+            'error': f'Payment verification failed: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

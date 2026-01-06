@@ -80,7 +80,9 @@ function Navigation() {
 
         {currentUser ? (
           <div className="user-menu">
-            <span className="user-name">{currentUser.displayName || currentUser.email}</span>
+            <div className="user-avatar" title={currentUser.displayName || currentUser.email}>
+              {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
+            </div>
             <button onClick={handleLogout} className="logout-btn" title="Logout">
               <LogOut size={20} color="#652810" strokeWidth={2} />
             </button>

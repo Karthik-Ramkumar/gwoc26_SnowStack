@@ -164,6 +164,11 @@ COMPANY_EMAIL = 'bashobyshivangi@gmail.com'
 COMPANY_PHONE = '+91 XXXXX XXXXX'
 COMPANY_ADDRESS = 'Pottery Studio, India'
 
+# Razorpay Configuration
+# Get these from: https://dashboard.razorpay.com/app/keys
+RAZORPAY_KEY_ID = 'your_razorpay_key_id'  # Replace with your actual key
+RAZORPAY_KEY_SECRET = 'your_razorpay_key_secret'  # Replace with your actual secret
+
 
 # ====================
 # JAZZMIN ADMIN THEME CONFIGURATION

@@ -24,6 +24,9 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',
             'description',
             'short_description',
+            'material',
+            'usage_instructions',
+            'care_instructions',
             'price',
             'weight',
             'dimensions',
@@ -100,13 +103,13 @@ class CustomOrderSerializer(serializers.ModelSerializer):
 
 class OrderItemSerializer(serializers.ModelSerializer):
     """Serializer for OrderItem model"""
-    product_name = serializers.CharField(source='product.name', read_only=True)
+    product_name = serializers.CharField(required=False, allow_blank=True)
     product_image = serializers.SerializerMethodField()
     
     class Meta:
         model = OrderItem
-        fields = ['id', 'product', 'product_name', 'product_image', 'quantity', 'price_at_purchase', 'subtotal']
-        read_only_fields = ['id', 'subtotal', 'product_name', 'product_image']
+        fields = ['id', 'product', 'product_name', 'product_price', 'product_image', 'quantity']
+        read_only_fields = ['id', 'product_image']
     
     def get_product_image(self, obj):
         """Return product image URL"""

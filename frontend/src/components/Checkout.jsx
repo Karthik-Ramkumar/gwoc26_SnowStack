@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../contexts/AuthContext';
@@ -8,7 +8,7 @@ import './Checkout.css';
 
 function Checkout() {
   const navigate = useNavigate();
-  const { cart, getCartTotal } = useCart();
+  const { cart, getCartTotal, clearCart } = useCart();
   const { currentUser } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -23,6 +23,19 @@ function Checkout() {
   });
 
   const [errors, setErrors] = useState({});
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -87,59 +100,143 @@ function Checkout() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (validateForm()) {
-      try {
-        // Prepare order data
-        const orderData = {
-          customer_name: `${formData.firstName} ${formData.lastName}`,
+    if (!validateForm()) {
+      return;
+    }
+
+    if (isProcessing) {
+      return;
+    }
+
+    setIsProcessing(true);
+    
+    try {
+      const totalAmount = getCartTotal();
+      const customerName = `${formData.firstName} ${formData.lastName}`;
+      
+      // Step 1: Create Razorpay order
+      const orderResponse = await fetch('/api/products/create-razorpay-order/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: totalAmount,
+          customer_name: customerName,
           customer_email: formData.email,
-          customer_phone: formData.phone,
-          shipping_address: formData.address,
-          shipping_city: formData.city,
-          shipping_state: formData.state,
-          shipping_pincode: formData.pincode,
-          billing_address: '', // Same as shipping for now
-          payment_method: 'cod', // Default to cash on delivery
-          payment_status: false,
-          subtotal: getCartTotal(),
-          shipping_charge: 0, // TODO: Calculate shipping
-          tax_amount: 0, // TODO: Calculate tax
-          discount_amount: 0,
-          total_amount: getCartTotal(),
-          items: cart.map(item => ({
-            product: item.product.id,
-            quantity: item.quantity,
-            price_at_purchase: item.product.price
-          }))
-        };
+          customer_phone: formData.phone
+        })
+      });
 
-        // Add user firebase UID if logged in
-        if (currentUser) {
-          orderData.user_firebase_uid = currentUser.uid;
-        }
+      const orderData = await orderResponse.json();
 
-        // Submit order to backend
-        const response = await fetch('/api/orders/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(orderData)
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          alert(`Order placed successfully! Order number: ${result.order_number}`);
-          // TODO: Clear cart and redirect to order confirmation page
-          navigate('/');
-        } else {
-          alert('Failed to place order. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error placing order:', error);
-        alert('An error occurred while placing your order. Please try again.');
+      if (!orderData.success) {
+        throw new Error(orderData.error || 'Failed to create payment order');
       }
+
+      // Step 2: Initialize Razorpay payment
+      const options = {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        name: 'Basho By Shivangi',
+        description: 'Product Purchase',
+        order_id: orderData.order_id,
+        handler: async function (response) {
+          // Step 3: Verify payment and create order
+          await handlePaymentSuccess(response, orderData.order_id);
+        },
+        prefill: {
+          name: customerName,
+          email: formData.email,
+          contact: formData.phone
+        },
+        notes: {
+          address: formData.address,
+          city: formData.city,
+          state: formData.state
+        },
+        theme: {
+          color: '#8B4513'
+        },
+        modal: {
+          ondismiss: function() {
+            setIsProcessing(false);
+            alert('Payment cancelled');
+          }
+        }
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+      
+    } catch (error) {
+      console.error('Error initiating payment:', error);
+      alert(error.message || 'An error occurred while initiating payment. Please try again.');
+      setIsProcessing(false);
+    }
+  };
+
+  const handlePaymentSuccess = async (paymentResponse, orderId) => {
+    try {
+      // Prepare order data
+      const orderData = {
+        customer_name: `${formData.firstName} ${formData.lastName}`,
+        customer_email: formData.email,
+        customer_phone: formData.phone,
+        shipping_address: formData.address,
+        shipping_city: formData.city,
+        shipping_state: formData.state,
+        shipping_pincode: formData.pincode,
+        billing_address: '', // Same as shipping for now
+        payment_method: 'razorpay',
+        payment_status: true,
+        subtotal: getCartTotal(),
+        shipping_charge: 0,
+        tax_amount: 0,
+        discount_amount: 0,
+        total_amount: getCartTotal(),
+        items: cart.map(item => ({
+          product: item.id,
+          quantity: item.quantity,
+          product_name: item.name,
+          product_price: item.price
+        }))
+      };
+
+      // Add user firebase UID if logged in
+      if (currentUser) {
+        orderData.user = currentUser.uid;
+      }
+
+      // Verify payment and create order
+      const verifyResponse = await fetch('/api/products/verify-payment/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          razorpay_order_id: paymentResponse.razorpay_order_id,
+          razorpay_payment_id: paymentResponse.razorpay_payment_id,
+          razorpay_signature: paymentResponse.razorpay_signature,
+          order_data: orderData
+        })
+      });
+
+      const result = await verifyResponse.json();
+
+      if (result.success) {
+        alert(`Payment successful! Order Number: ${result.order_number}`);
+        clearCart(); // Clear the cart
+        navigate('/'); // Redirect to home
+      } else {
+        throw new Error(result.error || 'Payment verification failed');
+      }
+    } catch (error) {
+      console.error('Error verifying payment:', error);
+      alert('Payment successful but order creation failed. Please contact support with your payment ID: ' + paymentResponse.razorpay_payment_id);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -283,8 +380,12 @@ function Checkout() {
                 </div>
               </div>
 
-              <button type="submit" className="pay-btn">
-                Proceed to Payment
+              <button 
+                type="submit" 
+                className="pay-btn"
+                disabled={isProcessing}
+              >
+                {isProcessing ? 'Processing...' : 'Proceed to Payment'}
               </button>
             </form>
           </div>

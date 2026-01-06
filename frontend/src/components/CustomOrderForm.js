@@ -79,18 +79,18 @@ const CustomOrderForm = () => {
 
         <div className="form-container">
           <form onSubmit={handleSubmit} className="fade-in">
-            <h3 style={{marginBottom: 'var(--spacing-md)', textAlign: 'center'}}>
-              Request a Custom Order
-            </h3>
+            <h3>Request a Custom Order</h3>
             
             {message && (
-              <div style={{
-                padding: 'var(--spacing-sm)',
-                marginBottom: 'var(--spacing-md)',
+              <div className="form-message" style={{
+                padding: '1rem 1.2rem',
+                marginBottom: '1.5rem',
                 backgroundColor: message.includes('Success') ? '#d4edda' : '#f8d7da',
                 color: message.includes('Success') ? '#155724' : '#721c24',
-                borderRadius: '4px',
-                textAlign: 'center'
+                borderRadius: '8px',
+                textAlign: 'center',
+                border: `2px solid ${message.includes('Success') ? '#c3e6cb' : '#f5c6cb'}`,
+                fontWeight: 500
               }}>
                 {message}
               </div>
@@ -190,10 +190,23 @@ const CustomOrderForm = () => {
             </div>
 
             <button 
-              type="submit" 
-              className="btn btn-primary" 
-              style={{width: '100%'}}
+              type="submit"
+              className="submit-order-btn" 
               disabled={submitting}
+              style={{
+                width: '100%',
+                padding: '1rem 2rem',
+                fontSize: '1.05rem',
+                fontWeight: 600,
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #652810 0%, #8E5022 100%)',
+                border: 'none',
+                color: 'white',
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(101, 40, 16, 0.2)',
+                opacity: submitting ? 0.7 : 1
+              }}
             >
               {submitting ? 'Submitting...' : 'Submit Custom Order Request'}
             </button>

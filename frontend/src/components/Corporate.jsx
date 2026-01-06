@@ -180,7 +180,7 @@ function Corporate() {
         <div className="container-new">
           <div className="difference-header">
             <h2 className="section-title-new">The Artisanal Difference</h2>
-            <a href="#" className="view-impact">View Our Impact →</a>
+            <button className="view-impact" style={{background: 'none', border: 'none', cursor: 'pointer', color: 'inherit', font: 'inherit'}}>View Our Impact →</button>
           </div>
 
           <div className="difference-grid">

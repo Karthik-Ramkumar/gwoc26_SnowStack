@@ -13,6 +13,7 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("all");
   const [sortBy, setSortBy] = useState("featured");
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -38,6 +39,81 @@ function Products() {
     fetchProducts();
   }, [category, sortBy]);
 
+  const handleProductClick = (product) => {
+    setSelectedProduct(product);
+  };
+
+  const ProductDetails = ({ product, onClose }) => {
+    return (
+      <div className="workshop-modal-overlay" onClick={onClose}>
+        <div className="workshop-modal product-modal" onClick={(e) => e.stopPropagation()}>
+          <button className="modal-close" onClick={onClose}>×</button>
+          <div className="modal-content">
+            <div className="modal-image">
+              {product.image_url_full || product.image ? (
+                <img src={product.image_url_full || product.image} alt={product.name} />
+              ) : (
+                <div className="workshop-placeholder-large">
+                  <span className="workshop-icon">🏺</span>
+                </div>
+              )}
+            </div>
+            <div className="modal-info">
+              <h2>{product.name}</h2>
+              <p className="modal-type">{product.category}</p>
+              <div className="modal-price">₹{parseFloat(product.price).toLocaleString('en-IN')}</div>
+              
+              <p className="modal-description">{product.description}</p>
+              
+              <div className="modal-details-grid">
+                {product.material && (
+                  <div className="detail-item">
+                    <strong>Material:</strong> {product.material}
+                  </div>
+                )}
+                {product.dimensions && (
+                  <div className="detail-item">
+                    <strong>Dimensions:</strong> {product.dimensions}
+                  </div>
+                )}
+                {product.weight && (
+                  <div className="detail-item">
+                    <strong>Weight:</strong> {product.weight} kg
+                  </div>
+                )}
+              </div>
+
+              {product.usage_instructions && (
+                <div className="modal-features">
+                  <h3>Usage:</h3>
+                  <p style={{whiteSpace: 'pre-line'}}>{product.usage_instructions}</p>
+                </div>
+              )}
+
+              {product.care_instructions && (
+                <div className="modal-features">
+                  <h3>Care Instructions:</h3>
+                  <p style={{whiteSpace: 'pre-line'}}>{product.care_instructions}</p>
+                </div>
+              )}
+
+              {product.tags && product.tags.length > 0 && (
+                <div className="modal-features">
+                  <h3>Features:</h3>
+                  <ul>
+                    {product.tags.map((tag, idx) => (
+                      <li key={idx}>✓ {tag}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="products-page">
       {/* HEADER - 1/3 screen with pattern and Japanese text */}
@@ -48,15 +124,6 @@ function Products() {
         </h1>
         <p>Handcrafted Pottery for Mindful Living</p>
       </header>
-
-      {/* DESCRIPTION SECTION - Clean centered text */}
-      <section className="workshops-description-section">
-        <div className="workshops-description-center">
-          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
-            Explore our curated collections of handcrafted pottery, where each piece embodies the philosophy of wabi-sabi — finding beauty in imperfection and celebrating the natural character of clay. From functional everyday items to decorative statement pieces, our collections bring mindful artistry into your space.
-          </p>
-        </div>
-      </section>
 
       {/* Products Section with Background */}
       <section className="products-main">
@@ -130,7 +197,16 @@ function Products() {
           </div>
 
           {/* Products Grid */}
-          <ProductList products={products} loading={loading} />
+          <ProductList products={products} loading={loading} onProductClick={handleProductClick} />
+        </div>
+      </section>
+
+      {/* DESCRIPTION SECTION - Clean centered text */}
+      <section className="workshops-description-section">
+        <div className="workshops-description-center">
+          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
+            Explore our curated collections of handcrafted pottery, where each piece embodies the philosophy of wabi-sabi — finding beauty in imperfection and celebrating the natural character of clay. From functional everyday items to decorative statement pieces, our collections bring mindful artistry into your space.
+          </p>
         </div>
       </section>
 
@@ -139,6 +215,14 @@ function Products() {
 
       {/* Product Care */}
       <ProductCare />
+
+      {/* Product Details Modal */}
+      {selectedProduct && (
+        <ProductDetails
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </div>
   );
 }

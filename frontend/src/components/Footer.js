@@ -1,4 +1,5 @@
 import React from 'react';
+import { Instagram } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -16,9 +17,9 @@ const Footer = () => {
                 href="https://www.instagram.com/bashobyyshivangi/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="social-link"
+                className="social-link instagram-link"
               >
-                Instagram
+                <Instagram size={24} strokeWidth={2} />
               </a>
             </div>
           </div>

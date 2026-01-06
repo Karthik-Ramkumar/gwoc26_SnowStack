@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Users, ChartBar } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 import './Workshops.css';
 
 const Workshops = () => {
@@ -10,13 +11,21 @@ const Workshops = () => {
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const filterWorkshops = useCallback(() => {
+    if (selectedType === 'all') {
+      setFilteredWorkshops(workshops);
+    } else {
+      setFilteredWorkshops(workshops.filter(w => w.workshop_type === selectedType));
+    }
+  }, [selectedType, workshops]);
+
   useEffect(() => {
     fetchWorkshops();
   }, []);
 
   useEffect(() => {
     filterWorkshops();
-  }, [selectedType, workshops]);
+  }, [filterWorkshops]);
 
   // Scroll animation for floating images
   useEffect(() => {
@@ -51,14 +60,6 @@ const Workshops = () => {
     } catch (error) {
       console.error('Error fetching workshops:', error);
       setLoading(false);
-    }
-  };
-
-  const filterWorkshops = () => {
-    if (selectedType === 'all') {
-      setFilteredWorkshops(workshops);
-    } else {
-      setFilteredWorkshops(workshops.filter(w => w.workshop_type === selectedType));
     }
   };
 
@@ -200,6 +201,9 @@ const Workshops = () => {
   };
 
   const RegistrationForm = ({ workshop, onClose }) => {
+    const { addToCart } = useCart();
+    const [availableSlots, setAvailableSlots] = useState([]);
+    const [loadingSlots, setLoadingSlots] = useState(true);
     const [formData, setFormData] = useState({
       workshop: workshop.id,
       full_name: '',
@@ -207,40 +211,68 @@ const Workshops = () => {
       phone: '',
       number_of_participants: 1,
       special_requests: '',
-      experience_level: ''
+      experience_level: '',
+      slot: ''
     });
-    const [submitting, setSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    // Fetch available slots when component mounts
+    useEffect(() => {
+      const fetchSlots = async () => {
+        try {
+          const response = await fetch(`/api/workshops/${workshop.id}/slots/`);
+          const data = await response.json();
+          setAvailableSlots(data);
+        } catch (error) {
+          console.error('Error fetching slots:', error);
+        } finally {
+          setLoadingSlots(false);
+        }
+      };
+      fetchSlots();
+    }, [workshop.id]);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      setSubmitting(true);
-
-      try {
-        const response = await fetch('/api/registrations/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-
-        if (response.ok) {
-          setSuccess(true);
-          setTimeout(() => {
-            onClose();
-            fetchWorkshops(); // Refresh to update available slots
-          }, 2000);
-        } else {
-          const error = await response.json();
-          alert(JSON.stringify(error));
-        }
-      } catch (error) {
-        console.error('Error submitting registration:', error);
-        alert('Failed to submit registration. Please try again.');
-      } finally {
-        setSubmitting(false);
+      
+      // Validate slot selection
+      if (!formData.slot) {
+        alert('Please select a date and time slot');
+        return;
       }
+
+      const selectedSlot = availableSlots.find(slot => slot.id === parseInt(formData.slot));
+      if (!selectedSlot) {
+        alert('Invalid slot selected');
+        return;
+      }
+
+      // Add workshop to cart
+      const workshopCartItem = {
+        type: 'workshop',
+        id: workshop.id,
+        workshopId: workshop.workshop_id,
+        name: workshop.name,
+        price: workshop.price,
+        quantity: formData.number_of_participants,
+        slotId: selectedSlot.id,
+        slotDate: selectedSlot.date,
+        slotStartTime: selectedSlot.start_time,
+        slotEndTime: selectedSlot.end_time,
+        participantName: formData.full_name,
+        participantEmail: formData.email,
+        participantPhone: formData.phone,
+        specialRequests: formData.special_requests,
+        experienceLevel: formData.experience_level,
+        image_url_full: workshop.image_url
+      };
+
+      addToCart(workshopCartItem);
+      setSuccess(true);
+      
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     };
 
     const handleChange = (e) => {
@@ -256,8 +288,8 @@ const Workshops = () => {
           <div className="workshop-modal registration-success" onClick={(e) => e.stopPropagation()}>
             <div className="success-message">
               <div className="success-icon">✓</div>
-              <h2>Registration Successful!</h2>
-              <p>You will receive a confirmation email shortly.</p>
+              <h2>Added to Cart!</h2>
+              <p>Workshop registration has been added to your cart.</p>
             </div>
           </div>
         </div>
@@ -317,6 +349,34 @@ const Workshops = () => {
             </div>
 
             <div className="form-group">
+              <label>Select Date & Time Slot *</label>
+              {loadingSlots ? (
+                <p>Loading available slots...</p>
+              ) : availableSlots.length > 0 ? (
+                <select
+                  name="slot"
+                  required
+                  value={formData.slot}
+                  onChange={handleChange}
+                >
+                  <option value="">-- Select a time slot --</option>
+                  {availableSlots.map((slot) => (
+                    <option key={slot.id} value={slot.id}>
+                      {new Date(slot.date).toLocaleDateString('en-IN', { 
+                        weekday: 'short', 
+                        year: 'numeric', 
+                        month: 'short', 
+                        day: 'numeric' 
+                      })} - {slot.start_time} to {slot.end_time} ({slot.available_spots} spots left)
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <p style={{color: '#d32f2f', marginTop: '0.5rem'}}>No available slots at the moment. Please check back later.</p>
+              )}
+            </div>
+
+            <div className="form-group">
               <label>Experience Level</label>
               <select
                 name="experience_level"
@@ -342,11 +402,15 @@ const Workshops = () => {
             </div>
 
             <div className="form-total">
-              <strong>Total Amount:</strong> ₹{workshop.price * formData.number_of_participants}
+              <strong>Total Amount:</strong> ₹{(workshop.price * formData.number_of_participants).toLocaleString('en-IN')}
             </div>
 
-            <button type="submit" className="submit-btn" disabled={submitting}>
-              {submitting ? 'Submitting...' : 'Complete Registration'}
+            <button 
+              type="submit" 
+              className="submit-btn" 
+              disabled={availableSlots.length === 0}
+            >
+              Add to Cart
             </button>
           </form>
         </div>
@@ -368,15 +432,6 @@ const Workshops = () => {
         </h1>
         <p>Create, Learn, and Connect Through the Art of Pottery</p>
       </header>
-
-      {/* DESCRIPTION SECTION - Clean centered text */}
-      <section className="workshops-description-section">
-        <div className="workshops-description-center">
-          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
-            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create meaningful pieces through shared experience.
-          </p>
-        </div>
-      </section>
 
       {/* WORKSHOPS LIST SECTION - With artistic floating images */}
       <section className="workshops-list-section">
@@ -442,6 +497,44 @@ const Workshops = () => {
             <p>No workshops available in this category.</p>
           </div>
         )}
+        </div>
+      </section>
+
+      {/* DESCRIPTION SECTION - Clean centered text */}
+      <section className="workshops-description-section">
+        <div className="workshops-description-center">
+          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 500, lineHeight: 1.7, maxWidth: '800px', margin: '0 auto' }}>
+            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create meaningful pieces through shared experience.
+          </p>
+        </div>
+      </section>
+
+      {/* PAST CREATIONS SECTION - Infinite Scroll */}
+      <section className="past-creations-section">
+        <h2 className="past-creations-title">
+          <span className="japanese-accent">過去の作品</span>
+          Our Past Creations
+        </h2>
+        <div className="infinite-scroll-container">
+          <div className="infinite-scroll-track">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
+              <div key={`set1-${num}`} className="scroll-item">
+                <img 
+                  src={`/static/images/gallery/past-creations-${num}.png`} 
+                  alt={`Past Creation ${num}`}
+                />
+              </div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
+              <div key={`set2-${num}`} className="scroll-item">
+                <img 
+                  src={`/static/images/gallery/past-creations-${num}.png`} 
+                  alt={`Past Creation ${num}`}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

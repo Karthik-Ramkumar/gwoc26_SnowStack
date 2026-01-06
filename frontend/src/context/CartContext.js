@@ -31,35 +31,48 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('basho_cart', JSON.stringify(cart));
   }, [cart]);
 
-  const addToCart = (product) => {
+  const addToCart = (item) => {
     setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+      // For workshops with slots, create unique ID based on workshop + slot
+      const itemKey = item.type === 'workshop' && item.slotId 
+        ? `workshop-${item.id}-slot-${item.slotId}` 
+        : item.id;
       
-      if (existingItem) {
-        return prevCart.map(item =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
+      const existingItem = prevCart.find(cartItem => {
+        if (item.type === 'workshop' && cartItem.type === 'workshop') {
+          // For workshops, match by workshop ID and slot ID
+          return cartItem.id === item.id && cartItem.slotId === item.slotId;
+        }
+        return cartItem.id === itemKey;
+      });
+      
+      if (existingItem && item.type !== 'workshop') {
+        // Only allow quantity increase for products, not workshops
+        return prevCart.map(cartItem =>
+          cartItem.id === itemKey
+            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            : cartItem
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }];
+        // Add new item (workshops always added as new items even if same workshop)
+        return [...prevCart, { ...item, cartKey: itemKey, quantity: item.quantity || 1 }];
       }
     });
   };
 
-  const removeFromCart = (productId) => {
-    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  const removeFromCart = (cartKey) => {
+    setCart(prevCart => prevCart.filter(item => item.cartKey !== cartKey));
   };
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = (cartKey, quantity) => {
     if (quantity <= 0) {
-      removeFromCart(productId);
+      removeFromCart(cartKey);
       return;
     }
     
     setCart(prevCart =>
       prevCart.map(item =>
-        item.id === productId ? { ...item, quantity } : item
+        item.cartKey === cartKey ? { ...item, quantity } : item
       )
     );
   };
@@ -73,7 +86,14 @@ export const CartProvider = ({ children }) => {
   };
 
   const getCartCount = () => {
-    return cart.reduce((count, item) => count + item.quantity, 0);
+    return cart.reduce((count, item) => {
+      // For workshops, count as 1 item regardless of participants
+      if (item.type === 'workshop') {
+        return count + 1;
+      }
+      // For products, count by quantity
+      return count + item.quantity;
+    }, 0);
   };
 
   const value = {

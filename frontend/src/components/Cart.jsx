@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, CalendarHeart, Clock, User, Users } from 'lucide-react';
 import './Cart.css';
 
 function Cart() {
@@ -62,7 +62,7 @@ function Cart() {
             </div>
 
             {cart.map((item) => (
-              <div key={item.id} className="cart-item">
+              <div key={item.cartKey} className="cart-item">
                 <div className="item-image">
                   <img 
                     src={item.image_url_full || item.image || '/static/images/products/placeholder.svg'} 
@@ -72,23 +72,55 @@ function Cart() {
                 
                 <div className="item-details">
                   <h3>{item.name}</h3>
-                  <p className="item-price">₹{parseFloat(item.price).toLocaleString('en-IN')}</p>
+                  {item.type === 'workshop' && (
+                    <div className="workshop-details">
+                      <p className="workshop-slot-info">
+                        <CalendarHeart size={16} color="#652810" strokeWidth={2} />
+                        {new Date(item.slotDate).toLocaleDateString('en-IN', { 
+                          weekday: 'short', 
+                          month: 'short', 
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </p>
+                      <p className="workshop-slot-info">
+                        <Clock size={16} color="#652810" strokeWidth={2} />
+                        {item.slotStartTime} - {item.slotEndTime}
+                      </p>
+                      <p className="workshop-slot-info">
+                        <User size={16} color="#652810" strokeWidth={2} />
+                        {item.participantName}
+                      </p>
+                      <p className="workshop-slot-info">
+                        <Users size={16} color="#652810" strokeWidth={2} />
+                        {item.quantity} participant{item.quantity > 1 ? 's' : ''}
+                      </p>
+                    </div>
+                  )}
+                  <p className="item-price">₹{parseFloat(item.price).toLocaleString('en-IN')}{item.type === 'workshop' ? ' per person' : ''}</p>
                 </div>
 
                 <div className="item-quantity">
-                  <button 
-                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                    className="quantity-btn"
-                  >
-                    <Minus size={16} />
-                  </button>
-                  <span className="quantity">{item.quantity}</span>
-                  <button 
-                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                    className="quantity-btn"
-                  >
-                    <Plus size={16} />
-                  </button>
+                  {item.type !== 'workshop' && (
+                    <>
+                      <button 
+                        onClick={() => updateQuantity(item.cartKey, item.quantity - 1)}
+                        className="quantity-btn"
+                      >
+                        <Minus size={16} />
+                      </button>
+                      <span className="quantity">{item.quantity}</span>
+                      <button 
+                        onClick={() => updateQuantity(item.cartKey, item.quantity + 1)}
+                        className="quantity-btn"
+                      >
+                        <Plus size={16} />
+                      </button>
+                    </>
+                  )}
+                  {item.type === 'workshop' && (
+                    <span className="quantity-fixed">{item.quantity} {item.quantity > 1 ? 'people' : 'person'}</span>
+                  )}
                 </div>
 
                 <div className="item-total">
@@ -96,7 +128,7 @@ function Cart() {
                     ₹{(parseFloat(item.price) * item.quantity).toLocaleString('en-IN')}
                   </p>
                   <button 
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeFromCart(item.cartKey)}
                     className="remove-btn"
                     title="Remove from cart"
                   >

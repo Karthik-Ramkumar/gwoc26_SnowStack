@@ -36,6 +36,9 @@ class Product(models.Model):
     # Description & Details
     description = models.TextField(help_text="Product description")
     short_description = models.CharField(max_length=300, blank=True, help_text="Brief description for cards")
+    material = models.CharField(max_length=200, blank=True, help_text="Material used (e.g., 'Stoneware clay with natural glaze')")
+    usage_instructions = models.TextField(blank=True, help_text="How to use the product")
+    care_instructions = models.TextField(blank=True, help_text="How to care for and maintain the product")
     
     # Pricing
     price = models.DecimalField(    

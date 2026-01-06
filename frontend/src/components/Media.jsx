@@ -11,7 +11,7 @@ function Media() {
   const [videoTestimonials, setVideoTestimonials] = useState([]);
   const [experiences, setExperiences] = useState([]);
 
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter] = useState('all');
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
@@ -42,11 +42,6 @@ function Media() {
   const filteredImages = activeFilter === 'all'
     ? galleryImages
     : galleryImages.filter(img => img.category === activeFilter);
-
-  const openLightbox = (image, index) => {
-    setLightboxImage(image);
-    setLightboxIndex(index);
-  };
 
   const navigateLightbox = useCallback((direction) => {
     const newIndex = direction === 'next'

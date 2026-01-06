@@ -48,6 +48,18 @@
 }
 
 html {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><text y="32" font-size="32">🏺</text></svg>') 6 6, auto;
+}
+
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><text y="32" font-size="32">🏺</text></svg>') 6 6, auto;
+}
+
+a, button {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><text y="32" font-size="32">👆</text></svg>') 6 6, pointer;
+}
+
+html {
     scroll-behavior: smooth;
     font-size: 16px;
 }
@@ -810,19 +822,28 @@ p {
 }
 
 .social-link {
-    display: inline-block;
-    padding: 0.5rem 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
     background: rgba(212, 197, 176, 0.1);
     border: 1px solid var(--sand);
+    border-radius: 50%;
     margin-right: 0.5rem;
-    transition: var(--transition);
+    transition: all 0.3s ease;
+    color: var(--sand);
 }
 
 .social-link:hover {
     background: var(--terracotta);
     border-color: var(--terracotta);
     color: var(--washi-white);
+    transform: scale(1.1);
 }
+
+
 
 .footer-bottom {
     text-align: center;

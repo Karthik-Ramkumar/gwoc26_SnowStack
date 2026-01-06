@@ -2,16 +2,19 @@ import React from 'react';
 import { useCart } from '../context/CartContext';
 import { ShoppingCart } from 'lucide-react';
 
-const ProductList = ({ products, loading }) => {
+const ProductList = ({ products, loading, onProductClick }) => {
   const { addToCart } = useCart();
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation(); // Prevent modal from opening
     addToCart({
-      id: product.product_id,
+      id: product.id,  // Database ID for backend
+      product_id: product.product_id,  // Product ID for display
       name: product.name,
       price: product.price,
       image: product.image,
-      image_url_full: product.image_url_full
+      image_url_full: product.image_url_full,
+      type: 'product'
     });
   };
 
@@ -38,6 +41,8 @@ const ProductList = ({ products, loading }) => {
                 className="product-card fade-in" 
                 data-category={product.category}
                 data-price={product.price}
+                onClick={() => onProductClick && onProductClick(product)}
+                style={{ cursor: 'pointer' }}
               >
                 <div className="product-image">
                   <img 
@@ -67,7 +72,7 @@ const ProductList = ({ products, loading }) => {
                     <div className="product-actions">
                       <button 
                         className="btn-icon" 
-                        onClick={() => handleAddToCart(product)}
+                        onClick={(e) => handleAddToCart(product, e)}
                         title="Add to Cart"
                       >
                         <ShoppingCart size={20} color="#ffffff" strokeWidth={2.5} />
