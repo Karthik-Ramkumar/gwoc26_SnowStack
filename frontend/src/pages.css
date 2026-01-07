@@ -380,9 +380,8 @@
     background-repeat: no-repeat;
     background-position: right 0.8rem center;
     background-size: 1.2em;
-    padding-right:#652810;
-    box-shadow: 0 0 0 4px rgba(101, 40, 16, 0.08);
-    background: #ffffff
+    padding-right: 2.5rem;
+    background-color: #ffffff;
 }
 
 .form-group input:focus,
@@ -428,10 +427,17 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--spacing-lg);
     margin-top: var(--spacing-lg);
+    /* Background image for workshop cards */
+    background-image: url('./images/gallery/wrk.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: var(--spacing-lg);
+    border-radius: 8px;
 }
 
 .workshop-detail-card {
-    background: var(--off-white);
+    background: rgba(255,255,255,0.92);
     padding: var(--spacing-lg);
     border: 1px solid rgba(61, 47, 42, 0.1);
 }
