@@ -24,9 +24,11 @@ body {
 }
 
 .logo img {
-  height: 40px;
+  height: 50px;
   width: auto;
   display: block;
+  margin: -5px 0;
+  /* Negative margin to prevent header from growing */
 }
 
 /* NAV LINKS */
@@ -35,6 +37,7 @@ body {
   gap: 28px;
 }
 
+.nav-links a,
 .nav-links span {
   position: relative;
   cursor: pointer;
@@ -42,9 +45,12 @@ body {
   font-weight: 599;
   color: #111;
   padding-bottom: 6px;
+  text-decoration: none;
+  display: inline-block;
 }
 
 /* underline from center */
+.nav-links a::after,
 .nav-links span::after {
   content: "";
   position: absolute;
@@ -57,12 +63,89 @@ body {
   transition: width 0.3s ease;
 }
 
+.nav-links a:hover::after,
 .nav-links span:hover::after {
   width: 100%;
 }
 
+.nav-links a.active::after,
 .nav-links span.active::after {
   width: 100%;
+}
+
+/* Cart Icon */
+.cart-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+.cart-icon::after {
+  display: none;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: transparent;
+  color: #652810;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Login/User Menu */
+.login-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+}
+
+.login-link::after {
+  display: none;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #652810;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: default;
+  flex-shrink: 0;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.logout-btn:hover {
+  background: rgba(101, 40, 16, 0.1);
+  transform: scale(1.1);
 }
 
 /* GENERIC PAGE */

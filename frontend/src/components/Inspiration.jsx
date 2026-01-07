@@ -35,18 +35,18 @@ const Inspiration = () => {
             <div
                 className="scroll-beat beat-1"
                 style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(/images/gallery/ipart1.jpg)`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(/static/images/gallery/ipart1.jpg)`
                 }}
             >
                 {/* Decorative Corners in Beat 1 - Purely visual, aria-hidden */}
                 <img
-                    src="/images/gallery/ipart1topright.png"
+                    src="/static/images/gallery/ipart1topright.png"
                     alt=""
                     className="corner-deco top-right"
                     aria-hidden="true"
                 />
                 <img
-                    src="/images/gallery/ipart1bottomleft.png"
+                    src="/static/images/gallery/ipart1bottomleft.png"
                     alt=""
                     className="corner-deco bottom-left"
                     aria-hidden="true"
@@ -69,7 +69,7 @@ const Inspiration = () => {
             <div
                 className="scroll-beat beat-2"
                 style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/images/gallery/ipart2.jpg)`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(/static/images/gallery/ipart2.jpg)`
                 }}
             >
                 <div className="content-wrapper">
@@ -86,7 +86,7 @@ const Inspiration = () => {
             <div
                 className="scroll-beat beat-3"
                 style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/images/gallery/ipart3.jpg)`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/static/images/gallery/ipart3.jpg)`
                 }}
             >
                 <div className="content-wrapper">
@@ -109,7 +109,7 @@ const Inspiration = () => {
             <div
                 className="scroll-beat beat-4"
                 style={{
-                    backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/images/gallery/ipart4.jpg)`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(/static/images/gallery/ipart4.jpg)`
                 }}
             >
                 <div className="content-wrapper">

@@ -11,6 +11,7 @@ const CustomOrderForm = () => {
     budget: '',
     gst_number: ''
   });
+  const [referenceImage, setReferenceImage] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
 
@@ -21,13 +22,35 @@ const CustomOrderForm = () => {
     });
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      setReferenceImage(e.target.files[0]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
     setMessage('');
 
     try {
-      const response = await axios.post('http://localhost:8000/api/custom-orders/', formData);
+      const formDataToSend = new FormData();
+      
+      // Append all text fields
+      Object.keys(formData).forEach(key => {
+        formDataToSend.append(key, formData[key]);
+      });
+      
+      // Append image if selected
+      if (referenceImage) {
+        formDataToSend.append('reference_images', referenceImage);
+      }
+
+      const response = await axios.post('http://localhost:8000/api/custom-orders/', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
       
       setMessage(`Success! Your order number is ${response.data.order_number}. We'll contact you within 24 hours.`);
       
@@ -41,6 +64,10 @@ const CustomOrderForm = () => {
         budget: '',
         gst_number: ''
       });
+      setReferenceImage(null);
+      // Reset file input
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
     } catch (error) {
       setMessage('Error submitting order. Please try again or contact us directly.');
       console.error('Order submission error:', error);
@@ -79,18 +106,18 @@ const CustomOrderForm = () => {
 
         <div className="form-container">
           <form onSubmit={handleSubmit} className="fade-in">
-            <h3 style={{marginBottom: 'var(--spacing-md)', textAlign: 'center'}}>
-              Request a Custom Order
-            </h3>
+            <h3>Request a Custom Order</h3>
             
             {message && (
-              <div style={{
-                padding: 'var(--spacing-sm)',
-                marginBottom: 'var(--spacing-md)',
+              <div className="form-message" style={{
+                padding: '1rem 1.2rem',
+                marginBottom: '1.5rem',
                 backgroundColor: message.includes('Success') ? '#d4edda' : '#f8d7da',
                 color: message.includes('Success') ? '#155724' : '#721c24',
-                borderRadius: '4px',
-                textAlign: 'center'
+                borderRadius: '8px',
+                textAlign: 'center',
+                border: `2px solid ${message.includes('Success') ? '#c3e6cb' : '#f5c6cb'}`,
+                fontWeight: 500
               }}>
                 {message}
               </div>
@@ -189,11 +216,48 @@ const CustomOrderForm = () => {
               />
             </div>
 
+            <div className="form-group">
+              <label>Reference Image (Optional)</label>
+              <input 
+                type="file" 
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{
+                  padding: '0.8rem',
+                  fontSize: '0.95rem'
+                }}
+              />
+              <span className="form-helper">Upload a reference image or design inspiration (JPG, PNG)</span>
+              {referenceImage && (
+                <div style={{
+                  marginTop: '0.5rem',
+                  color: '#652810',
+                  fontSize: '0.9rem',
+                  fontWeight: 500
+                }}>
+                  ✓ Selected: {referenceImage.name}
+                </div>
+              )}
+            </div>
+
             <button 
-              type="submit" 
-              className="btn btn-primary" 
-              style={{width: '100%'}}
+              type="submit"
+              className="submit-order-btn" 
               disabled={submitting}
+              style={{
+                width: '100%',
+                padding: '1rem 2rem',
+                fontSize: '1.05rem',
+                fontWeight: 600,
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #652810 0%, #8E5022 100%)',
+                border: 'none',
+                color: 'white',
+                cursor: submitting ? 'not-allowed' : 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(101, 40, 16, 0.2)',
+                opacity: submitting ? 0.7 : 1
+              }}
             >
               {submitting ? 'Submitting...' : 'Submit Custom Order Request'}
             </button>

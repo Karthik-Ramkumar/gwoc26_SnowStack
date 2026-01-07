@@ -1,123 +1,60 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 
 import Home from "./components/Home";
-import ProductList from "./components/ProductList";
-import CustomOrderForm from "./components/CustomOrderForm";
-import ProductCare from "./components/ProductCare";
+import Products from "./components/Products";
 import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 import Workshops from "./components/Workshops";
 import Studio from "./components/Studio";
 import Corporate from "./components/Corporate";
 import Media from "./components/Media";
+import Cart from "./components/Cart";
+import Checkout from "./components/Checkout";
+import Login from "./components/Login";
+import Signup from "./components/Signup";
+import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./contexts/AuthContext";
 
-const API_BASE_URL = "/api";
-
-function App() {
-  const [currentPage, setCurrentPage] = useState("home");
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("featured");
+// Component to scroll to top on route change
+function ScrollToTop() {
+  const { pathname } = useLocation();
 
   useEffect(() => {
-    if (currentPage !== "products") return;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname]);
 
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const params = {
-          category: category !== "all" ? category : undefined,
-          sort: sortBy,
-        };
+  return null;
+}
 
-        const response = await axios.get(
-          `${API_BASE_URL}/products/`,
-          { params }
-        );
-
-        setProducts(response.data.results || response.data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [category, sortBy, currentPage]);
-
-  const handleNavigate = (page) => {
-    setCurrentPage(page);
-  };
-
+function App() {
   return (
-    <div className="App">
-      <Navigation currentPage={currentPage} onNavigate={handleNavigate} />
+    <Router>
+      <AuthProvider>
+        <CartProvider>
+          <div className="App">
+            <ScrollToTop />
+            <Navigation />
 
-      {currentPage === "home" && <Home onNavigate={handleNavigate} />}
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/workshops" element={<Workshops />} />
+              <Route path="/studio" element={<Studio />} />
+              <Route path="/corporate" element={<Corporate />} />
+              <Route path="/media" element={<Media />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+            </Routes>
 
-      {currentPage === "products" && (
-        <>
-          <section className="page-header">
-            <div className="container">
-              <h1 className="page-title">
-                <span className="japanese-accent">陶器</span>
-                <span className="main-title">Our Collections</span>
-              </h1>
-              <p className="page-subtitle">
-                Handcrafted pottery for mindful living
-              </p>
-            </div>
-          </section>
-
-          <section className="section-padding">
-            <div className="container">
-              <div className="filter-bar">
-                <div className="filter-group">
-                  <label>Category:</label>
-                  <select
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  >
-                    <option value="all">All Collections</option>
-                    <option value="tableware">Tableware</option>
-                    <option value="art">Art Pieces</option>
-                    <option value="custom">Custom Orders</option>
-                  </select>
-                </div>
-
-                <div className="filter-group">
-                  <label>Sort by:</label>
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                  >
-                    <option value="featured">Featured</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                    <option value="newest">Newest</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <ProductList products={products} loading={loading} />
-          <CustomOrderForm />
-          <ProductCare />
-        </>
-      )}
-
-      {currentPage === "workshops" && <Workshops />}
-      {currentPage === "studio" && <Studio />}
-      {currentPage === "corporate" && <Corporate />}
-      {currentPage === "media" && <Media />}
-
-      <Footer />
-    </div>
+            <Footer />
+          </div>
+        </CartProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

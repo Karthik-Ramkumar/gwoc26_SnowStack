@@ -12,16 +12,27 @@ class WorkshopSerializer(serializers.ModelSerializer):
     slots = WorkshopSlotSerializer(many=True, read_only=True)
     workshop_type_display = serializers.CharField(source='get_workshop_type_display', read_only=True)
     difficulty_level_display = serializers.CharField(source='get_difficulty_level_display', read_only=True)
+    image_url = serializers.SerializerMethodField()
     
     class Meta:
         model = Workshop
         fields = [
             'id', 'workshop_id', 'name', 'workshop_type', 'workshop_type_display',
             'difficulty_level', 'difficulty_level_display', 'description', 'short_description',
-            'duration_hours', 'price', 'max_participants', 'min_age', 'image',
+            'duration_hours', 'price', 'max_participants', 'min_age', 'image', 'image_url',
             'is_active', 'available_slots', 'includes_materials', 'includes_refreshments',
             'takes_home_creation', 'is_featured', 'is_popular', 'slots', 'created_at'
         ]
+    
+    def get_image_url(self, obj):
+        """Return full image URL"""
+        # First check if there's an uploaded image
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+        # Otherwise return the image_url field (relative or absolute path)
+        return obj.image_url or None
 
 
 class WorkshopRegistrationSerializer(serializers.ModelSerializer):

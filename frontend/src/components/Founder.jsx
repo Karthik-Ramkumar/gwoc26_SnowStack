@@ -28,15 +28,19 @@ const Founder = () => {
     }, []);
 
     return (
-        <section className="founder-section" ref={sectionRef}>
+        <section
+            className="founder-section"
+            ref={sectionRef}
+            style={{ backgroundImage: "url('/static/images/gallery/founderbg.jpg')" }}
+        >
             <div className="founder-container">
 
                 {/* Image Side - Left/Center */}
                 <div className="founder-pimage-wrapper fade-in">
                     <div className="founder-frame">
                         <img
-                            src="/images/gallery/founder.png"
-                            alt="Shivangi, Founder of Basho"
+                            src="/static/images/gallery/founder.png"
+                            alt="Shivangi - Founder of Basho"
                             className="founder-img"
                         />
                     </div>

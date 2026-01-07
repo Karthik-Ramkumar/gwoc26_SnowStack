@@ -246,15 +246,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--clay-dark);
+    background: #C85428;
     color: var(--washi-white);
     border: none;
+    border-radius: 8px;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .btn-icon:hover {
-    background: var(--terracotta);
+    background: #a84420;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(200, 84, 40, 0.3);
 }
 
 .product-meta {
@@ -308,30 +311,78 @@
 .form-container {
     max-width: 700px;
     margin: 0 auto;
+    background: linear-gradient(135deg, #ffffff 0%, #fdfbf7 100%);
+    padding: 3rem 2.5rem;
+    border-radius: 16px;
+    box-shadow: 
+        0 10px 40px rgba(101, 40, 16, 0.08),
+        0 2px 8px rgba(101, 40, 16, 0.04);
+    border: 1px solid rgba(101, 40, 16, 0.08);
+    position: relative;
+    overflow: hidden;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #652810 0%, #8E5022 50%, #652810 100%);
+}
+
+.form-container h3 {
+    color: #442D1C;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 600;
 }
 
 .form-group {
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
-    color: var(--clay-dark);
-    font-weight: 500;
+    margin-bottom: 0.6rem;
+    color: #442D1C;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border: 1px solid rgba(61, 47, 42, 0.2);
-    background: var(--washi-white);
+    padding: 0.9rem 1.1rem;
+    border: 2px solid #e8dfd5;
+    border-radius: 8px;
+    background: #ffffff;
     font-family: var(--font-body);
     font-size: 1rem;
-    color: var(--clay-dark);
-    transition: var(--transition);
+    color: #442D1C;
+    transition: all 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.form-group input:hover,
+.form-group textarea:hover,
+.form-group select:hover {
+    border-color: #d4c4b0;
+}
+
+.form-group select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23652810' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.8rem center;
+    background-size: 1.2em;
+    padding-right:#652810;
+    box-shadow: 0 0 0 4px rgba(101, 40, 16, 0.08);
+    background: #ffffff
 }
 
 .form-group input:focus,
@@ -345,6 +396,8 @@
 .form-group textarea {
     min-height: 150px;
     resize: vertical;
+    line-height: 1.5;
+    font-family: inherit;
 }
 
 .form-row {

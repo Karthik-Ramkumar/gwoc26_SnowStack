@@ -1,26 +1,21 @@
 import React from 'react';
+import { useCart } from '../context/CartContext';
+import { ShoppingCart } from 'lucide-react';
 
-const ProductList = ({ products, loading }) => {
-  const addToCart = (productId, productName, price) => {
-    // Get existing cart from localStorage
-    const cart = JSON.parse(localStorage.getItem('basho_cart') || '[]');
-    
-    // Check if product already in cart
-    const existingItem = cart.find(item => item.id === productId);
-    
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      cart.push({
-        id: productId,
-        name: productName,
-        price: price,
-        quantity: 1
-      });
-    }
-    
-    localStorage.setItem('basho_cart', JSON.stringify(cart));
-    alert(`${productName} added to cart!`);
+const ProductList = ({ products, loading, onProductClick }) => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation(); // Prevent modal from opening
+    addToCart({
+      id: product.id,  // Database ID for backend
+      product_id: product.product_id,  // Product ID for display
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      image_url_full: product.image_url_full,
+      type: 'product'
+    });
   };
 
   if (loading) {
@@ -46,10 +41,12 @@ const ProductList = ({ products, loading }) => {
                 className="product-card fade-in" 
                 data-category={product.category}
                 data-price={product.price}
+                onClick={() => onProductClick && onProductClick(product)}
+                style={{ cursor: 'pointer' }}
               >
                 <div className="product-image">
                   <img 
-                    src={product.image_url_full || product.image || '/images/products/placeholder.svg'} 
+                    src={product.image_url_full || product.image || '/static/images/products/placeholder.svg'} 
                     alt={product.name}
                     className="placeholder-img"
                   />
@@ -75,10 +72,10 @@ const ProductList = ({ products, loading }) => {
                     <div className="product-actions">
                       <button 
                         className="btn-icon" 
-                        onClick={() => addToCart(product.product_id, product.name, product.price)}
+                        onClick={(e) => handleAddToCart(product, e)}
                         title="Add to Cart"
                       >
-                        🛒
+                        <ShoppingCart size={20} color="#ffffff" strokeWidth={2.5} />
                       </button>
                     </div>
                   </div>

@@ -1,10 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Inspiration from "./Inspiration";
 import Founder from "./Founder";
 import "./Home.css";
 
-function Home({ onNavigate }) {
+function Home() {
   const paperRef = useRef(null);
+  const navigate = useNavigate();
 
   /* Scroll effect is now handled by CSS sticky positioning */
 
@@ -15,7 +17,7 @@ function Home({ onNavigate }) {
       <section className="video-hero">
         <video
           className="hero-video"
-          src="/basho-here.mp4"
+          src="/static/basho-here.mp4"
           autoPlay
           muted
           loop
@@ -37,10 +39,10 @@ function Home({ onNavigate }) {
           </p>
 
           <div className="home-actions">
-            <button onClick={() => onNavigate("products")}>
+            <button onClick={() => navigate("/products")}>
               Explore Products
             </button>
-            <button onClick={() => onNavigate("workshops")}>
+            <button onClick={() => navigate("/workshops")}>
               View Workshops
             </button>
           </div>
@@ -50,9 +52,9 @@ function Home({ onNavigate }) {
       {/* ================= WHAT IS BASHO ================= */}
       <section
         ref={paperRef}
-        className="whatisbasho-section"
+        className="basho-paper"
         style={{
-          backgroundImage: "url(/images/gallery/whatisbasho.jpg)",
+          backgroundImage: "url(/static/images/gallery/whatisbasho.jpg)",
         }}
       >
         <div className="whatisbasho-inner">

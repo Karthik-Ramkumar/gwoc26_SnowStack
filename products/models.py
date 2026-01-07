@@ -5,6 +5,7 @@
 
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import User
 
 
 # ====================
@@ -35,6 +36,9 @@ class Product(models.Model):
     # Description & Details
     description = models.TextField(help_text="Product description")
     short_description = models.CharField(max_length=300, blank=True, help_text="Brief description for cards")
+    material = models.CharField(max_length=200, blank=True, help_text="Material used (e.g., 'Stoneware clay with natural glaze')")
+    usage_instructions = models.TextField(blank=True, help_text="How to use the product")
+    care_instructions = models.TextField(blank=True, help_text="How to care for and maintain the product")
     
     # Pricing
     price = models.DecimalField(    
@@ -199,3 +203,141 @@ class CartItem(models.Model):
     
     def get_total_price(self):
         return self.product.price * self.quantity
+
+
+# ====================
+# ORDER MODEL
+# Purpose: Track customer purchases and order history
+# ====================
+class Order(models.Model):
+    """
+    Stores customer orders for products
+    Used for order tracking, customer support, and business analytics
+    """
+    
+    STATUS_CHOICES = [
+        ('pending', 'Pending Payment'),
+        ('confirmed', 'Payment Confirmed'),
+        ('processing', 'Processing'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled'),
+        ('refunded', 'Refunded'),
+    ]
+    
+    PAYMENT_METHOD_CHOICES = [
+        ('cod', 'Cash on Delivery'),
+        ('upi', 'UPI'),
+        ('card', 'Credit/Debit Card'),
+        ('netbanking', 'Net Banking'),
+        ('wallet', 'Digital Wallet'),
+    ]
+    
+    # Order Identification
+    order_number = models.CharField(max_length=50, unique=True, editable=False)
+    
+    # User Association (Optional - null if guest checkout)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, 
+                            null=True, blank=True, related_name='product_orders',
+                            help_text="Linked user if logged in during checkout")
+    
+    # Customer Information
+    customer_name = models.CharField(max_length=200)
+    customer_email = models.EmailField()
+    customer_phone = models.CharField(max_length=20)
+    
+    # Shipping Address
+    shipping_address = models.TextField()
+    shipping_city = models.CharField(max_length=100)
+    shipping_state = models.CharField(max_length=100)
+    shipping_pincode = models.CharField(max_length=10)
+    
+    # Billing (optional if different from shipping)
+    billing_address = models.TextField(blank=True, help_text="Leave blank if same as shipping")
+    
+    # Order Details
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='cod')
+    payment_status = models.BooleanField(default=False, help_text="Payment received?")
+    
+    # Pricing
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2, help_text="Total before tax/shipping")
+    shipping_charge = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    tax_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0)
+    discount_amount = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, help_text="Final amount to pay")
+    
+    # Additional Info
+    order_notes = models.TextField(blank=True, help_text="Customer notes/special instructions")
+    internal_notes = models.TextField(blank=True, help_text="Staff notes (not visible to customer)")
+    
+    # Tracking
+    tracking_number = models.CharField(max_length=100, blank=True, help_text="Courier tracking number")
+    courier_service = models.CharField(max_length=100, blank=True, help_text="e.g., BlueDart, DHL")
+    
+    # GST (Optional)
+    gst_number = models.CharField(max_length=15, blank=True, help_text="For business customers")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    delivered_at = models.DateTimeField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Product Order'
+        verbose_name_plural = 'Purchases - Product Orders'
+    
+    def __str__(self):
+        return f"{self.order_number} - {self.customer_name}"
+    
+    def save(self, *args, **kwargs):
+        """Auto-generate order number if not exists"""
+        if not self.order_number:
+            from datetime import datetime
+            # Format: ORD-YYYYMMDDHHMMSS
+            self.order_number = f"ORD-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        super().save(*args, **kwargs)
+    
+    def get_item_count(self):
+        """Returns total number of items in order"""
+        return sum(item.quantity for item in self.items.all())
+
+
+# ====================
+# ORDER ITEM MODEL
+# Purpose: Individual items within an order
+# ====================
+class OrderItem(models.Model):
+    """
+    Individual products within an order
+    One order can have multiple products
+    """
+    
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)  # Don't delete if product is deleted
+    
+    # Snapshot of product details at time of purchase
+    product_name = models.CharField(max_length=200, help_text="Product name at time of order")
+    product_price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price at time of order")
+    
+    quantity = models.PositiveIntegerField(default=1)
+    
+    class Meta:
+        verbose_name = 'Order Item'
+        verbose_name_plural = 'Order Items'
+    
+    def __str__(self):
+        return f"{self.product_name} x {self.quantity}"
+    
+    def get_total_price(self):
+        """Returns total price for this line item"""
+        return self.product_price * self.quantity
+    
+    def save(self, *args, **kwargs):
+        """Capture product details at time of order"""
+        if not self.product_name:
+            self.product_name = self.product.name
+        if not self.product_price:
+            self.product_price = self.product.price
+        super().save(*args, **kwargs)
