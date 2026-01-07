@@ -77,7 +77,7 @@ const CustomOrderForm = () => {
   };
 
   return (
-    <section className="section-padding" id="custom">
+    <section className="section-padding custom-order-background-wrapper" id="custom">
       <div className="container">
         <div className="section-header center">
           <h2 className="section-title">

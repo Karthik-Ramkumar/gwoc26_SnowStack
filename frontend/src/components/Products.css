@@ -95,6 +95,10 @@
 .custom-order-background-wrapper {
   position: relative;
   min-height: 100vh;
+  background-image: url('../images/gallery/creation.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 /* Products Main Section */
@@ -132,7 +136,6 @@
     rgba(245, 240, 232, 0.87) 75%,
     rgba(237, 216, 180, 0.91) 100%
   );
-  backdrop-filter: blur(1px);
 }
 
 /* Pottery Decorations in Main Section */
@@ -237,8 +240,7 @@
 .filter-section {
   margin-bottom: 3rem;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
@@ -340,4 +342,20 @@
   .filter-section {
     padding: 1.5rem;
   }
+}
+/* Custom Order Section Styles */
+.custom-intro {
+  max-width: 800px;
+  margin: 0 auto var(--spacing-lg);
+}
+
+.custom-intro .large-text {
+  background: white;
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-size: 1.2rem;
+  line-height: 1.8;
+  color: #442D1C;
+  margin-bottom: 2rem;
 }

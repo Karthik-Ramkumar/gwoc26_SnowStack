@@ -126,14 +126,16 @@
   padding: 60px 30px;
 }
 
-/* LIST SECTION - Clean background with floating images */
+/* LIST SECTION - Clean background */
 .workshops-list-section {
   position: relative;
   z-index: 10;
-  background: linear-gradient(180deg, #F5E6D3 0%, #EDD8B4 50%, #F5E6D3 100%);
+  background-image: url('../images/gallery/wrk.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 100px 0 120px;
   min-height: 100vh;
-  overflow: hidden;
 }
 
 .workshops-list-content {
@@ -143,93 +145,6 @@
   padding: 0 40px;
   position: relative;
   z-index: 10;
-}
-
-/* Floating Images - Artistic positioning */
-.floating-image {
-  position: absolute;
-  width: 200px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  opacity: 0.8;
-  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 5;
-}
-
-.floating-image.visible {
-  opacity: 0.9;
-}
-
-.floating-image:hover {
-  opacity: 1;
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
-  z-index: 2;
-}
-
-/* Artistic positioning for each image */
-.floating-image-1 {
-  top: 150px;
-  left: 5%;
-  width: 180px;
-}
-
-.floating-image-2 {
-  top: 400px;
-  left: 8%;
-  width: 160px;
-  transform: rotate(-5deg);
-}
-
-.floating-image-3 {
-  top: 750px;
-  left: 4%;
-  width: 190px;
-  transform: rotate(3deg);
-}
-
-.floating-image-4 {
-  top: 1100px;
-  left: 7%;
-  width: 170px;
-  transform: rotate(-3deg);
-}
-
-.floating-image-5 {
-  top: 250px;
-  right: 6%;
-  width: 185px;
-  transform: rotate(4deg);
-}
-
-.floating-image-6 {
-  top: 600px;
-  right: 4%;
-  width: 175px;
-  transform: rotate(-4deg);
-}
-
-.floating-image-7 {
-  top: 950px;
-  right: 8%;
-  width: 195px;
-  transform: rotate(2deg);
-}
-
-.floating-image-8 {
-  top: 1300px;
-  right: 5%;
-  width: 165px;
-  transform: rotate(-2deg);
-}
-
-.floating-image-9 {
-  top: 1600px;
-  left: 50%;
-  transform: translateX(-50%) rotate(1deg);
-  width: 200px;
 }
 
 @keyframes fadeIn {

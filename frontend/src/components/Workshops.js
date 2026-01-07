@@ -27,27 +27,9 @@ const Workshops = () => {
     filterWorkshops();
   }, [filterWorkshops]);
 
-  // Scroll animation for floating images
+  // Fetch workshops on mount
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -100px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, observerOptions);
-
-    const floatingImages = document.querySelectorAll('.floating-image');
-    floatingImages.forEach(img => observer.observe(img));
-
-    return () => {
-      floatingImages.forEach(img => observer.unobserve(img));
-    };
+    fetchWorkshops();
   }, []);
 
   const fetchWorkshops = async () => {
@@ -440,19 +422,8 @@ const Workshops = () => {
         <p>Create, Learn, and Connect Through the Art of Pottery</p>
       </header>
 
-      {/* WORKSHOPS LIST SECTION - With artistic floating images */}
+      {/* WORKSHOPS LIST SECTION */}
       <section className="workshops-list-section">
-        {/* Artistic floating images that appear on scroll */}
-        <img src="/static/images/gallery/Workshop Pieces (1).png" alt="Workshop Piece 1" className="floating-image floating-image-1" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (2).png" alt="Workshop Piece 2" className="floating-image floating-image-2" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (3).png" alt="Workshop Piece 3" className="floating-image floating-image-3" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (4).png" alt="Workshop Piece 4" className="floating-image floating-image-4" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (5).png" alt="Workshop Piece 5" className="floating-image floating-image-5" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (6).png" alt="Workshop Piece 6" className="floating-image floating-image-6" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (7).png" alt="Workshop Piece 7" className="floating-image floating-image-7" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (8).png" alt="Workshop Piece 8" className="floating-image floating-image-8" data-scroll="fade-in" />
-        <img src="/static/images/gallery/Workshop Pieces (9).png" alt="Workshop Piece 9" className="floating-image floating-image-9" data-scroll="fade-in" />
-        
         <div className="workshops-list-content">
         <div className="workshops-filter">
           <button
