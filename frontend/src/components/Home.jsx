@@ -52,7 +52,7 @@ function Home() {
       {/* ================= WHAT IS BASHO ================= */}
       <section
         ref={paperRef}
-        className="basho-paper"
+        className="whatisbasho-section"
         style={{
           backgroundImage: "url(/static/images/gallery/whatisbasho.jpg)",
         }}

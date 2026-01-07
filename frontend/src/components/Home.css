@@ -115,11 +115,15 @@
 .whatisbasho-text {
   max-width: 580px;
   font-family: "Noto Serif JP", serif;
+  background: rgba(255, 255, 255, 0.85);
+  padding: 2.5rem 3rem;
+  border-radius: 8px;
+  backdrop-filter: blur(10px);
 }
 
 .whatisbasho-text h2 {
   font-family: 'Federo', sans-serif;
-  font-size: 3rem;
+  font-size: 4rem;
   letter-spacing: 0.18em;
   margin-bottom: 28px;
   font-weight: 400;
@@ -127,9 +131,11 @@
 }
 
 .whatisbasho-text p {
-  font-size: 1.15rem;
+  font-size: 1.4rem;
   line-height: 1.9;
   color: #4a3a2a;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
 }
 
 /* =========================
