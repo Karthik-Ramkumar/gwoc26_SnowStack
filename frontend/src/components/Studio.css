@@ -72,10 +72,10 @@
 }
 
 .studio-hero h1 {
-    font-family: 'Smythe', cursive;
+    font-family: 'Libre Baskerville', serif;
     font-size: 4rem;
     font-weight: 400;
-    color: white;
+    color: #FAF3E0;
     margin-bottom: 1.5rem;
     line-height: 1.1;
     letter-spacing: 0.02em;
@@ -83,10 +83,10 @@
 }
 
 .studio-hero p {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.15rem;
     font-weight: 400;
-    color: white;
+    color: #FAF3E0;
     line-height: 1.8;
     max-width: 650px;
     margin: 0 auto;
@@ -107,31 +107,44 @@
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 60px;
-    align-items: center;
+    gap: 0;
+    background-color: #ffffff;
+    padding: 0;
+    border-radius: 20px;
+    box-shadow: 0 15px 50px rgba(101, 40, 16, 0.08);
+    overflow: hidden;
+    min-height: 500px;
 }
 
 .studio-map-wrapper {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 30px rgba(101, 40, 16, 0.15);
+    height: 100%;
+    width: 100%;
 }
 
 .studio-map-wrapper iframe {
     width: 100%;
-    height: 400px;
+    height: 100%;
     border: none;
     filter: sepia(20%) saturate(90%) brightness(95%);
+    display: block;
+    /* Removes bottom space */
+}
+
+.studio-address {
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .studio-address h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
     color: var(--studio-primary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .studio-address-text {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     line-height: 2;
     color: var(--studio-text-dark);
 }
@@ -143,8 +156,11 @@
 /* =========================
    INFO SECTIONS (Visit & Policies)
 ========================= */
+/* =========================
+   INFO SECTIONS (Visit & Policies)
+========================= */
 .studio-info-section {
-    padding: 80px 40px;
+    padding: 100px 40px;
 }
 
 .studio-info-section.alt-bg {
@@ -153,18 +169,34 @@
 }
 
 .studio-info-container {
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+.studio-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+}
+
+.info-column {
+    background: #ffffff;
+    padding: 50px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .studio-info-section h2 {
     font-size: 2.2rem;
     margin-bottom: 2rem;
-    text-align: center;
+    color: var(--studio-primary);
 }
 
+/* Headers inside the white cards (Brown) */
 .studio-info-section.alt-bg h2 {
-    color: var(--studio-secondary);
+    color: var(--studio-primary);
+    text-align: left;
+    margin-top: 0;
 }
 
 .studio-info-list {
@@ -173,6 +205,7 @@
     margin: 0;
 }
 
+/* List items inside white cards (Dark/Brown text) */
 .studio-info-list li {
     padding: 1rem 0;
     border-bottom: 1px solid rgba(101, 40, 16, 0.1);
@@ -181,16 +214,19 @@
     display: flex;
     align-items: flex-start;
     gap: 12px;
+    color: var(--studio-text-dark);
 }
 
+/* Ensure border remains subtle brown */
 .studio-info-section.alt-bg .studio-info-list li {
-    border-bottom-color: rgba(237, 216, 180, 0.15);
+    border-bottom-color: rgba(101, 40, 16, 0.1);
 }
 
 .studio-info-list li:last-child {
     border-bottom: none;
 }
 
+/* Bullet points (Brown) */
 .studio-info-list li::before {
     content: '•';
     color: var(--studio-primary);
@@ -198,8 +234,9 @@
     line-height: 1.5;
 }
 
+/* Override the previous 'alt-bg' lighter color logic since card is white now */
 .studio-info-section.alt-bg .studio-info-list li::before {
-    color: var(--studio-secondary);
+    color: var(--studio-primary);
 }
 
 /* =========================
@@ -519,6 +556,11 @@
     }
 
     .studio-location-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+
+    .studio-info-grid {
         grid-template-columns: 1fr;
         gap: 40px;
     }
