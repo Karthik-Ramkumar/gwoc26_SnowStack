@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import studioHeaderBg from '../images/gallery/studio_header.jpg';
 import './Studio.css';
 
 const API_BASE_URL = '/api';
@@ -64,7 +65,7 @@ function Studio() {
       {/* ================= HERO SECTION ================= */}
       <section
         className="studio-hero"
-        style={{ backgroundImage: "url('/static/images/gallery/studiobg.jpg')" }}
+        style={{ backgroundImage: `url(${studioHeaderBg})` }}
       >
         <div className="studio-hero-content">
           <h1>THE STUDIO</h1>
@@ -79,15 +80,6 @@ function Studio() {
       {/* ================= LOCATION SECTION ================= */}
       <section className="studio-location">
         <div className="studio-location-container">
-          <div className="studio-map-wrapper">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.3714!2d72.8347!3d21.1702!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDEwJzEyLjciTiA3MsKwNTAnMDQuOSJF!5e0!3m2!1sen!2sin!4v1234567890"
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Basho Studio Location"
-            />
-          </div>
           <div className="studio-address">
             <h2>Visit Us</h2>
             <div className="studio-address-text">
@@ -97,34 +89,43 @@ function Studio() {
               <span>Surat, Gujarat</span>
             </div>
           </div>
+          <div className="studio-map-wrapper">
+            <iframe
+              src="https://maps.google.com/maps?q=21.130000,72.724000&hl=en&z=14&output=embed"
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Basho Studio Location"
+            />
+          </div>
         </div>
       </section>
 
-      {/* ================= VISIT & COLLECTION ================= */}
-      <section className="studio-info-section">
-        <div className="studio-info-container">
-          <h2>Visit & Collection</h2>
-          <ul className="studio-info-list">
-            <li>Studio visits are by prior appointment only</li>
-            <li>Collections can be viewed and purchased directly from the studio</li>
-            <li>Custom orders may be discussed during visits</li>
-            <li>Studio pickups are available for confirmed orders</li>
-            <li>Visitors are encouraged to take their time and engage with the process</li>
-          </ul>
-        </div>
-      </section>
-
-      {/* ================= STUDIO POLICIES ================= */}
+      {/* ================= STUDIO DETAILS (Visit & Policies) ================= */}
       <section className="studio-info-section alt-bg">
         <div className="studio-info-container">
-          <h2>Studio Policies</h2>
-          <ul className="studio-info-list">
-            <li>Visits and workshops require prior confirmation</li>
-            <li>Clay pieces are handcrafted; natural variations are part of the process</li>
-            <li>No refunds on custom-made orders once production begins</li>
-            <li>Handle pieces with care during studio visits</li>
-            <li>Photography is allowed unless otherwise specified</li>
-          </ul>
+          <div className="studio-info-grid">
+            <div className="info-column">
+              <h2>Visit & Collection</h2>
+              <ul className="studio-info-list">
+                <li>Studio visits are by prior appointment only</li>
+                <li>Collections can be viewed and purchased directly from the studio</li>
+                <li>Custom orders may be discussed during visits</li>
+                <li>Studio pickups are available for confirmed orders</li>
+                <li>Visitors are encouraged to take their time and engage with the process</li>
+              </ul>
+            </div>
+            <div className="info-column">
+              <h2>Studio Policies</h2>
+              <ul className="studio-info-list">
+                <li>Visits and workshops require prior confirmation</li>
+                <li>Clay pieces are handcrafted; natural variations are part of the process</li>
+                <li>No refunds on custom-made orders once production begins</li>
+                <li>Handle pieces with care during studio visits</li>
+                <li>Photography is allowed unless otherwise specified</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
