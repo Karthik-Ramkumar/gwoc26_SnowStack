@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import studioHeaderBg from '../images/gallery/studio_header.jpg';
 import './Studio.css';
 
 const API_BASE_URL = '/api';
@@ -65,7 +64,7 @@ function Studio() {
       {/* ================= HERO SECTION ================= */}
       <section
         className="studio-hero"
-        style={{ backgroundImage: `url(${studioHeaderBg})` }}
+        style={{ backgroundImage: "url('/images/gallery/studiobg.jpg')" }}
       >
         <div className="studio-hero-content">
           <h1>THE STUDIO</h1>
