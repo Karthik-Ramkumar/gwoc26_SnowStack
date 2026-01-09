@@ -24,7 +24,7 @@ function Products() {
           sort: sortBy,
         };
 
-        const response = await axios.get(`${API_BASE_URL}/products/`, {
+        const response = await axios.get(`${API_BASE_URL}/products/products/`, {
           params,
         });
 

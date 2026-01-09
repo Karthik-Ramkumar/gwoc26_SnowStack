@@ -341,3 +341,94 @@ class OrderItem(models.Model):
         if not self.product_price:
             self.product_price = self.product.price
         super().save(*args, **kwargs)
+
+
+# ====================
+# SHIPPING CONFIGURATION MODEL
+# Purpose: Manage shipping rates from admin panel
+# ====================
+class ShippingConfig(models.Model):
+    """
+    Store shipping configuration that can be managed from admin panel
+    Only one configuration should exist (singleton pattern)
+    """
+    
+    # Shipping rates
+    rate_per_kg = models.DecimalField(
+        max_digits=8, 
+        decimal_places=2, 
+        default=50.00,
+        help_text="Shipping cost per kilogram (₹)"
+    )
+    
+    minimum_charge = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        default=100.00,
+        help_text="Minimum shipping charge regardless of weight (₹)"
+    )
+    
+    free_shipping_threshold = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=5000.00,
+        help_text="Free shipping for orders above this amount (₹). Set to 0 to disable."
+    )
+    
+    # Timestamps
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True,
+        help_text="Last updated by"
+    )
+    
+    class Meta:
+        verbose_name = 'Shipping Configuration'
+        verbose_name_plural = 'Shipping Configuration'
+    
+    def __str__(self):
+        return f"Shipping: ₹{self.rate_per_kg}/kg (Min: ₹{self.minimum_charge})"
+    
+    def save(self, *args, **kwargs):
+        """Ensure only one configuration exists"""
+        self.pk = 1
+        super().save(*args, **kwargs)
+    
+    def delete(self, *args, **kwargs):
+        """Prevent deletion"""
+        pass
+    
+    @classmethod
+    def load(cls):
+        """Get or create the shipping configuration"""
+        obj, created = cls.objects.get_or_create(pk=1)
+        return obj
+    
+    def calculate_shipping(self, weight_kg, order_subtotal):
+        """
+        Calculate shipping cost based on weight and order value
+        
+        Args:
+            weight_kg: Total weight in kilograms
+            order_subtotal: Order subtotal amount
+            
+        Returns:
+            Decimal: Calculated shipping charge
+        """
+        from decimal import Decimal
+        
+        # Check for free shipping
+        if self.free_shipping_threshold > 0 and order_subtotal >= self.free_shipping_threshold:
+            return Decimal('0.00')
+        
+        # Calculate based on weight
+        shipping = weight_kg * self.rate_per_kg
+        
+        # Apply minimum charge
+        if shipping < self.minimum_charge:
+            shipping = self.minimum_charge
+        
+        return shipping

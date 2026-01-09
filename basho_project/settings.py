@@ -134,6 +134,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
+    BASE_DIR / 'frontend' / 'build',  # React build root (for images, css folders)
 ]
 
 # WhiteNoise configuration

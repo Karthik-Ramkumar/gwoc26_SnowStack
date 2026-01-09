@@ -76,6 +76,196 @@ Login to admin panel: http://127.0.0.1:8000/admin/products/customorder/{order_id
 
 
 @shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def send_product_order_confirmation_email(self, order_id):
+    """
+    Send order confirmation email to customer after successful payment
+    
+    Args:
+        order_id: Order database ID
+    """
+    try:
+        from .models import Order
+        
+        order = Order.objects.get(id=order_id)
+        
+        # Calculate total items
+        total_items = sum(item.quantity for item in order.items.all())
+        
+        # Context for template
+        context = {
+            'customer_name': order.customer_name,
+            'order_number': order.order_number,
+            'order_date': order.created_at.strftime('%B %d, %Y'),
+            'order_items': order.items.all(),
+            'total_items': total_items,
+            'subtotal': order.subtotal,
+            'shipping': order.shipping_charge,
+            'total_amount': order.total_amount,
+            'shipping_address': f"{order.shipping_address}, {order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}",
+            'customer_phone': order.customer_phone,
+            'customer_email': order.customer_email,
+            'company_email': settings.COMPANY_EMAIL,
+            'company_phone': settings.COMPANY_PHONE,
+        }
+        
+        # Render HTML template
+        try:
+            html_content = render_to_string('emails/order_confirmation.html', context)
+        except:
+            # Fallback if template doesn't exist
+            html_content = None
+        
+        # Plain text content
+        items_text = '\n'.join([
+            f"  - {item.product.name} x {item.quantity} @ ₹{item.product_price} = ₹{item.quantity * item.product_price}"
+            for item in order.items.all()
+        ])
+        
+        text_content = f'''
+Dear {order.customer_name},
+
+Thank you for your order at Basho By Shivangi!
+
+Order Number: {order.order_number}
+Order Date: {order.created_at.strftime('%B %d, %Y')}
+
+Order Items:
+{items_text}
+
+Subtotal: ₹{order.subtotal}
+Shipping: ₹{order.shipping_charge}
+Total Amount: ₹{order.total_amount}
+
+Shipping Address:
+{order.shipping_address}
+{order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}
+
+We will process your order and ship it within 3-5 business days.
+You will receive a tracking number once your order is shipped.
+
+If you have any questions, please contact us at:
+Email: {settings.COMPANY_EMAIL}
+Phone: {settings.COMPANY_PHONE}
+
+Thank you for supporting handcrafted pottery!
+
+With heartfelt appreciation,
+BASHO BY SHIVANGI
+        '''
+        
+        # Create email
+        subject = f'Order Confirmation - {order.order_number}'
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.COMPANY_EMAIL,
+            to=[order.customer_email]
+        )
+        
+        if html_content:
+            msg.attach_alternative(html_content, "text/html")
+        
+        msg.send(fail_silently=False)
+        
+        return f"Order confirmation email sent to {order.customer_email} for order {order.order_number}"
+        
+    except Exception as exc:
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def send_product_order_admin_notification(self, order_id):
+    """
+    Send order notification to admin after successful payment
+    
+    Args:
+        order_id: Order database ID
+    """
+    try:
+        from .models import Order
+        
+        order = Order.objects.get(id=order_id)
+        
+        # Calculate total items
+        total_items = sum(item.quantity for item in order.items.all())
+        
+        # Context for template
+        context = {
+            'order_number': order.order_number,
+            'customer_name': order.customer_name,
+            'customer_email': order.customer_email,
+            'customer_phone': order.customer_phone,
+            'order_date': order.created_at.strftime('%B %d, %Y'),
+            'order_items': order.items.all(),
+            'total_items': total_items,
+            'subtotal': order.subtotal,
+            'shipping': order.shipping_charge,
+            'total_amount': order.total_amount,
+            'shipping_address': f"{order.shipping_address}, {order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}",
+            'payment_status': 'Paid via Razorpay',
+            'admin_url': f'http://127.0.0.1:8000/admin/products/order/{order_id}/',
+        }
+        
+        # Render HTML template  
+        try:
+            html_content = render_to_string('emails/admin_order_notification.html', context)
+        except:
+            html_content = None
+        
+        # Plain text content
+        items_text = '\n'.join([
+            f"  - {item.product.name} x {item.quantity} @ ₹{item.product_price} = ₹{item.quantity * item.product_price}"
+            for item in order.items.all()
+        ])
+        
+        text_content = f'''
+New Product Order Received
+
+Order Number: {order.order_number}
+Order Date: {order.created_at.strftime('%B %d, %Y')}
+
+Customer Details:
+Name: {order.customer_name}
+Email: {order.customer_email}
+Phone: {order.customer_phone}
+
+Order Items ({total_items} items):
+{items_text}
+
+Subtotal: ₹{order.subtotal}
+Shipping: ₹{order.shipping_charge}
+Total Amount: ₹{order.total_amount}
+
+Shipping Address:
+{order.shipping_address}
+{order.shipping_city}, {order.shipping_state} - {order.shipping_pincode}
+
+Payment Status: Paid via Razorpay
+
+View in admin panel: http://127.0.0.1:8000/admin/products/order/{order_id}/
+        '''
+        
+        # Create email
+        subject = f'🛒 New Order Received: {order.order_number}'
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.COMPANY_EMAIL,
+            to=[settings.COMPANY_EMAIL]
+        )
+        
+        if html_content:
+            msg.attach_alternative(html_content, "text/html")
+        
+        msg.send(fail_silently=False)
+        
+        return f"Admin notification sent for order {order.order_number}"
+        
+    except Exception as exc:
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
 def send_custom_order_customer_email(self, order_number, name, email, project_type_display):
     """
     Send HTML confirmation email to customer about their custom order
