@@ -1,7 +1,7 @@
 /* Studio.css */
 
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Smythe&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&family=Smythe&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Lato:wght@300;400;700&display=swap');
 
 /* =========================
    CSS VARIABLES
@@ -52,15 +52,17 @@
     content: '';
     position: absolute;
     inset: 0;
-    /* Strong gradient from left and right edges */
-    background: linear-gradient(to right,
-            rgba(0, 0, 0, 0.92) 0%,
-            rgba(0, 0, 0, 0.75) 15%,
-            rgba(0, 0, 0, 0.45) 35%,
-            rgba(0, 0, 0, 0.35) 50%,
-            rgba(0, 0, 0, 0.45) 65%,
-            rgba(0, 0, 0, 0.75) 85%,
-            rgba(0, 0, 0, 0.92) 100%);
+    /* Combined gradient: radial center darkening + left/right edge darkening */
+    background:
+        radial-gradient(ellipse 70% 80% at 50% 55%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 80%),
+        linear-gradient(to right,
+            rgba(0, 0, 0, 0.7) 0%,
+            rgba(0, 0, 0, 0.5) 15%,
+            rgba(0, 0, 0, 0.25) 35%,
+            rgba(0, 0, 0, 0.2) 50%,
+            rgba(0, 0, 0, 0.25) 65%,
+            rgba(0, 0, 0, 0.5) 85%,
+            rgba(0, 0, 0, 0.7) 100%);
     pointer-events: none;
     z-index: 1;
 }
@@ -72,99 +74,144 @@
 }
 
 .studio-hero h1 {
-    font-family: 'Libre Baskerville', serif;
+    font-family: 'Fraunces', serif;
     font-size: 4rem;
     font-weight: 400;
     color: #FAF3E0;
     margin-bottom: 1.5rem;
     line-height: 1.1;
     letter-spacing: 0.02em;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .studio-hero p {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.15rem;
+    font-family: 'Lato', sans-serif;
+    font-size: 1.3rem;
     font-weight: 400;
     color: #FAF3E0;
-    line-height: 1.8;
-    max-width: 650px;
+    line-height: 1.9;
+    letter-spacing: 0.03em;
+    max-width: 680px;
     margin: 0 auto;
-    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
 }
 
 
 /* =========================
    LOCATION SECTION
 ========================= */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap');
+
 .studio-location {
-    padding: 100px 40px;
-    background-color: var(--studio-secondary);
+    padding: 120px 40px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .studio-location-container {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1.2fr;
     gap: 0;
     background-color: #ffffff;
     padding: 0;
-    border-radius: 20px;
-    box-shadow: 0 15px 50px rgba(101, 40, 16, 0.08);
+    border-radius: 24px;
+    box-shadow:
+        0 40px 120px rgba(0, 0, 0, 0.5),
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 10px 30px rgba(0, 0, 0, 0.3);
     overflow: hidden;
-    min-height: 500px;
+    min-height: 480px;
 }
 
 .studio-map-wrapper {
     height: 100%;
     width: 100%;
+    border-radius: 0 24px 24px 0;
+    overflow: hidden;
 }
 
 .studio-map-wrapper iframe {
     width: 100%;
     height: 100%;
     border: none;
-    filter: sepia(20%) saturate(90%) brightness(95%);
+    filter: sepia(15%) saturate(85%) brightness(98%) contrast(95%);
     display: block;
-    /* Removes bottom space */
 }
 
 .studio-address {
-    padding: 60px;
+    padding: 70px 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 8px;
 }
 
 .studio-address h2 {
-    font-size: 2.5rem;
-    color: var(--studio-primary);
-    margin-bottom: 2rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 500;
+    color: #3d2a1f;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
 }
 
 .studio-address-text {
-    font-size: 1.15rem;
-    line-height: 2;
-    color: var(--studio-text-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 2.2;
+    letter-spacing: 0.01em;
+    color: #5a4a40;
+    margin-bottom: 2rem;
 }
 
 .studio-address-text span {
     display: block;
 }
 
+/* Get Directions Button */
+.studio-directions-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #7a3e1d;
+    text-decoration: none;
+    padding: 14px 28px;
+    border: 1.5px solid #7a3e1d;
+    border-radius: 50px;
+    background: transparent;
+    width: fit-content;
+    transition: all 0.3s ease;
+    letter-spacing: 0.02em;
+}
+
+.studio-directions-btn:hover {
+    background: rgba(122, 62, 29, 0.08);
+    color: #5a2d14;
+    border-color: #5a2d14;
+}
+
 /* =========================
    INFO SECTIONS (Visit & Policies)
 ========================= */
-/* =========================
-   INFO SECTIONS (Visit & Policies)
-========================= */
+/* Import Bricolage Grotesque and Work Sans */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600&family=Work+Sans:wght@300;400&display=swap');
+
 .studio-info-section {
     padding: 100px 40px;
 }
 
 .studio-info-section.alt-bg {
-    background-color: var(--studio-primary);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     color: var(--studio-secondary);
 }
 
@@ -182,21 +229,21 @@
 .info-column {
     background: #ffffff;
     padding: 50px;
-    border-radius: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(101, 40, 16, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
-.studio-info-section h2 {
-    font-size: 2.2rem;
+/* Headings inside white cards */
+.info-column h2 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #652810;
     margin-bottom: 2rem;
-    color: var(--studio-primary);
-}
-
-/* Headers inside the white cards (Brown) */
-.studio-info-section.alt-bg h2 {
-    color: var(--studio-primary);
-    text-align: left;
     margin-top: 0;
+    text-align: left;
+    letter-spacing: -0.01em;
 }
 
 .studio-info-list {
@@ -205,12 +252,15 @@
     margin: 0;
 }
 
-/* List items inside white cards (Dark/Brown text) */
+/* List items inside white cards */
 .studio-info-list li {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 400;
     padding: 1rem 0;
-    border-bottom: 1px solid rgba(101, 40, 16, 0.1);
-    font-size: 1.05rem;
+    border-bottom: 1px dotted rgba(101, 40, 16, 0.2);
+    font-size: 1.15rem;
     line-height: 1.7;
+    letter-spacing: -0.01em;
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -244,15 +294,22 @@
 ========================= */
 .studio-exhibitions {
     padding: 100px 40px;
-    background-color: var(--studio-secondary);
+    background-color: #EDD8B4;
+    /* Kintsugi-style organic fracture texture */
+    background-image: url("data:image/svg+xml,%3Csvg width='800' height='800' viewBox='0 0 800 800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23652810' stroke-width='4' stroke-opacity='0.1'%3E%3Cpath d='M50,0 Q80,120 120,200 T200,350 Q250,420 180,500 T250,650 Q300,720 280,800'/%3E%3Cpath d='M120,200 Q180,220 250,180 T380,200 Q450,220 500,150'/%3E%3Cpath d='M180,500 Q250,480 320,520 T450,480 Q520,450 600,500'/%3E%3Cpath d='M300,0 Q350,80 320,150 T380,280 Q420,350 380,450 T420,580 Q480,680 450,800'/%3E%3Cpath d='M380,280 Q450,300 520,260 T650,280'/%3E%3Cpath d='M550,0 Q600,100 580,180 T620,320 Q680,400 650,500 T700,650 Q750,720 720,800'/%3E%3Cpath d='M620,320 Q680,300 750,340 T800,320'/%3E%3Cpath d='M0,100 Q80,130 150,100 T280,120'/%3E%3Cpath d='M0,350 Q100,380 180,340 T320,360 Q400,380 450,340'/%3E%3Cpath d='M0,600 Q120,580 200,620 T380,600 Q480,580 550,620 T720,600 Q780,580 800,600'/%3E%3Cpath d='M650,500 Q720,520 800,480'/%3E%3Cpath d='M250,650 Q320,680 400,640 T550,680 Q640,700 700,650'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 800px 800px;
     overflow: hidden;
 }
 
 .studio-exhibitions h2 {
-    font-size: 2.2rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 600;
     text-align: center;
     margin-bottom: 3rem;
-    color: var(--studio-primary);
+    color: #652810;
+    letter-spacing: -0.01em;
 }
 
 .carousel-container {
@@ -275,7 +332,7 @@
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 10px 40px rgba(101, 40, 16, 0.12);
+    box-shadow: 0 20px 40px rgba(60, 24, 10, 0.25);
     transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
 }
@@ -283,7 +340,7 @@
 .carousel-card.center {
     transform: scale(1.08);
     z-index: 2;
-    box-shadow: 0 20px 60px rgba(101, 40, 16, 0.2);
+    box-shadow: 0 25px 50px rgba(60, 24, 10, 0.35);
 }
 
 .carousel-card.side {
@@ -311,26 +368,36 @@
 }
 
 .carousel-card-content h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
     font-size: 1.3rem;
-    color: var(--studio-primary);
+    font-weight: 600;
+    color: #652810;
     margin-bottom: 8px;
+    letter-spacing: -0.01em;
 }
 
 .carousel-card-content .location {
+    font-family: 'Work Sans', sans-serif;
     font-size: 0.95rem;
+    font-weight: 300;
     color: #8a6b5a;
     margin-bottom: 8px;
+    line-height: 1.6;
 }
 
 .carousel-card-content .dates {
+    font-family: 'Work Sans', sans-serif;
     font-size: 0.9rem;
-    color: var(--studio-primary);
-    font-weight: 500;
+    color: #652810;
+    font-weight: 400;
     margin-bottom: 12px;
+    line-height: 1.6;
 }
 
 .carousel-card-content p {
+    font-family: 'Work Sans', sans-serif;
     font-size: 0.95rem;
+    font-weight: 300;
     line-height: 1.6;
     color: #5a4a40;
 }
@@ -346,25 +413,29 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 2px solid var(--studio-primary);
+    border: 1px solid #652810;
     background: transparent;
-    color: var(--studio-primary);
+    color: #652810;
     font-size: 1.2rem;
     cursor: pointer;
     transition: all 0.3s ease;
 }
 
 .carousel-btn:hover {
-    background: var(--studio-primary);
-    color: var(--studio-secondary);
+    background: #652810;
+    border-color: #652810;
+    color: #EDD8B4;
 }
 
 .carousel-placeholder {
+    font-family: 'Work Sans', sans-serif;
     text-align: center;
     padding: 60px 40px;
-    color: #8a6b5a;
+    color: #652810;
     font-style: italic;
     font-size: 1.1rem;
+    font-weight: 300;
+    line-height: 1.6;
 }
 
 /* =========================
@@ -372,14 +443,22 @@
 ========================= */
 .studio-past-popups {
     padding: 100px 40px;
-    background-color: var(--studio-primary);
+    background-color: #652810;
+    /* Throwing Rings - concentric wobbly circles like on a pottery wheel */
+    background-image: url("data:image/svg+xml,%3Csvg width='600' height='600' viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23EDD8B4' stroke-width='2' stroke-opacity='0.05'%3E%3Cellipse cx='300' cy='300' rx='280' ry='275' transform='rotate(2 300 300)'/%3E%3Cellipse cx='300' cy='300' rx='220' ry='225' transform='rotate(-3 300 300)'/%3E%3Cellipse cx='300' cy='300' rx='160' ry='155' transform='rotate(4 300 300)'/%3E%3Cellipse cx='300' cy='300' rx='100' ry='105' transform='rotate(-2 300 300)'/%3E%3Cellipse cx='300' cy='300' rx='50' ry='48' transform='rotate(5 300 300)'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 600px 600px;
+    background-position: center;
 }
 
 .studio-past-popups h2 {
-    font-size: 2.2rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 600;
     text-align: center;
     margin-bottom: 3rem;
-    color: var(--studio-secondary);
+    color: #EDD8B4;
+    letter-spacing: -0.01em;
 }
 
 .past-popups-grid {
@@ -396,6 +475,7 @@
     overflow: hidden;
     aspect-ratio: 4/3;
     cursor: pointer;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .popup-card img {
@@ -426,14 +506,20 @@
 }
 
 .popup-card-overlay h4 {
-    color: var(--studio-secondary);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    color: #EDD8B4;
     font-size: 1.2rem;
     margin-bottom: 4px;
+    letter-spacing: -0.01em;
 }
 
 .popup-card-overlay span {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 300;
     color: rgba(237, 216, 180, 0.8);
     font-size: 0.95rem;
+    line-height: 1.7;
 }
 
 /* =========================
@@ -441,14 +527,22 @@
 ========================= */
 .studio-gallery {
     padding: 100px 40px;
-    background-color: var(--studio-secondary);
+    background-color: #EDD8B4;
+    /* Kiln Embers - floating organic shapes like embers and heat blobs */
+    background-image: url("data:image/svg+xml,%3Csvg width='500' height='500' viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23652810' fill-opacity='0.12'%3E%3Cellipse cx='45' cy='35' rx='18' ry='12' transform='rotate(15 45 35)'/%3E%3Cellipse cx='180' cy='60' rx='8' ry='5' transform='rotate(-20 180 60)'/%3E%3Cellipse cx='320' cy='40' rx='25' ry='15' transform='rotate(30 320 40)'/%3E%3Cellipse cx='450' cy='55' rx='12' ry='8' transform='rotate(-10 450 55)'/%3E%3Ccircle cx='90' cy='120' r='4'/%3E%3Cellipse cx='250' cy='100' rx='20' ry='28' transform='rotate(45 250 100)'/%3E%3Cellipse cx='400' cy='130' rx='15' ry='10' transform='rotate(-25 400 130)'/%3E%3Ccircle cx='50' cy='180' r='6'/%3E%3Cellipse cx='150' cy='200' rx='30' ry='18' transform='rotate(10 150 200)'/%3E%3Ccircle cx='280' cy='170' r='3'/%3E%3Cellipse cx='380' cy='210' rx='22' ry='14' transform='rotate(-35 380 210)'/%3E%3Ccircle cx='480' cy='185' r='5'/%3E%3Cellipse cx='70' cy='280' rx='14' ry='20' transform='rotate(50 70 280)'/%3E%3Ccircle cx='180' cy='300' r='7'/%3E%3Cellipse cx='300' cy='270' rx='35' ry='20' transform='rotate(-15 300 270)'/%3E%3Ccircle cx='420' cy='290' r='4'/%3E%3Cellipse cx='480' cy='320' rx='16' ry='10' transform='rotate(25 480 320)'/%3E%3Ccircle cx='40' cy='380' r='5'/%3E%3Cellipse cx='130' cy='360' rx='12' ry='18' transform='rotate(-40 130 360)'/%3E%3Cellipse cx='250' cy='390' rx='28' ry='16' transform='rotate(20 250 390)'/%3E%3Ccircle cx='360' cy='370' r='6'/%3E%3Cellipse cx='450' cy='400' rx='20' ry='12' transform='rotate(-30 450 400)'/%3E%3Ccircle cx='100' cy='450' r='3'/%3E%3Cellipse cx='220' cy='470' rx='15' ry='22' transform='rotate(35 220 470)'/%3E%3Ccircle cx='340' cy='440' r='8'/%3E%3Cellipse cx='480' cy='460' rx='18' ry='11' transform='rotate(-5 480 460)'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 500px 500px;
 }
 
 .studio-gallery h2 {
-    font-size: 2.2rem;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 4rem;
+    font-weight: 800;
     text-align: center;
     margin-bottom: 3rem;
-    color: var(--studio-primary);
+    color: #652810;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
 }
 
 .gallery-masonry {
@@ -557,16 +651,31 @@
 
     .studio-location-container {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 0;
+    }
+
+    .studio-address {
+        padding: 50px 40px;
+        text-align: center;
+        align-items: center;
+    }
+
+    .studio-address h2 {
+        font-size: 2.2rem;
+    }
+
+    .studio-map-wrapper {
+        border-radius: 0 0 24px 24px;
+        min-height: 320px;
+    }
+
+    .studio-map-wrapper iframe {
+        height: 320px;
     }
 
     .studio-info-grid {
         grid-template-columns: 1fr;
         gap: 40px;
-    }
-
-    .studio-map-wrapper iframe {
-        height: 300px;
     }
 
     .carousel-card {
