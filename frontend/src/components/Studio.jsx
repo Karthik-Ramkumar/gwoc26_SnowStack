@@ -64,10 +64,10 @@ function Studio() {
       {/* ================= HERO SECTION ================= */}
       <section
         className="studio-hero"
-        style={{ backgroundImage: "url('/images/gallery/studiobg.jpg')" }}
+        style={{ backgroundImage: "url('/images/gallery/studiobg1.jpg')" }}
       >
         <div className="studio-hero-content">
-          <h1>THE STUDIO</h1>
+          <h1>The Studio</h1>
           <p>
             A quiet space for slow craft and shared making. Here, clay takes form through
             patience and intention — each piece shaped by hand, guided by tradition,
@@ -77,7 +77,10 @@ function Studio() {
       </section>
 
       {/* ================= LOCATION SECTION ================= */}
-      <section className="studio-location">
+      <section
+        className="studio-location"
+        style={{ backgroundImage: "url('/images/gallery/visitus.png')" }}
+      >
         <div className="studio-location-container">
           <div className="studio-address">
             <h2>Visit Us</h2>
@@ -87,6 +90,14 @@ function Studio() {
               <span>Surat–Dumas Road</span>
               <span>Surat, Gujarat</span>
             </div>
+            <a
+              href="https://maps.google.com/maps?q=21.130000,72.724000"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="studio-directions-btn"
+            >
+              Get Directions →
+            </a>
           </div>
           <div className="studio-map-wrapper">
             <iframe
@@ -101,7 +112,10 @@ function Studio() {
       </section>
 
       {/* ================= STUDIO DETAILS (Visit & Policies) ================= */}
-      <section className="studio-info-section alt-bg">
+      <section
+        className="studio-info-section alt-bg"
+        style={{ backgroundImage: "url('/images/gallery/vstd.png')" }}
+      >
         <div className="studio-info-container">
           <div className="studio-info-grid">
             <div className="info-column">
