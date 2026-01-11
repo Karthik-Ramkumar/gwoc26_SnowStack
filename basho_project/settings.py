@@ -134,6 +134,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
+    BASE_DIR / 'frontend' / 'build',  # React build root (for images, css folders)
 ]
 
 # WhiteNoise configuration
@@ -161,19 +162,51 @@ REST_FRAMEWORK = {
 }
 
 # Email Configuration (for custom orders and notifications)
-# For development: Console backend (prints emails to terminal)
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# SMTP backend for real email delivery via Gmail
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'vinanthp@gmail.com'
+EMAIL_HOST_PASSWORD = 'pudd wqdo ygnh qnyq'  # Gmail App Password
+DEFAULT_FROM_EMAIL = 'vinanthp@gmail.com'
 
 # Company Information
 COMPANY_NAME = 'Basho By Shivangi'
-COMPANY_EMAIL = 'bashobyshivangi@gmail.com'
+COMPANY_EMAIL = 'vinanthp@gmail.com'  # Admin email address
 COMPANY_PHONE = '+91 XXXXX XXXXX'
 COMPANY_ADDRESS = 'Pottery Studio, India'
 
 # Razorpay Configuration
 # Get these from: https://dashboard.razorpay.com/app/keys
-RAZORPAY_KEY_ID = 'your_razorpay_key_id'  # Replace with your actual key
-RAZORPAY_KEY_SECRET = 'your_razorpay_key_secret'  # Replace with your actual secret
+# IMPORTANT: Never commit real API keys to version control!
+# Set these in your .env file (create from .env.example)
+# TODO: Move these credentials to .env file before pushing to git!
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S1lAGZcFMuNU0Y')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'AI3Nxw061P2yE5nTj95yaG8S')
+
+
+# Celery Configuration
+# Redis as message broker for background tasks
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
+
+# Celery Configuration
+# Redis as message broker for background tasks
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
 
 
 # ====================

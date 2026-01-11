@@ -24,6 +24,8 @@ function Checkout() {
 
   const [errors, setErrors] = useState({});
   const [isProcessing, setIsProcessing] = useState(false);
+  const [shippingCost, setShippingCost] = useState(0);
+  const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
 
   // Load Razorpay script
   useEffect(() => {
@@ -36,6 +38,52 @@ function Checkout() {
       document.body.removeChild(script);
     };
   }, []);
+
+  // Calculate shipping when cart changes
+  useEffect(() => {
+    if (cart.length > 0) {
+      calculateShipping();
+    }
+  }, [cart]);
+
+  const calculateShipping = async () => {
+    try {
+      setIsCalculatingShipping(true);
+      
+      // Prepare items array with product IDs and quantities
+      const items = cart.map(item => ({
+        product_id: item.id,
+        quantity: item.quantity
+      }));
+
+      const response = await fetch('/api/products/calculate-shipping/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: items,
+          subtotal: getCartTotal()
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        setShippingCost(data.shipping_charge);
+      } else {
+        console.error('Error calculating shipping:', data.error);
+        // Default to 100 if calculation fails
+        setShippingCost(100);
+      }
+    } catch (error) {
+      console.error('Error calculating shipping:', error);
+      // Default to 100 if there's an error
+      setShippingCost(100);
+    } finally {
+      setIsCalculatingShipping(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -111,7 +159,7 @@ function Checkout() {
     setIsProcessing(true);
     
     try {
-      const totalAmount = getCartTotal();
+      const totalAmount = getCartTotal() + shippingCost;
       const customerName = `${formData.firstName} ${formData.lastName}`;
       
       // Step 1: Create Razorpay order
@@ -192,10 +240,10 @@ function Checkout() {
         payment_method: 'razorpay',
         payment_status: true,
         subtotal: getCartTotal(),
-        shipping_charge: 0,
+        shipping_charge: shippingCost,
         tax_amount: 0,
         discount_amount: 0,
-        total_amount: getCartTotal(),
+        total_amount: getCartTotal() + shippingCost,
         items: cart.map(item => ({
           product: item.id,
           quantity: item.quantity,
@@ -421,14 +469,14 @@ function Checkout() {
 
             <div className="summary-row">
               <span>Shipping</span>
-              <span>To be calculated</span>
+              <span>{isCalculatingShipping ? 'Calculating...' : `₹${shippingCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
             </div>
 
             <div className="summary-divider"></div>
 
             <div className="summary-row total">
               <span>Total</span>
-              <span>₹{getCartTotal().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span>₹{(getCartTotal() + shippingCost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
             </div>
           </div>
         </div>

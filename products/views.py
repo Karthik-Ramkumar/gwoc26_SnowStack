@@ -91,73 +91,40 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """
-        Create new custom order and send email notifications
+        Create new custom order and send email notifications asynchronously
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         custom_order = serializer.save()
         
-        # Send email notification to admin
+        # Trigger asynchronous email tasks
         try:
-            from django.core.mail import send_mail
-            from django.conf import settings
+            from .tasks import send_custom_order_admin_email, send_custom_order_customer_email
             
-            # Email to admin
-            admin_subject = f'New Custom Order: {custom_order.order_number}'
-            admin_message = f'''
-New Custom Order Received
-
-Order Number: {custom_order.order_number}
-Customer: {custom_order.name}
-Email: {custom_order.email}
-Phone: {custom_order.phone}
-Project Type: {custom_order.get_project_type_display()}
-Budget: {custom_order.get_budget_display() if custom_order.budget else 'Not specified'}
-
-Description:
-{custom_order.description}
-
-Login to admin panel to review: http://127.0.0.1:8000/admin/products/customorder/{custom_order.id}/
-            '''
-            
-            send_mail(
-                subject=admin_subject,
-                message=admin_message,
-                from_email=settings.COMPANY_EMAIL,
-                recipient_list=[settings.COMPANY_EMAIL],
-                fail_silently=True,  # Don't crash if email fails
+            # Send admin email in background
+            send_custom_order_admin_email.delay(
+                order_id=custom_order.id,
+                order_number=custom_order.order_number,
+                name=custom_order.name,
+                email=custom_order.email,
+                phone=custom_order.phone,
+                project_type_display=custom_order.get_project_type_display(),
+                budget_display=custom_order.get_budget_display() if custom_order.budget else None,
+                description=custom_order.description
             )
             
-            # Email confirmation to customer
-            customer_subject = f'Order Confirmation - {custom_order.order_number}'
-            customer_message = f'''
-Dear {custom_order.name},
-
-Thank you for your custom order request at Basho By Shivangi!
-
-Order Number: {custom_order.order_number}
-Project Type: {custom_order.get_project_type_display()}
-
-We have received your request and will contact you within 24 hours to discuss your project in detail.
-
-If you have any immediate questions, please contact us at:
-Email: {settings.COMPANY_EMAIL}
-Phone: {settings.COMPANY_PHONE}
-
-Best regards,
-Basho By Shivangi Team
-            '''
-            
-            send_mail(
-                subject=customer_subject,
-                message=customer_message,
-                from_email=settings.COMPANY_EMAIL,
-                recipient_list=[custom_order.email],
-                fail_silently=True,
+            # Send customer confirmation email in background
+            send_custom_order_customer_email.delay(
+                order_number=custom_order.order_number,
+                name=custom_order.name,
+                email=custom_order.email,
+                project_type_display=custom_order.get_project_type_display()
             )
+            
         except Exception as e:
             # Log the error but don't fail the request
-            print(f"Email sending failed: {str(e)}")
+            # Emails will still be attempted by Celery
+            print(f"Failed to queue email tasks: {str(e)}")
         
         return Response({
             'success': True,
@@ -385,6 +352,72 @@ def create_razorpay_order(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+def calculate_shipping(request):
+    """
+    Calculate shipping cost based on cart items
+    
+    Request body: {
+        "items": [
+            {"product_id": 1, "quantity": 2},
+            {"product_id": 2, "quantity": 1}
+        ],
+        "subtotal": 1500.00
+    }
+    
+    Returns: {
+        "shipping_charge": 150.00,
+        "total_weight_kg": 3.5,
+        "rate_per_kg": 50.00,
+        "minimum_charge": 100.00,
+        "free_shipping_threshold": 5000.00,
+        "is_free_shipping": false
+    }
+    """
+    try:
+        from .models import ShippingConfig, Product
+        from decimal import Decimal
+        
+        items = request.data.get('items', [])
+        subtotal = Decimal(str(request.data.get('subtotal', 0)))
+        
+        # Calculate total weight
+        total_weight = Decimal('0.0')
+        for item in items:
+            try:
+                product = Product.objects.get(id=item['product_id'])
+                quantity = int(item.get('quantity', 1))
+                if product.weight:
+                    total_weight += product.weight * quantity
+            except Product.DoesNotExist:
+                continue
+        
+        # Default to 1kg if no weight specified
+        if total_weight == 0:
+            total_weight = Decimal('1.0')
+        
+        # Get shipping configuration and calculate
+        config = ShippingConfig.load()
+        shipping_charge = config.calculate_shipping(total_weight, subtotal)
+        
+        is_free = shipping_charge == 0 and config.free_shipping_threshold > 0
+        
+        return Response({
+            'shipping_charge': float(shipping_charge),
+            'total_weight_kg': float(total_weight),
+            'rate_per_kg': float(config.rate_per_kg),
+            'minimum_charge': float(config.minimum_charge),
+            'free_shipping_threshold': float(config.free_shipping_threshold),
+            'is_free_shipping': is_free,
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'error': f'Failed to calculate shipping: {str(e)}'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def verify_payment(request):
     """
     Verify Razorpay payment signature
@@ -401,6 +434,9 @@ def verify_payment(request):
     try:
         import razorpay
         from django.conf import settings
+        import logging
+        
+        logger = logging.getLogger(__name__)
         
         # Initialize Razorpay client
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -436,10 +472,36 @@ def verify_payment(request):
         if payment_verified:
             order_data = request.data.get('order_data', {})
             
-            # Update order data with payment info
+            # Calculate shipping based on configuration
+            from .models import ShippingConfig
+            from decimal import Decimal
+            
+            shipping_config = ShippingConfig.load()
+            
+            # Calculate total weight from items
+            total_weight = Decimal('0.0')
+            for item_data in order_data.get('items', []):
+                try:
+                    from .models import Product
+                    product = Product.objects.get(id=item_data['product'])
+                    quantity = item_data.get('quantity', 1)
+                    if product.weight:
+                        total_weight += product.weight * quantity
+                except:
+                    pass
+            
+            # Default to 1kg if no weight specified
+            if total_weight == 0:
+                total_weight = Decimal('1.0')
+            
+            # Calculate shipping
+            subtotal = Decimal(str(order_data.get('subtotal', 0)))
+            shipping_charge = shipping_config.calculate_shipping(total_weight, subtotal)
+            
+            # Update order data with payment info and calculated shipping
             order_data['payment_method'] = 'razorpay'
             order_data['payment_status'] = True
-            order_data['shipping_charge'] = 0  # Shipping is 0 for now
+            order_data['shipping_charge'] = shipping_charge
             
             # Create order
             from .serializers import OrderSerializer
@@ -452,12 +514,36 @@ def verify_payment(request):
                 order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
                 order.save()
                 
+                # Send email confirmations asynchronously using Celery
+                email_sent = False
+                admin_email_sent = False
+                
+                try:
+                    from .tasks import send_product_order_confirmation_email, send_product_order_admin_notification
+                    
+                    # Queue customer confirmation email
+                    send_product_order_confirmation_email.delay(order.id)
+                    email_sent = True
+                    logger.info(f"Customer confirmation email queued for order {order.order_number}")
+                except Exception as email_error:
+                    logger.error(f"Error queueing customer email for order {order.order_number}: {str(email_error)}")
+                
+                try:
+                    # Queue admin notification email
+                    send_product_order_admin_notification.delay(order.id)
+                    admin_email_sent = True
+                    logger.info(f"Admin notification email queued for order {order.order_number}")
+                except Exception as email_error:
+                    logger.error(f"Error queueing admin email for order {order.order_number}: {str(email_error)}")
+                
                 return Response({
                     'success': True,
                     'message': 'Payment verified and order created successfully',
                     'order_number': order.order_number,
                     'order_id': order.id,
-                    'payment_id': razorpay_payment_id
+                    'payment_id': razorpay_payment_id,
+                    'email_queued': email_sent,
+                    'admin_notified': admin_email_sent
                 }, status=status.HTTP_201_CREATED)
             else:
                 return Response({
@@ -470,4 +556,7 @@ def verify_payment(request):
         return Response({
             'error': f'Payment verification failed: {str(e)}'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
