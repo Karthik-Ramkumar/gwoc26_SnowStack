@@ -144,9 +144,27 @@ class OrderViewSet(viewsets.ModelViewSet):
     API ViewSet for Order model
     Handles product orders from checkout
     """
-    queryset = Order.objects.all()
     serializer_class = OrderSerializer
     
+    def get_queryset(self):
+        """
+        Filter orders based on query parameters
+        """
+        queryset = Order.objects.all().prefetch_related('items', 'items__product')
+        
+        # Filter by firebase_uid (matching Django username)
+        firebase_uid = self.request.query_params.get('firebase_uid', None)
+        if firebase_uid:
+            from django.contrib.auth.models import User
+            try:
+                user = User.objects.get(username=firebase_uid)
+                queryset = queryset.filter(user=user)
+            except User.DoesNotExist:
+                # If user doesn't exist in Django, return no orders
+                return Order.objects.none()
+        
+        return queryset
+
     def create(self, request, *args, **kwargs):
         """
         Create new order from checkout

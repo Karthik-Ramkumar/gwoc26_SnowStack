@@ -1,0 +1,552 @@
+/* ================================
+   PROFILE PAGE - Premium Redesign
+   Brand Palette:
+   - Deep Terracotta: #652810
+   - Bone White: #FCF9F5
+   - Sandstone Beige: #C4B396
+   - Muted Gold: #BFA98E
+   ================================ */
+
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Work+Sans:wght@400;500;600;700&display=swap');
+
+/* ========== PAGE CONTAINER ========== */
+.profile-page-new {
+    min-height: 100vh;
+    /* Deep Sandstone-to-Bone White symmetric gradient (Corporate style) */
+    background: linear-gradient(to right, #C4B396 0%, #FCF9F5 50%, #C4B396 100%);
+    padding: 120px 20px 80px;
+    position: relative;
+}
+
+/* Subtle radial overlay for depth */
+.profile-page-new::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(ellipse at center, rgba(252, 249, 245, 0.4) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.profile-container-new {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== PROFILE CARD - VELLUM GLASS ========== */
+.profile-card-glass {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    padding: 40px 48px;
+    /* Vellum Glass Effect */
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow:
+        0 8px 32px rgba(101, 40, 16, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.04);
+    margin-bottom: 32px;
+}
+
+.profile-avatar-section {
+    flex-shrink: 0;
+}
+
+.profile-avatar-new {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    /* Deep Terracotta circular border */
+    border: 3px solid #652810;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #FCF9F5;
+    box-shadow: 0 8px 24px rgba(101, 40, 16, 0.15);
+}
+
+.avatar-image-new {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.avatar-placeholder-new {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #652810;
+    background: linear-gradient(145deg, #FCF9F5 0%, #EDD8B4 100%);
+}
+
+.profile-info-section {
+    flex: 1;
+}
+
+.profile-name-new {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #652810;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.02em;
+}
+
+.profile-email-new {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: rgba(101, 40, 16, 0.7);
+    margin: 0 0 20px 0;
+}
+
+.logout-btn-new {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: transparent;
+    border: 2px solid #652810;
+    border-radius: 8px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #652810;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-btn-new:hover {
+    background: #652810;
+    color: #FCF9F5;
+}
+
+/* ========== SECTION STYLING ========== */
+.section-container {
+    margin-bottom: 32px;
+}
+
+.section-title-profile {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #652810;
+    margin: 0 0 16px 8px;
+    letter-spacing: -0.01em;
+}
+
+/* ========== PROFILE PORCELAIN CARD ========== */
+.profile-porcelain-card {
+    background: #FFFFFF;
+    border-radius: 20px;
+    padding: 8px;
+    /* Deep multi-layered shadows */
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.03),
+        0 16px 40px rgba(101, 40, 16, 0.08),
+        0 32px 80px rgba(0, 0, 0, 0.06);
+    border: 1px solid rgba(101, 40, 16, 0.05);
+}
+
+/* ========== DETAIL ROWS ========== */
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(101, 40, 16, 0.06);
+    transition: background 0.2s ease;
+}
+
+.detail-row:hover {
+    background: rgba(252, 249, 245, 0.5);
+}
+
+.detail-row.last {
+    border-bottom: none;
+}
+
+.detail-icon-new {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(145deg, #FCF9F5 0%, #EDD8B4 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #652810;
+    flex-shrink: 0;
+}
+
+.detail-content-new {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.detail-label-new {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #C4B396;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value-new {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+/* ========== ORDER HISTORY ========== */
+.orders-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: #652810;
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(101, 40, 16, 0.1);
+    border-top-color: #652810;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 20px;
+    text-align: center;
+    color: #C4B396;
+}
+
+.orders-empty h3 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #652810;
+    margin: 8px 0 0 0;
+}
+
+.orders-empty p {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    color: rgba(101, 40, 16, 0.6);
+    margin: 0;
+    max-width: 280px;
+}
+
+.browse-products-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 12px 24px;
+    background: #652810;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #FCF9F5;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.browse-products-btn:hover {
+    background: #7A3518;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(101, 40, 16, 0.25);
+}
+
+/* Order List */
+.orders-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(101, 40, 16, 0.06);
+    transition: background 0.2s ease;
+}
+
+.order-row:last-child {
+    border-bottom: none;
+}
+
+.order-row:hover {
+    background: rgba(252, 249, 245, 0.5);
+}
+
+/* Order Item Thumbnails */
+.order-items-preview {
+    display: flex;
+    align-items: center;
+    position: relative;
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.order-item-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 2px solid #FFFFFF;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: absolute;
+}
+
+.order-item-thumb:nth-child(1) {
+    left: 0;
+}
+
+.order-item-thumb:nth-child(2) {
+    left: 15px;
+}
+
+.order-item-thumb:nth-child(3) {
+    left: 30px;
+}
+
+.order-item-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-item-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, #FCF9F5 0%, #EDD8B4 100%);
+    color: #652810;
+}
+
+.order-items-more {
+    position: absolute;
+    left: 45px;
+    width: 35px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #652810;
+    background: rgba(252, 249, 245, 0.9);
+    border-radius: 8px;
+}
+
+/* Order Info */
+.order-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.order-title {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1A1A1A;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+}
+
+.order-meta {
+    display: flex;
+    gap: 16px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+}
+
+.order-date {
+    color: rgba(101, 40, 16, 0.5);
+}
+
+.order-amount {
+    font-weight: 600;
+    color: #652810;
+}
+
+/* Status Badge - Muted Gold base */
+.order-status {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    /* Muted Gold default */
+    background: #BFA98E;
+    color: #FFFFFF;
+}
+
+.order-status.status-delivered {
+    background: #4CAF50;
+}
+
+.order-status.status-shipped {
+    background: #2196F3;
+}
+
+.order-status.status-processing {
+    background: #FF9800;
+}
+
+.order-status.status-cancelled {
+    background: #F44336;
+}
+
+.order-status.status-pending {
+    background: #BFA98E;
+}
+
+/* ========== QUICK ACTIONS ========== */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.quick-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 32px 20px;
+    background: #FFFFFF;
+    border: 2px solid transparent;
+    border-radius: 16px;
+    cursor: pointer;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #652810;
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.03),
+        0 16px 40px rgba(101, 40, 16, 0.06);
+    transition: all 0.3s ease;
+}
+
+.quick-action-card:hover {
+    border-color: #652810;
+    transform: translateY(-4px);
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.04),
+        0 24px 50px rgba(101, 40, 16, 0.12);
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .profile-page-new {
+        padding: 100px 16px 60px;
+    }
+
+    .profile-card-glass {
+        flex-direction: column;
+        text-align: center;
+        padding: 32px 24px;
+        gap: 20px;
+    }
+
+    .profile-avatar-new {
+        width: 90px;
+        height: 90px;
+    }
+
+    .avatar-placeholder-new {
+        font-size: 36px;
+    }
+
+    .profile-name-new {
+        font-size: 1.6rem;
+    }
+
+    .logout-btn-new {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .detail-row {
+        padding: 16px 20px;
+    }
+
+    .order-row {
+        flex-wrap: wrap;
+        padding: 16px 20px;
+    }
+
+    .order-items-preview {
+        width: 65px;
+    }
+
+    .order-item-thumb {
+        width: 40px;
+        height: 40px;
+    }
+
+    .order-info {
+        flex: 1 1 calc(100% - 100px);
+    }
+
+    .order-status {
+        margin-top: 8px;
+        margin-left: auto;
+    }
+
+    .quick-actions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .order-meta {
+        flex-direction: column;
+        gap: 4px;
+    }
+}

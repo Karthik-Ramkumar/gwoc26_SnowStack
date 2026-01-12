@@ -254,7 +254,7 @@ function Checkout() {
 
       // Add user firebase UID if logged in
       if (currentUser) {
-        orderData.user = currentUser.uid;
+        orderData.user_firebase_uid = currentUser.uid;
       }
 
       // Verify payment and create order
