@@ -62,10 +62,7 @@ function Studio() {
   return (
     <div className="studio-page">
       {/* ================= HERO SECTION ================= */}
-      <section
-        className="studio-hero"
-        style={{ backgroundImage: "url('/images/gallery/studiobg1.jpg')" }}
-      >
+      <header className="studio-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/images/gallery/studiobg1.jpg')" }}>
         <div className="studio-hero-content">
           <h1>The Studio</h1>
           <p>
@@ -74,7 +71,7 @@ function Studio() {
             and imbued with the spirit of mindful creation.
           </p>
         </div>
-      </section>
+      </header>
 
       {/* ================= LOCATION SECTION ================= */}
       <section

@@ -35,7 +35,10 @@
 ========================= */
 .studio-hero {
     position: relative;
-    min-height: 70vh;
+    height: 40vh;
+    min-height: 350px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
     /* Background image applied via inline style in JSX */
     background-size: cover;
     background-position: center;
@@ -44,33 +47,30 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 80px 40px;
     overflow: hidden;
 }
 
-.studio-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    /* Combined gradient: radial center darkening + left/right edge darkening */
-    background:
-        radial-gradient(ellipse 70% 80% at 50% 55%, rgba(0, 0, 0, 0.35) 0%, rgba(0, 0, 0, 0.15) 50%, transparent 80%),
-        linear-gradient(to right,
-            rgba(0, 0, 0, 0.7) 0%,
-            rgba(0, 0, 0, 0.5) 15%,
-            rgba(0, 0, 0, 0.25) 35%,
-            rgba(0, 0, 0, 0.2) 50%,
-            rgba(0, 0, 0, 0.25) 65%,
-            rgba(0, 0, 0, 0.5) 85%,
-            rgba(0, 0, 0, 0.7) 100%);
-    pointer-events: none;
-    z-index: 1;
-}
+/* Removed the ::before pseudo-element since gradient is now inline */
 
 .studio-hero-content {
     position: relative;
     z-index: 2;
     max-width: 800px;
+    padding: 40px 50px;
+}
+
+/* Soft radial glow behind text - no visible box edges */
+.studio-hero-content::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 150%;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 40%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
 }
 
 .studio-hero h1 {
@@ -82,6 +82,7 @@
     line-height: 1.1;
     letter-spacing: 0.02em;
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+    animation: studioFadeInDown 0.8s ease-out;
 }
 
 .studio-hero p {
@@ -94,6 +95,32 @@
     max-width: 680px;
     margin: 0 auto;
     text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    animation: studioFadeIn 1s ease-out 0.2s backwards;
+}
+
+/* Header Animations */
+@keyframes studioFadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes studioFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 
