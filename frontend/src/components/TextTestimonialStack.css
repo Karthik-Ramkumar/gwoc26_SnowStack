@@ -15,10 +15,11 @@
 }
 
 .testimonial-card {
-  background: #5a3826; /* deep brown */
-  border: 1px solid rgba(255,255,255,0.08);
+  background: #5a3826;
+  /* deep brown */
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
-  box-shadow: 0 20px 55px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
   overflow: hidden;
 }
 
@@ -34,14 +35,19 @@
   font-family: 'Libre Baskerville', serif;
   font-size: 56px;
   line-height: 1;
-  color: rgba(255,255,255,0.15);
+  color: rgba(255, 255, 255, 0.15);
 }
 
-.quote-text {
-  margin: 10px 0 18px;
-  font-size: 1.25rem;
-  line-height: 1.65;
-  color: #ffffff;
+.text-testimonial-stack .testimonial-card .quote-text {
+  margin: 12px 0 20px;
+  font-size: 1.15rem;
+  line-height: 1.75;
+  color: #FCF9F5 !important;
+  font-family: 'Cormorant Garamond', 'Georgia', serif !important;
+  font-weight: 500 !important;
+  font-style: italic !important;
+  letter-spacing: 0.02em;
+  text-align: left;
 }
 
 .author-row {
@@ -54,7 +60,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   color: #fff;
   display: flex;
   align-items: center;
@@ -74,5 +80,5 @@
 
 .author-location {
   font-size: 1.05rem;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
 }
