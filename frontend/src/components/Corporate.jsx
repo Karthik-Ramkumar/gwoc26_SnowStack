@@ -93,8 +93,7 @@ function Corporate() {
                 </p>
               </div>
               <div className="service-image-new">
-                {/* TODO: Add corporate gifting image */}
-                <div className="image-placeholder">Gift Box Image</div>
+                <img src="/images/gallery/giftbox.png" alt="Corporate Gifting" />
               </div>
             </div>
 

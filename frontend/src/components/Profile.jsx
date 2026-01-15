@@ -9,6 +9,7 @@ function Profile() {
     const { currentUser, logout } = useAuth();
     const { orders, loading: ordersLoading } = useOrders();
     const navigate = useNavigate();
+    const [imageError, setImageError] = React.useState(false);
 
     const handleLogout = async () => {
         try {
@@ -75,8 +76,14 @@ function Profile() {
                 <div className="profile-card-glass">
                     <div className="profile-avatar-section">
                         <div className="profile-avatar-new">
-                            {currentUser.photoURL ? (
-                                <img src={currentUser.photoURL} alt="Profile" className="avatar-image-new" />
+                            {currentUser.photoURL && !imageError ? (
+                                <img
+                                    src={currentUser.photoURL}
+                                    alt="Profile"
+                                    className="avatar-image-new"
+                                    referrerPolicy="no-referrer"
+                                    onError={() => setImageError(true)}
+                                />
                             ) : (
                                 <div className="avatar-placeholder-new">
                                     {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}

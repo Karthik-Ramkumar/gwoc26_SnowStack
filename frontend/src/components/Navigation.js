@@ -12,6 +12,7 @@ function Navigation() {
   const { currentUser, logout } = useAuth();
   const cartCount = getCartCount();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -108,11 +109,13 @@ function Navigation() {
               title={currentUser.displayName || currentUser.email}
               onClick={handleNavClick}
             >
-              {currentUser.photoURL ? (
+              {currentUser.photoURL && !imageError ? (
                 <img
                   src={currentUser.photoURL}
                   alt={currentUser.displayName || 'Profile'}
                   className="user-avatar-img"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImageError(true)}
                 />
               ) : (
                 (currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()

@@ -216,3 +216,169 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ========== PAYMENT FAILED MODAL ========== */
+.payment-failed-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.payment-failed-modal {
+  position: relative;
+  background: #FCF9F5;
+  border-radius: 20px;
+  padding: 50px 40px 40px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.payment-failed-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(101, 40, 16, 0.08);
+  color: #652810;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.payment-failed-close:hover {
+  background: rgba(101, 40, 16, 0.15);
+  transform: rotate(90deg);
+}
+
+.payment-failed-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FF6B6B 0%, #C85428 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  animation: shake 0.5s ease 0.3s;
+}
+
+@keyframes shake {
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  20% {
+    transform: translateX(-8px);
+  }
+
+  40% {
+    transform: translateX(8px);
+  }
+
+  60% {
+    transform: translateX(-6px);
+  }
+
+  80% {
+    transform: translateX(6px);
+  }
+}
+
+.payment-failed-title {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #652810;
+  margin: 0 0 12px 0;
+}
+
+.payment-failed-message {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: #5a4a40;
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+}
+
+.payment-failed-btn {
+  display: inline-block;
+  padding: 14px 40px;
+  background: #652810;
+  color: #FCF9F5;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.payment-failed-btn:hover {
+  background: #7A3518;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(101, 40, 16, 0.3);
+}
+
+@media (max-width: 480px) {
+  .payment-failed-modal {
+    padding: 40px 24px 32px;
+  }
+
+  .payment-failed-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .payment-failed-title {
+    font-size: 1.4rem;
+  }
+
+  .payment-failed-message {
+    font-size: 0.9rem;
+  }
+}
