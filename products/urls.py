@@ -27,4 +27,7 @@ urlpatterns = [
     # Razorpay payment endpoints
     path('create-razorpay-order/', views.create_razorpay_order, name='create_razorpay_order'),
     path('verify-payment/', views.verify_payment, name='verify_payment'),
+    
+    # Order tracking endpoint (for chatbot)
+    path('track-order/', views.track_order, name='track_order'),
 ]

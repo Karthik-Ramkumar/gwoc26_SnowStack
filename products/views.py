@@ -558,5 +558,95 @@ def verify_payment(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# ====================
+# ORDER TRACKING API
+# Purpose: Look up order status for chatbot
+# URL: /api/products/track-order/
+# Method: POST (read-only lookup)
+# ====================
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def track_order(request):
+    """
+    Track order status by order number and email (read-only)
+    
+    Request body: {
+        "order_number": "ORD-20250115123456",
+        "email": "customer@example.com"
+    }
+    
+    Response (success): {
+        "found": true,
+        "order_number": "ORD-20250115123456",
+        "status": "shipped",
+        "status_display": "Shipped",
+        "tracking_number": "TRACK123456",
+        "courier_service": "BlueDart",
+        "created_at": "2025-01-15T10:30:00Z"
+    }
+    
+    Response (not found): {
+        "found": false,
+        "error": "Order not found. Please check your order number and email."
+    }
+    """
+    try:
+        order_number = request.data.get('order_number', '').strip().upper()
+        email = request.data.get('email', '').strip().lower()
+        
+        # Validate inputs
+        if not order_number:
+            return Response({
+                'found': False,
+                'error': 'Please enter your order number.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if not email:
+            return Response({
+                'found': False,
+                'error': 'Please enter your email address.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Look up order (case-insensitive for order number)
+        try:
+            order = Order.objects.get(
+                order_number__iexact=order_number,
+                customer_email__iexact=email
+            )
+        except Order.DoesNotExist:
+            return Response({
+                'found': False,
+                'error': 'Order not found. Please check your order number and email.'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        # Build response with order status
+        response_data = {
+            'found': True,
+            'order_number': order.order_number,
+            'status': order.status,
+            'status_display': order.get_status_display(),
+            'created_at': order.created_at.isoformat(),
+            'total_amount': float(order.total_amount),
+        }
+        
+        # Include tracking info if shipped
+        if order.status in ['shipped', 'delivered']:
+            response_data['tracking_number'] = order.tracking_number or None
+            response_data['courier_service'] = order.courier_service or None
+        
+        # Include delivery date if delivered
+        if order.status == 'delivered' and order.delivered_at:
+            response_data['delivered_at'] = order.delivered_at.isoformat()
+        
+        return Response(response_data, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'found': False,
+            'error': 'An error occurred while looking up your order. Please try again.'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 
 
