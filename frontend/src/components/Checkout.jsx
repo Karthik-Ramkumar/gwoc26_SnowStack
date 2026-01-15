@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../contexts/AuthContext';
-import { useToast } from '../context/ToastContext';
+import { X, AlertCircle } from 'lucide-react';
 import './Cart.css';
-import './Checkout.css';
 import './Checkout.css';
 
 function Checkout() {
   const navigate = useNavigate();
   const { cart, getCartTotal, clearCart } = useCart();
   const { currentUser } = useAuth();
-  const { showError } = useToast();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -28,6 +26,7 @@ function Checkout() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [shippingCost, setShippingCost] = useState(0);
   const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
+  const [paymentError, setPaymentError] = useState(null);
 
   // Load Razorpay script
   useEffect(() => {
@@ -212,7 +211,7 @@ function Checkout() {
         modal: {
           ondismiss: function () {
             setIsProcessing(false);
-            showError('Payment cancelled');
+            setPaymentError('Payment was cancelled. Please try again.');
           }
         }
       };
@@ -222,7 +221,7 @@ function Checkout() {
 
     } catch (error) {
       console.error('Error initiating payment:', error);
-      showError(error.message || 'An error occurred while initiating payment. Please try again.');
+      setPaymentError(error.message || 'An error occurred while initiating payment. Please try again.');
       setIsProcessing(false);
     }
   };
@@ -256,7 +255,7 @@ function Checkout() {
 
       // Add user firebase UID if logged in
       if (currentUser) {
-        orderData.user = currentUser.uid;
+        orderData.user_firebase_uid = currentUser.uid;
       }
 
       // Verify payment and create order
@@ -284,7 +283,7 @@ function Checkout() {
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
-      alert('Payment successful but order creation failed. Please contact support with your payment ID: ' + paymentResponse.razorpay_payment_id);
+      setPaymentError('Payment successful but order creation failed. Please contact support with your payment ID: ' + paymentResponse.razorpay_payment_id);
     } finally {
       setIsProcessing(false);
     }
@@ -296,194 +295,222 @@ function Checkout() {
   }
 
   return (
-    <div className="checkout-page">
-      {/* Hero Section */}
-      <section className="checkout-hero" style={{
-        backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/static/images/gallery/checkout.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative'
-      }}>
-        <div className="hero-content">
-          <h1 className="hero-title">
-            <span className="japanese-accent">チェックアウト</span>
-            <span className="main-title">Checkout</span>
-          </h1>
-          <p className="hero-subtitle">Complete your order</p>
-        </div>
-      </section>
-
-      {/* Checkout Content */}
-      <section className="checkout-content">
-        <div className="checkout-container">
-          {/* Delivery Form */}
-          <div className="checkout-form-section">
-            <h2>Delivery Information</h2>
-            <form onSubmit={handleSubmit} className="checkout-form">
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="firstName">First Name *</label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={errors.firstName ? 'error' : ''}
-                  />
-                  {errors.firstName && <span className="error-message">{errors.firstName}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="lastName">Last Name *</label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={errors.lastName ? 'error' : ''}
-                  />
-                  {errors.lastName && <span className="error-message">{errors.lastName}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="phone">Phone Number *</label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="10-digit mobile number"
-                    className={errors.phone ? 'error' : ''}
-                  />
-                  {errors.phone && <span className="error-message">{errors.phone}</span>}
-                </div>
-              </div>
-
-              <div className="form-row two-col">
-                <div className="form-group">
-                  <label htmlFor="email">Email Address *</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="your@email.com"
-                    className={errors.email ? 'error' : ''}
-                  />
-                  {errors.email && <span className="error-message">{errors.email}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="address">Delivery Address *</label>
-                  <textarea
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleChange}
-                    rows="2"
-                    placeholder="House/Flat No., Street, Locality"
-                    className={errors.address ? 'error' : ''}
-                  />
-                  {errors.address && <span className="error-message">{errors.address}</span>}
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label htmlFor="city">City *</label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    className={errors.city ? 'error' : ''}
-                  />
-                  {errors.city && <span className="error-message">{errors.city}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="state">State *</label>
-                  <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleChange}
-                    className={errors.state ? 'error' : ''}
-                  />
-                  {errors.state && <span className="error-message">{errors.state}</span>}
-                </div>
-
-                <div className="form-group">
-                  <label htmlFor="pincode">Pincode *</label>
-                  <input
-                    type="text"
-                    id="pincode"
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    placeholder="6-digit pincode"
-                    className={errors.pincode ? 'error' : ''}
-                  />
-                  {errors.pincode && <span className="error-message">{errors.pincode}</span>}
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                className="pay-btn"
-                disabled={isProcessing}
-              >
-                {isProcessing ? 'Processing...' : 'Proceed to Payment'}
-              </button>
-            </form>
+    <>
+      {/* Payment Failed Modal */}
+      {paymentError && (
+        <div className="payment-failed-overlay" onClick={() => setPaymentError(null)}>
+          <div className="payment-failed-modal" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="payment-failed-close"
+              onClick={() => setPaymentError(null)}
+              aria-label="Close"
+            >
+              <X size={24} />
+            </button>
+            <div className="payment-failed-icon">
+              <AlertCircle size={48} strokeWidth={1.5} />
+            </div>
+            <h3 className="payment-failed-title">Payment Failed</h3>
+            <p className="payment-failed-message">{paymentError}</p>
+            <button
+              className="payment-failed-btn"
+              onClick={() => setPaymentError(null)}
+            >
+              Try Again
+            </button>
           </div>
+        </div>
+      )}
 
-          {/* Order Summary */}
-          <div className="checkout-summary">
-            <h2>Order Summary</h2>
+      <div className="checkout-page">
+        {/* Hero Section */}
+        <section className="checkout-hero" style={{
+          backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/images/gallery/checkout.jpg')",
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          position: 'relative'
+        }}>
+          <div className="hero-content">
+            <h1 className="hero-title">
+              <span className="japanese-accent">チェックアウト</span>
+              <span className="main-title">Checkout</span>
+            </h1>
+            <p className="hero-subtitle">Complete your order</p>
+          </div>
+        </section>
 
-            <div className="summary-items">
-              {cart.map((item) => (
-                <div key={item.id} className="summary-item">
-                  <div className="item-info">
-                    <span className="item-name">{item.name}</span>
-                    <span className="item-qty">x{item.quantity}</span>
+        {/* Checkout Content */}
+        <section className="checkout-content">
+          <div className="checkout-container">
+            {/* Delivery Form */}
+            <div className="checkout-form-section">
+              <h2>Delivery Information</h2>
+              <form onSubmit={handleSubmit} className="checkout-form">
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="firstName">First Name *</label>
+                    <input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      className={errors.firstName ? 'error' : ''}
+                    />
+                    {errors.firstName && <span className="error-message">{errors.firstName}</span>}
                   </div>
-                  <span className="item-price">
-                    ₹{(parseFloat(item.price) * item.quantity).toLocaleString('en-IN')}
-                  </span>
+
+                  <div className="form-group">
+                    <label htmlFor="lastName">Last Name *</label>
+                    <input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      className={errors.lastName ? 'error' : ''}
+                    />
+                    {errors.lastName && <span className="error-message">{errors.lastName}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="phone">Phone Number *</label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      placeholder="10-digit mobile number"
+                      className={errors.phone ? 'error' : ''}
+                    />
+                    {errors.phone && <span className="error-message">{errors.phone}</span>}
+                  </div>
                 </div>
-              ))}
+
+                <div className="form-row two-col">
+                  <div className="form-group">
+                    <label htmlFor="email">Email Address *</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="your@email.com"
+                      className={errors.email ? 'error' : ''}
+                    />
+                    {errors.email && <span className="error-message">{errors.email}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="address">Delivery Address *</label>
+                    <textarea
+                      id="address"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleChange}
+                      rows="2"
+                      placeholder="House/Flat No., Street, Locality"
+                      className={errors.address ? 'error' : ''}
+                    />
+                    {errors.address && <span className="error-message">{errors.address}</span>}
+                  </div>
+                </div>
+
+                <div className="form-row">
+                  <div className="form-group">
+                    <label htmlFor="city">City *</label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className={errors.city ? 'error' : ''}
+                    />
+                    {errors.city && <span className="error-message">{errors.city}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="state">State *</label>
+                    <input
+                      type="text"
+                      id="state"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleChange}
+                      className={errors.state ? 'error' : ''}
+                    />
+                    {errors.state && <span className="error-message">{errors.state}</span>}
+                  </div>
+
+                  <div className="form-group">
+                    <label htmlFor="pincode">Pincode *</label>
+                    <input
+                      type="text"
+                      id="pincode"
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      placeholder="6-digit pincode"
+                      className={errors.pincode ? 'error' : ''}
+                    />
+                    {errors.pincode && <span className="error-message">{errors.pincode}</span>}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="pay-btn"
+                  disabled={isProcessing}
+                >
+                  {isProcessing ? 'Processing...' : 'Proceed to Payment'}
+                </button>
+              </form>
             </div>
 
-            <div className="summary-divider"></div>
+            {/* Order Summary */}
+            <div className="checkout-summary">
+              <h2>Order Summary</h2>
 
-            <div className="summary-row">
-              <span>Subtotal</span>
-              <span>₹{getCartTotal().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-            </div>
+              <div className="summary-items">
+                {cart.map((item) => (
+                  <div key={item.id} className="summary-item">
+                    <div className="item-info">
+                      <span className="item-name">{item.name}</span>
+                      <span className="item-qty">x{item.quantity}</span>
+                    </div>
+                    <span className="item-price">
+                      ₹{(parseFloat(item.price) * item.quantity).toLocaleString('en-IN')}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-            <div className="summary-row">
-              <span>Shipping</span>
-              <span>{isCalculatingShipping ? 'Calculating...' : `₹${shippingCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
-            </div>
+              <div className="summary-divider"></div>
 
-            <div className="summary-divider"></div>
+              <div className="summary-row">
+                <span>Subtotal</span>
+                <span>₹{getCartTotal().toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
 
-            <div className="summary-row total">
-              <span>Total</span>
-              <span>₹{(getCartTotal() + shippingCost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <div className="summary-row">
+                <span>Shipping</span>
+                <span>{isCalculatingShipping ? 'Calculating...' : `₹${shippingCost.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}</span>
+              </div>
+
+              <div className="summary-divider"></div>
+
+              <div className="summary-row total">
+                <span>Total</span>
+                <span>₹{(getCartTotal() + shippingCost).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </>
   );
 }
 

@@ -1,5 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { FreeMode, Navigation, Autoplay } from 'swiper/modules';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/navigation';
 import './Studio.css';
 
 const API_BASE_URL = '/api';
@@ -10,6 +16,12 @@ function Studio() {
   const [galleryImages, setGalleryImages] = useState([]);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState(null);
+
+  // Refs for custom navigation
+  const popupsPrevRef = useRef(null);
+  const popupsNextRef = useRef(null);
+  const galleryPrevRef = useRef(null);
+  const galleryNextRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,10 +74,7 @@ function Studio() {
   return (
     <div className="studio-page">
       {/* ================= HERO SECTION ================= */}
-      <section
-        className="studio-hero"
-        style={{ backgroundImage: "url('/static/images/gallery/studiobg1.jpg')" }}
-      >
+      <header className="studio-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/images/gallery/studiobg1.jpg')" }}>
         <div className="studio-hero-content">
           <h1>The Studio</h1>
           <p>
@@ -74,12 +83,12 @@ function Studio() {
             and imbued with the spirit of mindful creation.
           </p>
         </div>
-      </section>
+      </header>
 
       {/* ================= LOCATION SECTION ================= */}
       <section
         className="studio-location"
-        style={{ backgroundImage: "url('/static/images/gallery/visitus.png')" }}
+        style={{ backgroundImage: "url('/images/gallery/visitus.png')" }}
       >
         <div className="studio-location-container">
           <div className="studio-address">
@@ -114,7 +123,7 @@ function Studio() {
       {/* ================= STUDIO DETAILS (Visit & Policies) ================= */}
       <section
         className="studio-info-section alt-bg"
-        style={{ backgroundImage: "url('/static/images/gallery/vstd.png')" }}
+        style={{ backgroundImage: "url('/images/gallery/vstd.png')" }}
       >
         <div className="studio-info-container">
           <div className="studio-info-grid">
@@ -206,56 +215,158 @@ function Studio() {
         )}
       </section>
 
-      {/* ================= PAST POP-UPS ================= */}
+      {/* ================= PAST POP-UPS - SWIPER CAROUSEL ================= */}
       {pastPopups.length > 0 && (
         <section className="studio-past-popups">
           <h2>Past Pop-up Showcases</h2>
-          <div className="past-popups-grid">
-            {pastPopups.map(popup => (
-              <div key={popup.id} className="popup-card">
-                {popup.image_url ? (
-                  <img src={popup.image_url} alt={popup.event_name} />
-                ) : (
-                  <div style={{
-                    width: '100%',
-                    height: '100%',
-                    background: 'var(--studio-secondary)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}>
-                    <span style={{ color: 'var(--studio-primary)' }}>
-                      {popup.event_name}
-                    </span>
+          <div className="swiper-carousel-wrapper">
+            {/* Custom Navigation Arrows */}
+            <button
+              ref={popupsPrevRef}
+              className="swiper-nav-btn swiper-nav-prev"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+            <button
+              ref={popupsNextRef}
+              className="swiper-nav-btn swiper-nav-next"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} strokeWidth={2} />
+            </button>
+
+            <Swiper
+              modules={[FreeMode, Navigation, Autoplay]}
+              spaceBetween={24}
+              slidesPerView={1.2}
+              centeredSlides={true}
+              loop={true}
+              autoplay={{
+                delay: 4000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              freeMode={{
+                enabled: true,
+                sticky: false,
+                momentumRatio: 0.5
+              }}
+              speed={800}
+              navigation={{
+                prevEl: popupsPrevRef.current,
+                nextEl: popupsNextRef.current,
+              }}
+              onBeforeInit={(swiper) => {
+                swiper.params.navigation.prevEl = popupsPrevRef.current;
+                swiper.params.navigation.nextEl = popupsNextRef.current;
+              }}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2.5,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 3.5,
+                  spaceBetween: 30,
+                },
+              }}
+              className="past-popups-swiper"
+            >
+              {pastPopups.map(popup => (
+                <SwiperSlide key={popup.id}>
+                  <div className="popup-slide-card">
+                    {popup.image_url ? (
+                      <img src={popup.image_url} alt={popup.event_name} />
+                    ) : (
+                      <div className="popup-placeholder">
+                        <span>{popup.event_name}</span>
+                      </div>
+                    )}
+                    <div className="popup-slide-overlay">
+                      <h4>{popup.event_name}</h4>
+                      <span>{popup.city}, {popup.year}</span>
+                    </div>
                   </div>
-                )}
-                <div className="popup-card-overlay">
-                  <h4>{popup.event_name}</h4>
-                  <span>{popup.city}, {popup.year}</span>
-                </div>
-              </div>
-            ))}
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </section>
       )}
 
-      {/* ================= EVENT GALLERY ================= */}
+      {/* ================= EVENT GALLERY - SWIPER CAROUSEL ================= */}
       {galleryImages.length > 0 && (
         <section className="studio-gallery">
           <h2>Event Gallery</h2>
-          <div className="gallery-masonry">
-            {galleryImages.map(image => (
-              <div
-                key={image.id}
-                className="gallery-item"
-                onClick={() => setLightboxImage(image.image_url)}
-              >
-                <img
-                  src={image.image_url}
-                  alt={image.alt_text || 'Gallery image'}
-                />
-              </div>
-            ))}
+          <div className="swiper-carousel-wrapper gallery-carousel">
+            {/* Custom Navigation Arrows */}
+            <button
+              ref={galleryPrevRef}
+              className="swiper-nav-btn swiper-nav-prev gallery-nav"
+              aria-label="Previous slide"
+            >
+              <ChevronLeft size={24} strokeWidth={2} />
+            </button>
+            <button
+              ref={galleryNextRef}
+              className="swiper-nav-btn swiper-nav-next gallery-nav"
+              aria-label="Next slide"
+            >
+              <ChevronRight size={24} strokeWidth={2} />
+            </button>
+
+            <Swiper
+              modules={[FreeMode, Navigation, Autoplay]}
+              spaceBetween={24}
+              slidesPerView={1.2}
+              centeredSlides={true}
+              loop={true}
+              autoplay={{
+                delay: 4000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              freeMode={{
+                enabled: true,
+                sticky: false,
+                momentumRatio: 0.5
+              }}
+              speed={800}
+              navigation={{
+                prevEl: galleryPrevRef.current,
+                nextEl: galleryNextRef.current,
+              }}
+              onBeforeInit={(swiper) => {
+                swiper.params.navigation.prevEl = galleryPrevRef.current;
+                swiper.params.navigation.nextEl = galleryNextRef.current;
+              }}
+              breakpoints={{
+                640: {
+                  slidesPerView: 2.5,
+                  spaceBetween: 24,
+                },
+                1024: {
+                  slidesPerView: 3.5,
+                  spaceBetween: 30,
+                },
+              }}
+              className="gallery-swiper"
+            >
+              {galleryImages.map(image => (
+                <SwiperSlide key={image.id}>
+                  <div
+                    className="gallery-slide-item"
+                    onClick={() => setLightboxImage(image.image_url)}
+                  >
+                    <img
+                      src={image.image_url}
+                      alt={image.alt_text || 'Gallery image'}
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
         </section>
       )}
