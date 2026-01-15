@@ -1,7 +1,10 @@
 /* Media.css */
 
 /* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Italianno&family=Federo&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bonheur+Royale&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sedgwick+Ave+Display&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Style+Script&display=swap');
 
 /* =========================
    CSS VARIABLES
@@ -38,10 +41,10 @@
     min-height: 350px;
     width: 100vw;
     margin-left: calc(-50vw + 50%);
-    background-color: #6B4423;
+    background-image: linear-gradient(120deg, rgba(22, 9, 5, 0.62) 0%, rgba(36, 17, 10, 0.52) 45%, rgba(62, 32, 18, 0.48) 100%);
     background-size: cover;
     background-position: center;
-    background-repeat: repeat;
+    background-repeat: no-repeat;
     text-align: center;
     color: white;
     overflow: hidden;
@@ -58,7 +61,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(68, 45, 28, 0.4);
+    background: rgba(24, 11, 6, 0.32);
     pointer-events: none;
 }
 
@@ -69,12 +72,18 @@
 }
 
 .media-hero h1 {
-    font-size: 3.5rem;
-    font-weight: 700;
+    font-size: 5.2rem;
+    font-weight: 501;
     margin-bottom: 20px;
     letter-spacing: -1px;
     color: white;
     animation: fadeInDown 0.8s ease-out;
+    font-family: 'Style Script', cursive;
+}
+
+/* Ensure hero paragraph keeps original serif font (do not change) */
+.media-hero p {
+    font-family: 'Libre Baskerville', serif;
 }
 
 .media-hero p {
@@ -82,6 +91,8 @@
     opacity: 0.95;
     color: white;
     animation: fadeIn 1s ease-out 0.2s backwards;
+    margin: 0;
+    font-family: 'Libre Baskerville', serif;
 }
 
 /* Animations */
@@ -90,6 +101,7 @@
         opacity: 0;
         transform: translateY(-30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -100,6 +112,7 @@
     from {
         opacity: 0;
     }
+
     to {
         opacity: 1;
     }
@@ -123,12 +136,64 @@
     color: var(--media-secondary);
 }
 
+/* Section headers on media page: keep default centered styles */
+.media-page .section-header {
+    text-align: center;
+}
+
+.media-page .section-header h2 {
+    font-family: 'Libre Baskerville', serif;
+    color: var(--media-primary);
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
 /* =========================
    GALLERY SECTION
 ========================= */
 .media-gallery {
-    padding: 80px 40px;
+    padding: 0;
     background-color: var(--media-secondary);
+}
+
+.dome-gallery-wrapper {
+    position: relative;
+    width: 100%;
+    height: min(80vh, 900px);
+    min-height: 560px;
+    max-width: none;
+    margin: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    border-radius: 0;
+    overflow: visible;
+    background: transparent;
+    box-shadow: none;
+}
+
+.dome-header {
+    position: absolute;
+    top: 0;
+    left: 30px;
+    transform: none;
+    z-index: 25;
+    text-align: left;
+    background: #ffffff;
+    border: none;
+    border-radius: 0 0 28px 28px;
+    padding: 8px 20px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dome-header h2 {
+    font-size: 3rem !important;
+    margin: 0;
+    color: var(--media-primary);
+    font-weight: 600 !important;
+    font-family: 'Bonheur Royale', cursive !important;
+    letter-spacing: 0.02em;
 }
 
 .gallery-filters {
@@ -199,8 +264,56 @@
    TEXT TESTIMONIALS
 ========================= */
 .media-testimonials {
-    padding: 100px 40px;
-    background-color: var(--media-primary);
+    padding: 60px 40px;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+    position: relative;
+}
+
+.media-testimonials::before {
+    /* Remove vignette */
+    display: none;
+}
+
+.testimonial-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    align-items: center;
+    gap: 60px;
+}
+
+.testimonial-left {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
+    margin-left: 70px;
+}
+
+.testimonial-left .testimonial-subtext {
+    color: #6b4a39;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    margin-left: 50px;
+}
+
+.testimonial-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 900px) {
+    .testimonial-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .testimonial-right {
+        justify-content: center;
+        margin-top: 16px;
+    }
 }
 
 .testimonials-carousel {
@@ -348,6 +461,115 @@
     opacity: 0.8;
 }
 
+/* Clay Ripples Animation */
+@keyframes clayRippleScroll {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 800px 0;
+    }
+}
+
+.customer-experiences-section {
+    padding: 100px 40px;
+    background-color: #f5f5f5;
+    /* Clay Ripples - flowing wave lines inspired by ripples in clay */
+    background-image: url("data:image/svg+xml,%3Csvg width='800' height='200' viewBox='0 0 800 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='rgba(180,160,140,0.3)' stroke-width='1.5'%3E%3Cpath d='M0,30 Q100,10 200,30 T400,30 T600,30 T800,30'/%3E%3Cpath d='M0,50 Q100,35 200,55 T400,50 T600,55 T800,50'/%3E%3Cpath d='M0,75 Q100,60 200,80 T400,75 T600,80 T800,75'/%3E%3Cpath d='M0,100 Q100,85 200,105 T400,100 T600,105 T800,100'/%3E%3Cpath d='M0,125 Q100,110 200,130 T400,125 T600,130 T800,125'/%3E%3Cpath d='M0,150 Q100,135 200,155 T400,150 T600,155 T800,150'/%3E%3Cpath d='M0,175 Q100,160 200,180 T400,175 T600,180 T800,175'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 800px 200px;
+    animation: clayRippleScroll 60s linear infinite;
+    width: 100%;
+}
+
+.experiences-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.experiences-header h2 {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 700;
+    color: #2c2c2c;
+    margin-bottom: 12px;
+}
+
+.experiences-header p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.1rem;
+    color: #666;
+    font-style: italic;
+}
+
+.experiences-masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.experience-testimonial-card {
+    background: #fff;
+    padding: 32px;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.experience-testimonial-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.experience-testimonial-card .experience-title {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.25rem;
+    color: #2c2c2c;
+    margin-bottom: 16px;
+    line-height: 1.2;
+}
+
+.experience-quote {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 24px;
+    font-style: italic;
+}
+
+.experience-author-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.experience-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #DFD0C6;
+}
+
+.experience-author-name {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #2c2c2c;
+    margin-bottom: 2px;
+}
+
+.experience-author-role {
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    color: #666;
+}
+
 /* =========================
    CUSTOMER EXPERIENCES
 ========================= */
@@ -362,6 +584,14 @@
     gap: 50px;
     max-width: 1100px;
     margin: 0 auto;
+}
+
+/* Remove left/right side overlays (used by other sections) when on media page */
+.media-page .infinite-scroll-container::before,
+.media-page .infinite-scroll-container::after,
+.media-page .carousel-fade {
+    display: none !important;
+    background: none !important;
 }
 
 .experience-card {
@@ -529,7 +759,30 @@
     }
 
     .testimonial-quote {
-        font-size: 1.3rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-quote::before {
+        font-size: 2rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .testimonial-slide {
+        padding: 0 15px;
+    }
+
+    .testimonial-author {
+        font-size: 0.75rem;
+    }
+
+    .testimonials-carousel {
+        max-width: 100%;
+    }
+
+    .media-testimonials {
+        padding: 40px 20px;
     }
 
     .media-gallery,
@@ -537,5 +790,14 @@
     .media-videos,
     .media-experiences {
         padding: 60px 20px;
+    }
+
+    .dome-gallery-wrapper {
+        height: min(60vh, 500px);
+        min-height: 350px;
+    }
+
+    .dome-header h2 {
+        font-size: 1.8rem !important;
     }
 }

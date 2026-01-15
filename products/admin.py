@@ -5,10 +5,11 @@
 
 from django.contrib import admin
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import Product, CustomOrder, CartItem, Order, OrderItem
+from .models import Product, CustomOrder, CartItem, Order, OrderItem, ShippingConfig
 from workshops.models import WorkshopRegistration
 
 
@@ -518,8 +519,8 @@ class OrderAdmin(admin.ModelAdmin):
     def payment_badge(self, obj):
         """Show payment status"""
         if obj.payment_status:
-            return format_html('<span style="color: #4CAF50; font-weight: 600;">✓ Paid</span>')
-        return format_html('<span style="color: #F44336; font-weight: 600;">✗ Unpaid</span>')
+            return format_html('<span style="color: #4CAF50; font-weight: 600;">{}</span>', '✓ Paid')
+        return format_html('<span style="color: #F44336; font-weight: 600;">{}</span>', '✗ Unpaid')
     payment_badge.short_description = 'Payment'
     
     def total_display(self, obj):
@@ -558,7 +559,7 @@ class OrderAdmin(admin.ModelAdmin):
         html += f'<strong>Total: ₹{obj.total_amount:,.2f}</strong>'
         html += '</div>'
         
-        return format_html(html)
+        return mark_safe(html)
     order_summary.short_description = 'Summary'
     
     # Bulk actions
@@ -659,3 +660,51 @@ class CustomUserAdmin(BaseUserAdmin):
         
         return format_html('<strong>₹{}</strong>', f'{total:,.2f}')
     total_spent.short_description = 'Total Spent'
+
+
+# ====================
+# SHIPPING CONFIGURATION ADMIN
+# Purpose: Manage shipping rates from admin panel
+# ====================
+@admin.register(ShippingConfig)
+class ShippingConfigAdmin(admin.ModelAdmin):
+    """
+    Admin interface for shipping configuration
+    Only one configuration exists - staff can edit rates
+    """
+    
+    fieldsets = (
+        ('📦 Shipping Rates', {
+            'fields': ('rate_per_kg', 'minimum_charge', 'free_shipping_threshold'),
+            'description': 'How Shipping is Calculated: 1. Per Kg Rate: Base shipping cost multiplied by total product weight | 2. Minimum Charge: Minimum shipping fee (even if weight-based is lower) | 3. Free Shipping: No shipping charge for orders above this amount (set to 0 to disable)'
+        }),
+        ('ℹ️ Information', {
+            'fields': ('updated_at', 'updated_by'),
+            'classes': ('collapse',),
+        }),
+    )
+    
+    readonly_fields = ('updated_at', 'updated_by')
+    
+    def has_add_permission(self, request):
+        """Only allow one configuration"""
+        return not ShippingConfig.objects.exists()
+    
+    def has_delete_permission(self, request, obj=None):
+        """Prevent deletion"""
+        return False
+    
+    def save_model(self, request, obj, form, change):
+        """Track who updated the configuration"""
+        obj.updated_by = request.user
+        super().save_model(request, obj, form, change)
+    
+    def changelist_view(self, request, extra_context=None):
+        """Redirect to edit if configuration exists"""
+        if ShippingConfig.objects.exists():
+            config = ShippingConfig.objects.first()
+            from django.shortcuts import redirect
+            from django.urls import reverse
+            return redirect(reverse('admin:products_shippingconfig_change', args=[config.pk]))
+        return super().changelist_view(request, extra_context)
+

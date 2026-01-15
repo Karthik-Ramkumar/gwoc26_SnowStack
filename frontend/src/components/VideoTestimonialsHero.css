@@ -1,0 +1,212 @@
+/* Import fonts for Video Testimonials */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Work+Sans:wght@300&display=swap');
+
+.video-hero-section {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0;
+  padding: 80px 40px 40px;
+  background: #DFD0C6;
+  /* fallback color; section background image set from JSX to avoid webpack resolution */
+  max-width: 100%;
+  margin: 0 auto;
+  position: relative;
+}
+
+.video-hero-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0.2) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.video-hero-side {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+.video-hero-side.left {
+  margin-right: -50px;
+  z-index: 2;
+}
+
+.video-hero-side.right {
+  margin-left: -50px;
+  z-index: 2;
+}
+
+
+
+/* Glassmorphism Name Bars */
+.name-bar {
+  width: 65px;
+  height: 420px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(237, 216, 180, 0.2);
+  color: #EDD8B4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.name-text {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  color: #EDD8B4;
+}
+
+/* Navigation Arrows */
+.side-arrow {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: #EDD8B4;
+  color: #652810;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  position: absolute;
+  bottom: -70px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.side-arrow:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  background: #f5ebe0;
+}
+
+.video-hero-side.left .side-arrow {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.video-hero-side.left .side-arrow:hover {
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.video-hero-side.right .side-arrow {
+  right: 50%;
+  transform: translateX(50%);
+}
+
+.video-hero-side.right .side-arrow:hover {
+  transform: translateX(50%) translateY(-2px);
+}
+
+.video-hero-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+/* Central Video Card */
+.center-card {
+  width: min(880px, 90vw);
+  height: 520px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 8px;
+  border: 1px solid #EDD8B4;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.center-card::before {
+  /* removed gradient overlay so background image shows plainly */
+  content: none;
+}
+
+/* Play Button */
+.play-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 2px solid #EDD8B4;
+  background: rgba(0, 0, 0, 0.3);
+  color: #EDD8B4;
+  font-size: 28px;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.play-button:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+/* Text Overlay */
+.center-info {
+  position: absolute;
+  left: 20px;
+  bottom: 18px;
+  z-index: 2;
+}
+
+.center-info .name {
+  font-family: 'Bricolage Grotesque', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: #EDD8B4;
+}
+
+.center-info .role {
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  color: #EDD8B4;
+  opacity: 0.8;
+}
+
+
+
+@media (max-width: 1024px) {
+  .video-hero-section {
+    grid-template-columns: 60px 1fr 60px;
+  }
+
+  .name-bar {
+    height: 380px;
+    width: 56px;
+  }
+}
+
+@media (max-width: 768px) {
+  .video-hero-section {
+    grid-template-columns: 1fr;
+  }
+
+  .video-hero-side {
+    display: none;
+  }
+
+  .center-card {
+    height: 420px;
+  }
+}

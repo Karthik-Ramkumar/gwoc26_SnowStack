@@ -352,6 +352,72 @@ def create_razorpay_order(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+def calculate_shipping(request):
+    """
+    Calculate shipping cost based on cart items
+    
+    Request body: {
+        "items": [
+            {"product_id": 1, "quantity": 2},
+            {"product_id": 2, "quantity": 1}
+        ],
+        "subtotal": 1500.00
+    }
+    
+    Returns: {
+        "shipping_charge": 150.00,
+        "total_weight_kg": 3.5,
+        "rate_per_kg": 50.00,
+        "minimum_charge": 100.00,
+        "free_shipping_threshold": 5000.00,
+        "is_free_shipping": false
+    }
+    """
+    try:
+        from .models import ShippingConfig, Product
+        from decimal import Decimal
+        
+        items = request.data.get('items', [])
+        subtotal = Decimal(str(request.data.get('subtotal', 0)))
+        
+        # Calculate total weight
+        total_weight = Decimal('0.0')
+        for item in items:
+            try:
+                product = Product.objects.get(id=item['product_id'])
+                quantity = int(item.get('quantity', 1))
+                if product.weight:
+                    total_weight += product.weight * quantity
+            except Product.DoesNotExist:
+                continue
+        
+        # Default to 1kg if no weight specified
+        if total_weight == 0:
+            total_weight = Decimal('1.0')
+        
+        # Get shipping configuration and calculate
+        config = ShippingConfig.load()
+        shipping_charge = config.calculate_shipping(total_weight, subtotal)
+        
+        is_free = shipping_charge == 0 and config.free_shipping_threshold > 0
+        
+        return Response({
+            'shipping_charge': float(shipping_charge),
+            'total_weight_kg': float(total_weight),
+            'rate_per_kg': float(config.rate_per_kg),
+            'minimum_charge': float(config.minimum_charge),
+            'free_shipping_threshold': float(config.free_shipping_threshold),
+            'is_free_shipping': is_free,
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'error': f'Failed to calculate shipping: {str(e)}'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
 def verify_payment(request):
     """
     Verify Razorpay payment signature
@@ -368,6 +434,9 @@ def verify_payment(request):
     try:
         import razorpay
         from django.conf import settings
+        import logging
+        
+        logger = logging.getLogger(__name__)
         
         # Initialize Razorpay client
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
@@ -403,10 +472,36 @@ def verify_payment(request):
         if payment_verified:
             order_data = request.data.get('order_data', {})
             
-            # Update order data with payment info
+            # Calculate shipping based on configuration
+            from .models import ShippingConfig
+            from decimal import Decimal
+            
+            shipping_config = ShippingConfig.load()
+            
+            # Calculate total weight from items
+            total_weight = Decimal('0.0')
+            for item_data in order_data.get('items', []):
+                try:
+                    from .models import Product
+                    product = Product.objects.get(id=item_data['product'])
+                    quantity = item_data.get('quantity', 1)
+                    if product.weight:
+                        total_weight += product.weight * quantity
+                except:
+                    pass
+            
+            # Default to 1kg if no weight specified
+            if total_weight == 0:
+                total_weight = Decimal('1.0')
+            
+            # Calculate shipping
+            subtotal = Decimal(str(order_data.get('subtotal', 0)))
+            shipping_charge = shipping_config.calculate_shipping(total_weight, subtotal)
+            
+            # Update order data with payment info and calculated shipping
             order_data['payment_method'] = 'razorpay'
             order_data['payment_status'] = True
-            order_data['shipping_charge'] = 0  # Shipping is 0 for now
+            order_data['shipping_charge'] = shipping_charge
             
             # Create order
             from .serializers import OrderSerializer
@@ -419,12 +514,36 @@ def verify_payment(request):
                 order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
                 order.save()
                 
+                # Send email confirmations asynchronously using Celery
+                email_sent = False
+                admin_email_sent = False
+                
+                try:
+                    from .tasks import send_product_order_confirmation_email, send_product_order_admin_notification
+                    
+                    # Queue customer confirmation email
+                    send_product_order_confirmation_email.delay(order.id)
+                    email_sent = True
+                    logger.info(f"Customer confirmation email queued for order {order.order_number}")
+                except Exception as email_error:
+                    logger.error(f"Error queueing customer email for order {order.order_number}: {str(email_error)}")
+                
+                try:
+                    # Queue admin notification email
+                    send_product_order_admin_notification.delay(order.id)
+                    admin_email_sent = True
+                    logger.info(f"Admin notification email queued for order {order.order_number}")
+                except Exception as email_error:
+                    logger.error(f"Error queueing admin email for order {order.order_number}: {str(email_error)}")
+                
                 return Response({
                     'success': True,
                     'message': 'Payment verified and order created successfully',
                     'order_number': order.order_number,
                     'order_id': order.id,
-                    'payment_id': razorpay_payment_id
+                    'payment_id': razorpay_payment_id,
+                    'email_queued': email_sent,
+                    'admin_notified': admin_email_sent
                 }, status=status.HTTP_201_CREATED)
             else:
                 return Response({
@@ -437,4 +556,7 @@ def verify_payment(request):
         return Response({
             'error': f'Payment verification failed: {str(e)}'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,12 +21,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-@^y*w!pkb*pza+bqln*u+jr-q+15)8h$12ynk&%o1xdt--&^)='
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-@^y*w!pkb*pza+bqln*u+jr-q+15)8h$12ynk&%o1xdt--&^)=')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -49,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # WhiteNoise for static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',  # CORS middleware
     'django.middleware.common.CommonMiddleware',
@@ -126,12 +128,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Only include paths that exist
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-    BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
 ]
+
+# Add frontend build paths only if they exist
+if (BASE_DIR / 'frontend' / 'build').exists():
+    STATICFILES_DIRS.extend([
+        BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
+        BASE_DIR / 'frontend' / 'build',  # React build root (for images, css folders)
+    ])
+
+# WhiteNoise configuration
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploaded images)
 MEDIA_URL = 'media/'
@@ -172,8 +185,34 @@ COMPANY_ADDRESS = 'Pottery Studio, India'
 
 # Razorpay Configuration
 # Get these from: https://dashboard.razorpay.com/app/keys
-RAZORPAY_KEY_ID = 'your_razorpay_key_id'  # Replace with your actual key
-RAZORPAY_KEY_SECRET = 'your_razorpay_key_secret'  # Replace with your actual secret
+# IMPORTANT: Never commit real API keys to version control!
+# Set these in your .env file (create from .env.example)
+# TODO: Move these credentials to .env file before pushing to git!
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S1lAGZcFMuNU0Y')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'AI3Nxw061P2yE5nTj95yaG8S')
+
+
+# Celery Configuration
+# Redis as message broker for background tasks
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
+
+# Celery Configuration
+# Redis as message broker for background tasks
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
 
 # Celery Configuration
 # Redis as message broker for background tasks

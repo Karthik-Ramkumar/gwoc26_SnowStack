@@ -22,6 +22,8 @@
     text-align: center;
     padding: 0 20px;
     position: relative;
+    transform: scale(1.5);
+    transform-origin: center;
 
     background-size: cover;
     background-position: center;
@@ -98,7 +100,7 @@
 /* Beat 1: Introduction - slight left tilt to start the pattern */
 .beat-1 {
     z-index: 1;
-    transform: rotate(-1deg);
+    transform: rotate(-0.2deg);
     /* This ensures text isn't too crooked but the edge feels organic against "What is Basho" */
 }
 
@@ -142,10 +144,10 @@
 }
 
 
-/* Beat 2 rotates slightly left (more pronounced) */
+/* Beat 2 rotates slightly right */
 .beat-2 {
     z-index: 2;
-    transform: rotate(-1.5deg);
+    transform: rotate(0.2deg);
     /* Since we deleted the clip-path, we just rely on the rotation and shadow for the messiness, 
        plus a simple border-radius or just the rotation itself implies the paper stack.
        The SVG mask data URI is complex to get right without external assets. 
@@ -153,17 +155,17 @@
     */
 }
 
-/* Beat 3 rotates slightly right */
+/* Beat 3 rotates slightly left */
 .beat-3 {
     z-index: 3;
-    transform: rotate(1.2deg);
+    transform: rotate(-0.2deg);
     color: #f0e6d2;
 }
 
-/* Beat 4 rotates back left to finish the rhythm */
+/* Beat 4 rotates back right to finish the rhythm */
 .beat-4 {
     z-index: 4;
-    transform: rotate(-1.5deg);
+    transform: rotate(0.2deg);
     /* Increased from -1.2deg to matches Beat 2 */
     color: #f0e6d2;
     /* Match Beat 3 text color */
