@@ -759,7 +759,30 @@
     }
 
     .testimonial-quote {
-        font-size: 1.3rem;
+        font-size: 0.85rem;
+        line-height: 1.5;
+        margin-bottom: 1rem;
+    }
+
+    .testimonial-quote::before {
+        font-size: 2rem !important;
+        margin-bottom: 0.5rem;
+    }
+
+    .testimonial-slide {
+        padding: 0 15px;
+    }
+
+    .testimonial-author {
+        font-size: 0.75rem;
+    }
+
+    .testimonials-carousel {
+        max-width: 100%;
+    }
+
+    .media-testimonials {
+        padding: 40px 20px;
     }
 
     .media-gallery,
@@ -767,5 +790,14 @@
     .media-videos,
     .media-experiences {
         padding: 60px 20px;
+    }
+
+    .dome-gallery-wrapper {
+        height: min(60vh, 500px);
+        min-height: 350px;
+    }
+
+    .dome-header h2 {
+        font-size: 1.8rem !important;
     }
 }
