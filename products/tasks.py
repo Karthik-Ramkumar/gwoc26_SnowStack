@@ -340,6 +340,162 @@ BASHO BY SHIVANGI
 
 
 # ====================
+# CORPORATE INQUIRY EMAIL TASKS
+# ====================
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def send_corporate_inquiry_customer_email(self, inquiry_number, company_name, contact_name, 
+                                          email, service_type_display):
+    """
+    Send confirmation email to customer about their corporate inquiry
+    
+    Args:
+        inquiry_number: Inquiry number
+        company_name: Company name
+        contact_name: Contact person name
+        email: Customer email
+        service_type_display: Human-readable service type
+    """
+    try:
+        # Context for template
+        context = {
+            'inquiry_number': inquiry_number,
+            'company_name': company_name,
+            'contact_name': contact_name,
+            'service_type': service_type_display,
+            'company_email': settings.COMPANY_EMAIL,
+            'company_phone': settings.COMPANY_PHONE,
+        }
+        
+        # Render HTML template
+        html_content = render_to_string('emails/corporate_customer_confirmation.html', context)
+        
+        # Plain text fallback
+        text_content = f'''
+Dear {contact_name},
+
+Thank you for your corporate inquiry at Basho By Shivangi!
+
+Inquiry Number: {inquiry_number}
+Company: {company_name}
+Service Type: {service_type_display}
+
+We have received your inquiry and will contact you within 24 hours to discuss your project in detail.
+
+If you have any immediate questions, please contact us at:
+Email: {settings.COMPANY_EMAIL}
+Phone: {settings.COMPANY_PHONE}
+
+With heartfelt appreciation,
+BASHO BY SHIVANGI
+        '''
+        
+        # Create email
+        subject = f'Thank You for Your Inquiry - {inquiry_number}'
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.COMPANY_EMAIL,
+            to=[email]
+        )
+        msg.attach_alternative(html_content, "text/html")
+
+        # Attach image with Content-ID
+        import os
+        from email.mime.image import MIMEImage
+        
+        image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        if os.path.exists(image_path):
+            with open(image_path, 'rb') as f:
+                img = MIMEImage(f.read())
+                img.add_header('Content-ID', '<header_image>')
+                img.add_header('Content-Disposition', 'inline', filename='header.jpg')
+                msg.attach(img)
+        
+        msg.send(fail_silently=False)
+        
+        return f"Customer email sent successfully to {email} for inquiry {inquiry_number}"
+        
+    except Exception as exc:
+        # Retry the task if it fails
+        raise self.retry(exc=exc)
+
+
+@shared_task(bind=True, max_retries=3, default_retry_delay=60)
+def send_corporate_inquiry_admin_notification(self, inquiry_id, inquiry_number, company_name, 
+                                               contact_name, email, phone, service_type_display,
+                                               team_size, budget_range, message):
+    """
+    Send HTML email notification to admin about new corporate inquiry
+    
+    Args:
+        inquiry_id: CorporateInquiry database ID
+        inquiry_number: Inquiry number
+        company_name: Company name
+        contact_name: Contact person name
+        email: Customer email
+        phone: Customer phone
+        service_type_display: Human-readable service type
+        team_size: Team size or participant count
+        budget_range: Budget range
+        message: Inquiry message
+    """
+    try:
+        # Context for template
+        context = {
+            'inquiry_number': inquiry_number,
+            'company_name': company_name,
+            'contact_name': contact_name,
+            'customer_email': email,
+            'customer_phone': phone,
+            'service_type': service_type_display,
+            'team_size': team_size,
+            'budget_range': budget_range,
+            'message': message,
+            'admin_url': f'http://127.0.0.1:8000/admin/products/corporateinquiry/{inquiry_id}/',
+        }
+        
+        # Render HTML template
+        html_content = render_to_string('emails/corporate_admin_notification.html', context)
+        
+        # Plain text fallback
+        text_content = f'''
+New Corporate Inquiry Received
+
+Inquiry Number: {inquiry_number}
+Company: {company_name}
+Contact: {contact_name}
+Email: {email}
+Phone: {phone}
+Service Type: {service_type_display}
+Team Size: {team_size}
+Budget Range: {budget_range}
+
+Message:
+{message}
+
+Login to admin panel: http://127.0.0.1:8000/admin/products/corporateinquiry/{inquiry_id}/
+        '''
+        
+        # Create email
+        subject = f'🏢 New Corporate Inquiry: {inquiry_number}'
+        msg = EmailMultiAlternatives(
+            subject=subject,
+            body=text_content,
+            from_email=settings.COMPANY_EMAIL,
+            to=[settings.COMPANY_EMAIL]
+        )
+        msg.attach_alternative(html_content, "text/html")
+        msg.send(fail_silently=False)
+        
+        return f"Admin email sent successfully for inquiry {inquiry_number}"
+        
+    except Exception as exc:
+        # Retry the task if it fails
+        raise self.retry(exc=exc)
+
+
+# ====================
 # PRODUCT ORDER EMAIL TASKS
 # ====================
 

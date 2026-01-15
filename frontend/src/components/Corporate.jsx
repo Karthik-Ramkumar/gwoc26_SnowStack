@@ -29,18 +29,32 @@ function Corporate() {
     setMessage('');
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      setMessage('Thank you! We\'ll get back to you within 24 hours.');
-      setFormData({
-        company_name: '',
-        contact_name: '',
-        email: '',
-        phone: '',
-        service_type: '',
-        team_size: '',
-        message: '',
-        budget_range: ''
+      const response = await fetch('/api/products/corporate-inquiries/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
       });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setMessage(`Thank you! We'll get back to you within 24 hours. Your inquiry number is: ${data.inquiry_number}`);
+        setFormData({
+          company_name: '',
+          contact_name: '',
+          email: '',
+          phone: '',
+          service_type: '',
+          team_size: '',
+          message: '',
+          budget_range: ''
+        });
+      } else {
+        setMessage('Error submitting inquiry. Please try again.');
+        console.error('API error:', data);
+      }
     } catch (error) {
       setMessage('Error submitting inquiry. Please try again.');
       console.error('Inquiry submission error:', error);
@@ -132,42 +146,42 @@ function Corporate() {
       <section className="difference-section">
         {/* Pottery decorations for artisanal section */}
         <svg className="pottery-decor pottery-decor-1" width="110" height="150" viewBox="0 0 110 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M38 18 Q33 38, 38 58 L38 115 Q38 135, 55 135 Q72 135, 72 115 L72 58 Q77 38, 72 18 Q63 13, 55 13 Q47 13, 38 18 Z" stroke="#C85428" strokeWidth="2" opacity="0.15" fill="none"/>
-          <ellipse cx="55" cy="18" rx="17" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.12" fill="none"/>
+          <path d="M38 18 Q33 38, 38 58 L38 115 Q38 135, 55 135 Q72 135, 72 115 L72 58 Q77 38, 72 18 Q63 13, 55 13 Q47 13, 38 18 Z" stroke="#C85428" strokeWidth="2" opacity="0.15" fill="none" />
+          <ellipse cx="55" cy="18" rx="17" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.12" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-2" width="90" height="110" viewBox="0 0 90 110" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M18 38 Q18 75, 45 92 Q72 75, 72 38" stroke="#652810" strokeWidth="2" opacity="0.16" fill="none"/>
-          <ellipse cx="45" cy="38" rx="27" ry="7" stroke="#652810" strokeWidth="1.5" opacity="0.13" fill="none"/>
+          <path d="M18 38 Q18 75, 45 92 Q72 75, 72 38" stroke="#652810" strokeWidth="2" opacity="0.16" fill="none" />
+          <ellipse cx="45" cy="38" rx="27" ry="7" stroke="#652810" strokeWidth="1.5" opacity="0.13" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-3" width="95" height="130" viewBox="0 0 95 130" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M28 18 L28 95 Q28 115, 47 115 Q66 115, 66 95 L66 18" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none"/>
-          <ellipse cx="47" cy="18" rx="19" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none"/>
+          <path d="M28 18 L28 95 Q28 115, 47 115 Q66 115, 66 95 L66 18" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none" />
+          <ellipse cx="47" cy="18" rx="19" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-4" width="100" height="120" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 28 Q25 48, 30 68 L30 95 Q30 105, 50 105 Q70 105, 70 95 L70 68 Q75 48, 70 28" stroke="#652810" strokeWidth="2" opacity="0.15" fill="none"/>
-          <ellipse cx="50" cy="28" rx="20" ry="6" stroke="#652810" strokeWidth="1.5" opacity="0.12" fill="none"/>
+          <path d="M30 28 Q25 48, 30 68 L30 95 Q30 105, 50 105 Q70 105, 70 95 L70 68 Q75 48, 70 28" stroke="#652810" strokeWidth="2" opacity="0.15" fill="none" />
+          <ellipse cx="50" cy="28" rx="20" ry="6" stroke="#652810" strokeWidth="1.5" opacity="0.12" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-5" width="80" height="105" viewBox="0 0 80 105" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M23 28 L23 68 Q23 83, 40 83 Q57 83, 57 68 L57 28" stroke="#C85428" strokeWidth="1.8" opacity="0.13" fill="none"/>
-          <ellipse cx="40" cy="28" rx="17" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none"/>
+          <path d="M23 28 L23 68 Q23 83, 40 83 Q57 83, 57 68 L57 28" stroke="#C85428" strokeWidth="1.8" opacity="0.13" fill="none" />
+          <ellipse cx="40" cy="28" rx="17" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-6" width="88" height="118" viewBox="0 0 88 118" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M28 38 Q26 53, 28 68 L28 88 Q28 98, 44 98 Q60 98, 60 88 L60 68 Q62 53, 60 38" stroke="#652810" strokeWidth="2" opacity="0.16" fill="none"/>
-          <ellipse cx="44" cy="38" rx="16" ry="6" stroke="#652810" strokeWidth="1.5" opacity="0.13" fill="none"/>
+          <path d="M28 38 Q26 53, 28 68 L28 88 Q28 98, 44 98 Q60 98, 60 88 L60 68 Q62 53, 60 38" stroke="#652810" strokeWidth="2" opacity="0.16" fill="none" />
+          <ellipse cx="44" cy="38" rx="16" ry="6" stroke="#652810" strokeWidth="1.5" opacity="0.13" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-7" width="98" height="138" viewBox="0 0 98 138" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M33 23 L33 105 Q33 120, 49 120 Q65 120, 65 105 L65 23" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none"/>
-          <ellipse cx="49" cy="23" rx="16" ry="6" stroke="#C85428" strokeWidth="1.5" opacity="0.12" fill="none"/>
+          <path d="M33 23 L33 105 Q33 120, 49 120 Q65 120, 65 105 L65 23" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none" />
+          <ellipse cx="49" cy="23" rx="16" ry="6" stroke="#C85428" strokeWidth="1.5" opacity="0.12" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-8" width="92" height="125" viewBox="0 0 92 125" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M34 20 Q29 40, 34 60 L34 95 Q34 110, 46 110 Q58 110, 58 95 L58 60 Q63 40, 58 20 Q52 15, 46 15 Q40 15, 34 20 Z" stroke="#652810" strokeWidth="2" opacity="0.15" fill="none"/>
-          <ellipse cx="46" cy="20" rx="12" ry="5" stroke="#652810" strokeWidth="1.5" opacity="0.12" fill="none"/>
+          <path d="M34 20 Q29 40, 34 60 L34 95 Q34 110, 46 110 Q58 110, 58 95 L58 60 Q63 40, 58 20 Q52 15, 46 15 Q40 15, 34 20 Z" stroke="#652810" strokeWidth="2" opacity="0.15" fill="none" />
+          <ellipse cx="46" cy="20" rx="12" ry="5" stroke="#652810" strokeWidth="1.5" opacity="0.12" fill="none" />
         </svg>
         <svg className="pottery-decor pottery-decor-9" width="85" height="112" viewBox="0 0 85 112" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M30 25 Q28 40, 30 55 L30 80 Q30 90, 42 90 Q55 90, 55 80 L55 55 Q57 40, 55 25" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none"/>
-          <ellipse cx="42" cy="25" rx="13" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none"/>
+          <path d="M30 25 Q28 40, 30 55 L30 80 Q30 90, 42 90 Q55 90, 55 80 L55 55 Q57 40, 55 25" stroke="#C85428" strokeWidth="2" opacity="0.14" fill="none" />
+          <ellipse cx="42" cy="25" rx="13" ry="5" stroke="#C85428" strokeWidth="1.5" opacity="0.11" fill="none" />
         </svg>
-        
+
         <div className="container-new">
           <div className="difference-header">
             <h2 className="section-title-new">The Artisanal Difference</h2>
@@ -206,56 +220,56 @@ function Corporate() {
         {/* Pottery-shaped decorative SVG elements */}
         <svg className="japanese-decor japanese-decor-1" width="120" height="160" viewBox="0 0 120 160" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Vase shape */}
-          <path d="M40 20 Q35 40, 40 60 L40 120 Q40 140, 60 140 Q80 140, 80 120 L80 60 Q85 40, 80 20 Q70 15, 60 15 Q50 15, 40 20 Z" stroke="#C85428" strokeWidth="2.5" opacity="0.25" fill="none"/>
-          <ellipse cx="60" cy="20" rx="20" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.2" fill="none"/>
+          <path d="M40 20 Q35 40, 40 60 L40 120 Q40 140, 60 140 Q80 140, 80 120 L80 60 Q85 40, 80 20 Q70 15, 60 15 Q50 15, 40 20 Z" stroke="#C85428" strokeWidth="2.5" opacity="0.25" fill="none" />
+          <ellipse cx="60" cy="20" rx="20" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.2" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-2" width="100" height="120" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Bowl shape */}
-          <path d="M20 40 Q20 80, 50 100 Q80 80, 80 40" stroke="#652810" strokeWidth="2.5" opacity="0.28" fill="none"/>
-          <ellipse cx="50" cy="40" rx="30" ry="8" stroke="#652810" strokeWidth="2" opacity="0.22" fill="none"/>
+          <path d="M20 40 Q20 80, 50 100 Q80 80, 80 40" stroke="#652810" strokeWidth="2.5" opacity="0.28" fill="none" />
+          <ellipse cx="50" cy="40" rx="30" ry="8" stroke="#652810" strokeWidth="2" opacity="0.22" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-3" width="90" height="140" viewBox="0 0 90 140" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Narrow pot */}
-          <path d="M30 20 L30 100 Q30 120, 45 120 Q60 120, 60 100 L60 20" stroke="#C85428" strokeWidth="2.5" opacity="0.22" fill="none"/>
-          <ellipse cx="45" cy="20" rx="15" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.18" fill="none"/>
+          <path d="M30 20 L30 100 Q30 120, 45 120 Q60 120, 60 100 L60 20" stroke="#C85428" strokeWidth="2.5" opacity="0.22" fill="none" />
+          <ellipse cx="45" cy="20" rx="15" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.18" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-4" width="110" height="130" viewBox="0 0 110 130" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Wide jar */}
-          <path d="M35 30 Q30 50, 35 70 L35 100 Q35 110, 55 110 Q75 110, 75 100 L75 70 Q80 50, 75 30" stroke="#652810" strokeWidth="2.5" opacity="0.25" fill="none"/>
-          <ellipse cx="55" cy="30" rx="20" ry="6" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none"/>
+          <path d="M35 30 Q30 50, 35 70 L35 100 Q35 110, 55 110 Q75 110, 75 100 L75 70 Q80 50, 75 30" stroke="#652810" strokeWidth="2.5" opacity="0.25" fill="none" />
+          <ellipse cx="55" cy="30" rx="20" ry="6" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-5" width="85" height="110" viewBox="0 0 85 110" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Small cup */}
-          <path d="M25 30 L25 70 Q25 85, 42 85 Q60 85, 60 70 L60 30" stroke="#C85428" strokeWidth="2.2" opacity="0.2" fill="none"/>
-          <ellipse cx="42" cy="30" rx="18" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.16" fill="none"/>
+          <path d="M25 30 L25 70 Q25 85, 42 85 Q60 85, 60 70 L60 30" stroke="#C85428" strokeWidth="2.2" opacity="0.2" fill="none" />
+          <ellipse cx="42" cy="30" rx="18" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.16" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-6" width="95" height="125" viewBox="0 0 95 125" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Teapot shape */}
-          <path d="M30 40 Q28 55, 30 70 L30 90 Q30 100, 47 100 Q65 100, 65 90 L65 70 Q67 55, 65 40" stroke="#652810" strokeWidth="2.5" opacity="0.24" fill="none"/>
-          <ellipse cx="47" cy="40" rx="18" ry="6" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none"/>
-          <path d="M65 55 Q75 55, 75 65 Q75 75, 65 75" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none"/>
+          <path d="M30 40 Q28 55, 30 70 L30 90 Q30 100, 47 100 Q65 100, 65 90 L65 70 Q67 55, 65 40" stroke="#652810" strokeWidth="2.5" opacity="0.24" fill="none" />
+          <ellipse cx="47" cy="40" rx="18" ry="6" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none" />
+          <path d="M65 55 Q75 55, 75 65 Q75 75, 65 75" stroke="#652810" strokeWidth="2" opacity="0.2" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-7" width="105" height="145" viewBox="0 0 105 145" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Tall cylinder */}
-          <path d="M35 25 L35 110 Q35 125, 52 125 Q70 125, 70 110 L70 25" stroke="#C85428" strokeWidth="2.5" opacity="0.23" fill="none"/>
-          <ellipse cx="52" cy="25" rx="18" ry="6" stroke="#C85428" strokeWidth="2" opacity="0.19" fill="none"/>
+          <path d="M35 25 L35 110 Q35 125, 52 125 Q70 125, 70 110 L70 25" stroke="#C85428" strokeWidth="2.5" opacity="0.23" fill="none" />
+          <ellipse cx="52" cy="25" rx="18" ry="6" stroke="#C85428" strokeWidth="2" opacity="0.19" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-9" width="100" height="135" viewBox="0 0 100 135" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Amphora */}
-          <path d="M38 25 Q33 45, 38 65 L38 100 Q38 115, 50 115 Q62 115, 62 100 L62 65 Q67 45, 62 25 Q56 20, 50 20 Q44 20, 38 25 Z" stroke="#C85428" strokeWidth="2.5" opacity="0.24" fill="none"/>
-          <ellipse cx="50" cy="25" rx="12" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.2" fill="none"/>
+          <path d="M38 25 Q33 45, 38 65 L38 100 Q38 115, 50 115 Q62 115, 62 100 L62 65 Q67 45, 62 25 Q56 20, 50 20 Q44 20, 38 25 Z" stroke="#C85428" strokeWidth="2.5" opacity="0.24" fill="none" />
+          <ellipse cx="50" cy="25" rx="12" ry="5" stroke="#C85428" strokeWidth="2" opacity="0.2" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-10" width="95" height="115" viewBox="0 0 95 115" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Rounded jar */}
-          <path d="M32 30 Q30 45, 32 60 L32 85 Q32 95, 47 95 Q63 95, 63 85 L63 60 Q65 45, 63 30" stroke="#652810" strokeWidth="2.5" opacity="0.26" fill="none"/>
-          <ellipse cx="47" cy="30" rx="16" ry="6" stroke="#652810" strokeWidth="2" opacity="0.21" fill="none"/>
+          <path d="M32 30 Q30 45, 32 60 L32 85 Q32 95, 47 95 Q63 95, 63 85 L63 60 Q65 45, 63 30" stroke="#652810" strokeWidth="2.5" opacity="0.26" fill="none" />
+          <ellipse cx="47" cy="30" rx="16" ry="6" stroke="#652810" strokeWidth="2" opacity="0.21" fill="none" />
         </svg>
         <svg className="japanese-decor japanese-decor-11" width="88" height="128" viewBox="0 0 88 128" fill="none" xmlns="http://www.w3.org/2000/svg">
           {/* Sake bottle */}
-          <path d="M36 22 L36 30 Q34 45, 36 60 L36 95 Q36 110, 44 110 Q52 110, 52 95 L52 60 Q54 45, 52 30 L52 22" stroke="#C85428" strokeWidth="2.5" opacity="0.23" fill="none"/>
-          <ellipse cx="44" cy="22" rx="8" ry="4" stroke="#C85428" strokeWidth="2" opacity="0.19" fill="none"/>
+          <path d="M36 22 L36 30 Q34 45, 36 60 L36 95 Q36 110, 44 110 Q52 110, 52 95 L52 60 Q54 45, 52 30 L52 22" stroke="#C85428" strokeWidth="2.5" opacity="0.23" fill="none" />
+          <ellipse cx="44" cy="22" rx="8" ry="4" stroke="#C85428" strokeWidth="2" opacity="0.19" fill="none" />
         </svg>
-        
+
         {/* DESCRIPTION SECTION - Above inquiry form */}
         <section className="workshops-description-section" style={{ paddingTop: '2rem', paddingBottom: '2rem', background: '#F5EFE7', margin: '0' }}>
           <div className="workshops-description-center">
@@ -264,7 +278,7 @@ function Corporate() {
             </p>
           </div>
         </section>
-        
+
         <div className="container-new" style={{ marginTop: '4rem' }}>
           <div className="inquiry-card">
             {/* Form Side */}
