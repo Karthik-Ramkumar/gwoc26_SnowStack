@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../context/ToastContext';
 import { X, AlertCircle } from 'lucide-react';
 import './Cart.css';
 import './Checkout.css';
@@ -10,6 +11,7 @@ function Checkout() {
   const navigate = useNavigate();
   const { cart, getCartTotal, clearCart } = useCart();
   const { currentUser } = useAuth();
+  const { showError, showSuccess } = useToast();
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -178,6 +180,8 @@ function Checkout() {
       });
 
       const orderData = await orderResponse.json();
+      
+      console.log('Order creation response:', orderData);
 
       if (!orderData.success) {
         throw new Error(orderData.error || 'Failed to create payment order');
@@ -190,10 +194,10 @@ function Checkout() {
         currency: orderData.currency,
         name: 'Basho By Shivangi',
         description: 'Product Purchase',
-        order_id: orderData.order_id,
+        order_id: orderData.orderId,  // Changed from order_id to orderId
         handler: async function (response) {
           // Step 3: Verify payment and create order
-          await handlePaymentSuccess(response, orderData.order_id);
+          await handlePaymentSuccess(response, orderData.orderId);  // Changed from order_id to orderId
         },
         prefill: {
           name: customerName,
@@ -211,17 +215,32 @@ function Checkout() {
         modal: {
           ondismiss: function () {
             setIsProcessing(false);
-            setPaymentError('Payment was cancelled. Please try again.');
+            showError('Payment cancelled by user');
+          },
+          // Handle payment failures
+          onerror: function (error) {
+            setIsProcessing(false);
+            console.error('Razorpay payment error:', error);
+            showError('Payment failed. Please try again or use a different payment method.');
           }
         }
       };
 
       const razorpay = new window.Razorpay(options);
+      
+      // Handle errors during Razorpay initialization
+      razorpay.on('payment.failed', function (response) {
+        setIsProcessing(false);
+        console.error('Payment failed:', response.error);
+        const errorMsg = response.error.description || 'Payment failed. Please try again.';
+        showError(errorMsg);
+      });
+      
       razorpay.open();
 
     } catch (error) {
       console.error('Error initiating payment:', error);
-      setPaymentError(error.message || 'An error occurred while initiating payment. Please try again.');
+      showError(error.message || 'Failed to initiate payment. Please try again.');
       setIsProcessing(false);
     }
   };
@@ -274,16 +293,30 @@ function Checkout() {
 
       const result = await verifyResponse.json();
 
+      console.log('Payment verification response:', result);
+
       if (result.success) {
-        alert(`Payment successful! Order Number: ${result.order_number}`);
-        clearCart(); // Clear the cart
-        navigate('/'); // Redirect to home
+        // Show success message with order details
+        const successMessage = `Payment successful! Order #${result.order_number}. Confirmation email sent to ${formData.email}`;
+        showSuccess(successMessage);
+        
+        // Clear the cart
+        clearCart();
+        
+        // Redirect to home after 2 seconds to let user see the success message
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
       } else {
+        console.error('Payment verification failed:', result);
         throw new Error(result.error || 'Payment verification failed');
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
-      setPaymentError('Payment successful but order creation failed. Please contact support with your payment ID: ' + paymentResponse.razorpay_payment_id);
+      const errorMessage = paymentResponse?.razorpay_payment_id 
+        ? `Payment received but order creation failed. Please contact support with Payment ID: ${paymentResponse.razorpay_payment_id}`
+        : 'Payment verification failed. Please try again or contact support.';
+      showError(errorMessage);
     } finally {
       setIsProcessing(false);
     }
@@ -325,7 +358,7 @@ function Checkout() {
       <div className="checkout-page">
         {/* Hero Section */}
         <section className="checkout-hero" style={{
-          backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/images/gallery/checkout.jpg')",
+          backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/static/images/gallery/checkout.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative'

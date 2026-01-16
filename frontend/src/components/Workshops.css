@@ -1017,7 +1017,7 @@
 .infinite-scroll-track {
   display: flex;
   gap: 30px;
-  animation: scroll-left 25s linear infinite;
+  animation: scroll-left 40 s linear infinite;
   width: fit-content;
 }
 

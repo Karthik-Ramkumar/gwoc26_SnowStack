@@ -128,11 +128,11 @@ body {
   min-height: 36px;
   border-radius: 50%;
   background: #652810;
-  color: white;
+  color: #ffffff !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   flex-shrink: 0;
@@ -141,6 +141,10 @@ body {
   border: 2px solid #652810;
   transition: all 0.3s ease;
   box-sizing: border-box;
+  line-height: 36px;
+  text-align: center;
+  padding: 0;
+  margin: 0;
 }
 
 .user-avatar:hover {

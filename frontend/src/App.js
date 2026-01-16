@@ -17,6 +17,7 @@ import Signup from "./components/Signup";
 import Profile from "./components/Profile";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 
 // Component to scroll to top on route change
 function ScrollToTop() {
@@ -34,26 +35,28 @@ function App() {
     <Router>
       <AuthProvider>
         <CartProvider>
-          <div className="App">
-            <ScrollToTop />
-            <Navigation />
+          <ToastProvider>
+            <div className="App">
+              <ScrollToTop />
+              <Navigation />
 
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/workshops" element={<Workshops />} />
-              <Route path="/studio" element={<Studio />} />
-              <Route path="/corporate" element={<Corporate />} />
-              <Route path="/media" element={<Media />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/profile" element={<Profile />} />
-            </Routes>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/workshops" element={<Workshops />} />
+                <Route path="/studio" element={<Studio />} />
+                <Route path="/corporate" element={<Corporate />} />
+                <Route path="/media" element={<Media />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/profile" element={<Profile />} />
+              </Routes>
 
-            <Footer />
-          </div>
+              <Footer />
+            </div>
+          </ToastProvider>
         </CartProvider>
       </AuthProvider>
     </Router>

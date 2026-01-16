@@ -550,3 +550,238 @@
         gap: 4px;
     }
 }
+
+/* ========== ORDER TIMELINE ENHANCEMENTS ========== */
+.order-card-wrapper {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.order-row {
+    cursor: pointer;
+}
+
+.order-row.expanded {
+    background: rgba(252, 249, 245, 0.7);
+}
+
+.order-number {
+    font-weight: 600;
+    color: #652810;
+}
+
+/* Order Timeline Container */
+.order-timeline-container {
+    padding: 24px;
+    background: rgba(252, 249, 245, 0.5);
+    border-top: 1px solid rgba(101, 40, 16, 0.08);
+}
+
+.order-timeline {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    position: relative;
+    margin-bottom: 32px;
+    padding: 0 20px;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    flex: 1;
+}
+
+.timeline-dot {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 3px solid;
+    background: #FFFFFF;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.timeline-dot.completed {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+}
+
+.timeline-dot.active {
+    background: #652810;
+    border-color: #652810;
+    color: #FFFFFF;
+    box-shadow: 0 4px 16px rgba(101, 40, 16, 0.4);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.timeline-dot.pending {
+    background: #FFFFFF;
+    border-color: #D1D5DB;
+    color: #9CA3AF;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 4px 16px rgba(101, 40, 16, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 24px rgba(101, 40, 16, 0.6);
+    }
+}
+
+.timeline-icon {
+    display: block;
+}
+
+.timeline-label {
+    margin-top: 12px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #2A1810;
+    text-align: center;
+}
+
+.timeline-line {
+    position: absolute;
+    top: 24px;
+    left: calc(50% + 24px);
+    right: calc(-50% + 24px);
+    height: 3px;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.timeline-line.completed {
+    background: #16a34a;
+}
+
+.timeline-line.pending {
+    background: #D1D5DB;
+}
+
+/* Cancelled Order Notice */
+.order-cancelled-notice {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.cancelled-icon {
+    font-size: 32px;
+    color: #dc2626;
+}
+
+.order-cancelled-notice strong {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1.1rem;
+    color: #dc2626;
+    margin-bottom: 4px;
+}
+
+.order-cancelled-notice p {
+    margin: 0;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    color: #7B6F63;
+}
+
+/* Order Details Expanded */
+.order-details-expanded {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(101, 40, 16, 0.04);
+}
+
+.order-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(101, 40, 16, 0.05);
+    font-family: 'Work Sans', sans-serif;
+}
+
+.order-detail-row:last-of-type {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #652810;
+}
+
+.detail-value {
+    font-size: 0.9rem;
+    color: #2A1810;
+    text-align: right;
+    flex: 1;
+    margin-left: 20px;
+}
+
+.tracking-number {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: #2563eb;
+}
+
+.order-items-list {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid rgba(101, 40, 16, 0.08);
+}
+
+.order-items-list h4 {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #652810;
+    margin: 0 0 16px 0;
+}
+
+.order-item-detail {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(101, 40, 16, 0.05);
+}
+
+.order-item-detail:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    flex: 1;
+    color: #2A1810;
+}
+
+.item-qty {
+    color: #7B6F63;
+    margin: 0 16px;
+}
+
+.item-price {
+    font-weight: 600;
+    color: #652810;
+}

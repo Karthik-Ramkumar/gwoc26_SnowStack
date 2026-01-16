@@ -10,6 +10,7 @@ function Profile() {
     const { orders, loading: ordersLoading } = useOrders();
     const navigate = useNavigate();
     const [imageError, setImageError] = React.useState(false);
+    const [expandedOrder, setExpandedOrder] = React.useState(null);
 
     const handleLogout = async () => {
         try {
@@ -67,6 +68,26 @@ function Profile() {
             default:
                 return 'status-pending';
         }
+    };
+
+    // Get order status timeline data
+    const getOrderTimeline = (currentStatus) => {
+        const statuses = [
+            { key: 'confirmed', label: 'Confirmed', icon: '✓' },
+            { key: 'processing', label: 'Processing', icon: '⚙' },
+            { key: 'shipped', label: 'Shipped', icon: '📦' },
+            { key: 'delivered', label: 'Delivered', icon: '✓' }
+        ];
+
+        const statusOrder = ['pending', 'confirmed', 'processing', 'shipped', 'delivered'];
+        const currentIndex = statusOrder.indexOf(currentStatus?.toLowerCase());
+
+        return statuses.map((status, index) => ({
+            ...status,
+            isCompleted: index < currentIndex,
+            isActive: statusOrder[currentIndex] === status.key,
+            isCancelled: currentStatus?.toLowerCase() === 'cancelled'
+        }));
     };
 
     return (
@@ -176,44 +197,112 @@ function Profile() {
                         ) : (
                             <div className="orders-list">
                                 {orders.map((order) => (
-                                    <div key={order.orderId} className="order-row">
-                                        <div className="order-items-preview">
-                                            {order.items.slice(0, 3).map((item, index) => (
-                                                <div
-                                                    key={index}
-                                                    className="order-item-thumb"
-                                                    style={{ zIndex: 3 - index }}
-                                                >
-                                                    {item.image ? (
-                                                        <img src={item.image} alt={item.name} />
-                                                    ) : (
-                                                        <div className="order-item-placeholder">
-                                                            <Package size={20} />
+                                    <div key={order.orderId} className="order-card-wrapper">
+                                        <div 
+                                            className={`order-row ${expandedOrder === order.orderId ? 'expanded' : ''}`}
+                                            onClick={() => setExpandedOrder(expandedOrder === order.orderId ? null : order.orderId)}
+                                        >
+                                            <div className="order-items-preview">
+                                                {order.items.slice(0, 3).map((item, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="order-item-thumb"
+                                                        style={{ zIndex: 3 - index }}
+                                                    >
+                                                        {item.image ? (
+                                                            <img src={item.image} alt={item.name} />
+                                                        ) : (
+                                                            <div className="order-item-placeholder">
+                                                                <Package size={20} />
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                                {order.items.length > 3 && (
+                                                    <div className="order-items-more">
+                                                        +{order.items.length - 3}
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="order-info">
+                                                <div className="order-title">
+                                                    {order.items.length === 1
+                                                        ? order.items[0].name
+                                                        : `${order.items[0]?.name || 'Order'} + ${order.items.length - 1} more`
+                                                    }
+                                                </div>
+                                                <div className="order-meta">
+                                                    <span className="order-number">#{order.orderNumber}</span>
+                                                    <span className="order-date">{formatOrderDate(order.createdAt)}</span>
+                                                    <span className="order-amount">₹{order.totalAmount.toLocaleString()}</span>
+                                                </div>
+                                            </div>
+                                            <div className={`order-status ${getStatusClass(order.status)}`}>
+                                                {order.status}
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Order Status Timeline */}
+                                        {expandedOrder === order.orderId && (
+                                            <div className="order-timeline-container">
+                                                {order.status?.toLowerCase() === 'cancelled' ? (
+                                                    <div className="order-cancelled-notice">
+                                                        <span className="cancelled-icon">⚠</span>
+                                                        <div>
+                                                            <strong>Order Cancelled</strong>
+                                                            <p>This order has been cancelled.</p>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div className="order-timeline">
+                                                        {getOrderTimeline(order.status).map((step, index, array) => (
+                                                            <div key={step.key} className="timeline-step">
+                                                                <div className={`timeline-dot ${
+                                                                    step.isActive ? 'active' : 
+                                                                    step.isCompleted ? 'completed' : 'pending'
+                                                                }`}>
+                                                                    <span className="timeline-icon">{step.icon}</span>
+                                                                </div>
+                                                                <div className="timeline-label">
+                                                                    {step.label}
+                                                                </div>
+                                                                {index < array.length - 1 && (
+                                                                    <div className={`timeline-line ${
+                                                                        step.isCompleted ? 'completed' : 'pending'
+                                                                    }`}></div>
+                                                                )}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                                
+                                                {/* Order Details */}
+                                                <div className="order-details-expanded">
+                                                    <div className="order-detail-row">
+                                                        <span className="detail-label">Shipping Address:</span>
+                                                        <span className="detail-value">
+                                                            {order.shippingAddress}, {order.shippingCity}, {order.shippingState} - {order.shippingPincode}
+                                                        </span>
+                                                    </div>
+                                                    {order.trackingNumber && (
+                                                        <div className="order-detail-row">
+                                                            <span className="detail-label">Tracking Number:</span>
+                                                            <span className="detail-value tracking-number">{order.trackingNumber}</span>
                                                         </div>
                                                     )}
+                                                    <div className="order-items-list">
+                                                        <h4>Items in this order:</h4>
+                                                        {order.items.map((item, idx) => (
+                                                            <div key={idx} className="order-item-detail">
+                                                                <span className="item-name">{item.name}</span>
+                                                                <span className="item-qty">x{item.quantity}</span>
+                                                                <span className="item-price">₹{item.price}</span>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            ))}
-                                            {order.items.length > 3 && (
-                                                <div className="order-items-more">
-                                                    +{order.items.length - 3}
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="order-info">
-                                            <div className="order-title">
-                                                {order.items.length === 1
-                                                    ? order.items[0].name
-                                                    : `${order.items[0]?.name || 'Order'} + ${order.items.length - 1} more`
-                                                }
                                             </div>
-                                            <div className="order-meta">
-                                                <span className="order-date">{formatOrderDate(order.createdAt)}</span>
-                                                <span className="order-amount">₹{order.totalAmount.toLocaleString()}</span>
-                                            </div>
-                                        </div>
-                                        <div className={`order-status ${getStatusClass(order.status)}`}>
-                                            {order.status}
-                                        </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

@@ -173,14 +173,14 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'vinanthp@gmail.com'
-EMAIL_HOST_PASSWORD = 'pudd wqdo ygnh qnyq'  # Gmail App Password
-DEFAULT_FROM_EMAIL = 'vinanthp@gmail.com'
+EMAIL_HOST_USER = 'karthik.sb.ram@gmail.com'
+EMAIL_HOST_PASSWORD = 'dbhf ozns pwlu bwgi'  # Gmail App Password (no spaces)
+DEFAULT_FROM_EMAIL = 'karthik.sb.ram@gmail.com'
 
 # Company Information
 COMPANY_NAME = 'Basho By Shivangi'
-COMPANY_EMAIL = 'vinanthp@gmail.com'  # Admin email address
-COMPANY_PHONE = '+91 XXXXX XXXXX'
+COMPANY_EMAIL = 'karthik.sb.ram@gmail.com'  # Admin email address
+COMPANY_PHONE = '+91 98795 75601'
 COMPANY_ADDRESS = 'Pottery Studio, India'
 
 # Razorpay Configuration

@@ -30,7 +30,7 @@ export const useOrders = () => {
 
             try {
                 // Fetch orders from Django API filtered by Firebase UID
-                const response = await fetch(`http://localhost:8000/api/orders/?firebase_uid=${currentUser.uid}`);
+                const response = await fetch(`/api/products/orders/?firebase_uid=${currentUser.uid}`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch order history from server');
@@ -38,8 +38,11 @@ export const useOrders = () => {
 
                 const data = await response.json();
 
+                // Handle both array responses and paginated responses
+                const ordersArray = Array.isArray(data) ? data : (data.results || []);
+
                 // Transform Django data to match our UI expectations
-                const ordersData = data.map((order) => ({
+                const ordersData = ordersArray.map((order) => ({
                     orderId: order.order_number,
                     id: order.id,
                     items: order.items.map(item => ({

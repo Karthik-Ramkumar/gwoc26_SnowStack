@@ -87,44 +87,111 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
     """
     queryset = CustomOrder.objects.all()
     serializer_class = CustomOrderSerializer
+    permission_classes = [AllowAny]  # Allow unauthenticated users to submit custom orders
     http_method_names = ['get', 'post', 'head', 'options']  # Only allow GET and POST
     
     def create(self, request, *args, **kwargs):
         """
-        Create new custom order and send email notifications asynchronously
+        Create new custom order and send email notifications
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         custom_order = serializer.save()
         
-        # Trigger asynchronous email tasks
+        # Send emails synchronously
         try:
-            from .tasks import send_custom_order_admin_email, send_custom_order_customer_email
+            import logging
+            from django.core.mail import EmailMultiAlternatives
+            from django.template.loader import render_to_string
+            from django.conf import settings
             
-            # Send admin email in background
-            send_custom_order_admin_email.delay(
-                order_id=custom_order.id,
-                order_number=custom_order.order_number,
-                name=custom_order.name,
-                email=custom_order.email,
-                phone=custom_order.phone,
-                project_type_display=custom_order.get_project_type_display(),
-                budget_display=custom_order.get_budget_display() if custom_order.budget else None,
-                description=custom_order.description
-            )
+            logger = logging.getLogger(__name__)
+            logger.info(f"Sending emails for custom order {custom_order.order_number}")
             
-            # Send customer confirmation email in background
-            send_custom_order_customer_email.delay(
-                order_number=custom_order.order_number,
-                name=custom_order.name,
-                email=custom_order.email,
-                project_type_display=custom_order.get_project_type_display()
-            )
+            # Send customer confirmation email
+            try:
+                import os
+                from email.mime.image import MIMEImage
+                
+                context = {
+                    'customer_name': custom_order.name,
+                    'order_number': custom_order.order_number,
+                    'project_type': custom_order.get_project_type_display(),
+                    'company_email': settings.COMPANY_EMAIL,
+                    'company_phone': settings.COMPANY_PHONE,
+                }
+                html_content = render_to_string('emails/customer_confirmation.html', context)
+                text_content = f'Thank you for your custom order {custom_order.order_number}'
+                
+                msg = EmailMultiAlternatives(
+                    subject=f'Thank You for Your Order - {custom_order.order_number}',
+                    body=text_content,
+                    from_email=settings.COMPANY_EMAIL,
+                    to=[custom_order.email]
+                )
+                msg.attach_alternative(html_content, "text/html")
+                
+                # Attach header image
+                header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+                if os.path.exists(header_image_path):
+                    with open(header_image_path, 'rb') as img_file:
+                        img = MIMEImage(img_file.read())
+                        img.add_header('Content-ID', '<header_image>')
+                        img.add_header('Content-Disposition', 'inline', filename='email_header.jpg')
+                        msg.attach(img)
+                
+                msg.send(fail_silently=False)
+                logger.info(f"✓ Customer email sent to {custom_order.email}")
+                print(f"✓ Customer email sent to {custom_order.email}")
+            except Exception as customer_email_error:
+                logger.error(f"Failed to send customer email: {str(customer_email_error)}", exc_info=True)
+                print(f"✗ Customer email failed: {str(customer_email_error)}")
             
+            # Send admin notification email
+            try:
+                import os
+                from email.mime.image import MIMEImage
+                
+                admin_context = {
+                    'order_number': custom_order.order_number,
+                    'customer_name': custom_order.name,
+                    'customer_email': custom_order.email,
+                    'customer_phone': custom_order.phone,
+                    'project_type': custom_order.get_project_type_display(),
+                    'budget': custom_order.get_budget_display() if custom_order.budget else 'Not specified',
+                    'description': custom_order.description,
+                    'admin_url': f'http://127.0.0.1:8000/admin/products/customorder/{custom_order.id}/',
+                }
+                admin_html = render_to_string('emails/admin_notification.html', admin_context)
+                admin_msg = EmailMultiAlternatives(
+                    subject=f'🔔 New Custom Order: {custom_order.order_number}',
+                    body=f'New custom order received: {custom_order.order_number}',
+                    from_email=settings.COMPANY_EMAIL,
+                    to=[settings.COMPANY_EMAIL]
+                )
+                admin_msg.attach_alternative(admin_html, "text/html")
+                
+                # Attach header image
+                header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+                if os.path.exists(header_image_path):
+                    with open(header_image_path, 'rb') as img_file:
+                        img = MIMEImage(img_file.read())
+                        img.add_header('Content-ID', '<header_image>')
+                        img.add_header('Content-Disposition', 'inline', filename='email_header.jpg')
+                        admin_msg.attach(img)
+                
+                admin_msg.send(fail_silently=False)
+                logger.info(f"✓ Admin email sent")
+                print(f"✓ Admin email sent")
+            except Exception as admin_email_error:
+                logger.error(f"Failed to send admin email: {str(admin_email_error)}", exc_info=True)
+                print(f"✗ Admin email failed: {str(admin_email_error)}")
+                
         except Exception as e:
-            # Log the error but don't fail the request
-            # Emails will still be attempted by Celery
-            print(f"Failed to queue email tasks: {str(e)}")
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Email sending error: {str(e)}", exc_info=True)
+            print(f"✗ Email error: {str(e)}")
         
         return Response({
             'success': True,
@@ -306,7 +373,7 @@ def create_user(request):
 @permission_classes([AllowAny])
 def create_razorpay_order(request):
     """
-    Create Razorpay order for payment
+    Create Razorpay order for payment (Updated with improved validation)
     
     Request body: {
         "amount": 5000,  // Amount in rupees
@@ -316,7 +383,8 @@ def create_razorpay_order(request):
     }
     
     Response: {
-        "order_id": "order_xyz123",
+        "success": true,
+        "orderId": "order_xyz123",
         "amount": 500000,  // Amount in paise
         "currency": "INR",
         "key": "rzp_test_xxxxx"
@@ -325,46 +393,91 @@ def create_razorpay_order(request):
     try:
         import razorpay
         from django.conf import settings
+        import logging
         
-        # Initialize Razorpay client
-        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        logger = logging.getLogger(__name__)
+        logger.info(f"Razorpay order creation request received: {request.data}")
         
-        # Get amount from request (in rupees)
-        amount_rupees = float(request.data.get('amount', 0))
+        # Validate required fields
+        amount = request.data.get('amount')
+        customer_name = request.data.get('customer_name', '')
+        customer_email = request.data.get('customer_email', '')
+        customer_phone = request.data.get('customer_phone', '')
+        
+        if not amount:
+            logger.error("Missing amount in request")
+            return Response({
+                'error': 'Missing required field: amount'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Convert to float and validate
+        try:
+            amount_rupees = float(amount)
+        except (ValueError, TypeError):
+            logger.error(f"Invalid amount format: {amount}")
+            return Response({
+                'error': 'Invalid amount format'
+            }, status=status.HTTP_400_BAD_REQUEST)
         
         if amount_rupees <= 0:
+            logger.error(f"Amount must be positive: {amount_rupees}")
             return Response({
                 'error': 'Amount must be greater than 0'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Convert to paise (Razorpay accepts amount in smallest currency unit)
-        amount_paise = int(amount_rupees * 100)
+        # Convert to paise using round() to avoid floating point issues
+        amount_paise = round(amount_rupees * 100)
         
-        # Create Razorpay order
+        logger.info(f"Amount: ₹{amount_rupees} = {amount_paise} paise")
+        
+        # Initialize Razorpay client
+        client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+        client.set_app_details({"title": "Basho", "version": "1.0"})
+        
+        # Create receipt ID
+        import uuid
+        receipt_id = f"ORDER_{str(uuid.uuid4())[:10].upper()}"
+        
+        # Create Razorpay order with all required parameters
         order_data = {
             'amount': amount_paise,
             'currency': 'INR',
+            'receipt': receipt_id,
             'payment_capture': 1,  # Auto capture payment
             'notes': {
-                'customer_name': request.data.get('customer_name', ''),
-                'customer_email': request.data.get('customer_email', ''),
-                'customer_phone': request.data.get('customer_phone', '')
+                'customer_name': customer_name,
+                'customer_email': customer_email,
+                'customer_phone': customer_phone
             }
         }
         
+        logger.info(f"Creating Razorpay order with data: {order_data}")
         razorpay_order = client.order.create(data=order_data)
+        logger.info(f"Razorpay order created successfully: {razorpay_order['id']}")
         
         return Response({
             'success': True,
-            'order_id': razorpay_order['id'],
+            'orderId': razorpay_order['id'],
             'amount': razorpay_order['amount'],
             'currency': razorpay_order['currency'],
             'key': settings.RAZORPAY_KEY_ID
         }, status=status.HTTP_201_CREATED)
         
-    except Exception as e:
+    except razorpay.errors.BadRequestError as e:
+        logger.error(f"Razorpay Bad Request Error: {str(e)}")
+        error_message = 'Invalid request to payment gateway'
+        if settings.DEBUG:
+            error_message += f': {str(e)}'
         return Response({
-            'error': f'Failed to create Razorpay order: {str(e)}'
+            'error': error_message
+        }, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        logger.error(f"Razorpay order creation error: {str(e)}", exc_info=True)
+        error_message = 'Failed to create payment order. Please try again.'
+        if settings.DEBUG:
+            error_message += f' Error: {str(e)}'
+        return Response({
+            'error': error_message
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -488,6 +601,8 @@ def verify_payment(request):
         
         # If payment verified, create order in database
         if payment_verified:
+            from django.db import transaction
+            
             order_data = request.data.get('order_data', {})
             
             # Calculate shipping based on configuration
@@ -521,16 +636,19 @@ def verify_payment(request):
             order_data['payment_status'] = True
             order_data['shipping_charge'] = shipping_charge
             
-            # Create order
+            # Create order within transaction
             from .serializers import OrderSerializer
             serializer = OrderSerializer(data=order_data)
             
             if serializer.is_valid():
-                order = serializer.save()
+                with transaction.atomic():
+                    order = serializer.save()
+                    
+                    # Store payment details in order notes
+                    order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
+                    order.save()
                 
-                # Store payment details in order notes
-                order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
-                order.save()
+                logger.info(f"Order {order.order_number} created successfully for payment {razorpay_payment_id}")
                 
                 # Send email confirmations asynchronously using Celery
                 email_sent = False
@@ -539,20 +657,24 @@ def verify_payment(request):
                 try:
                     from .tasks import send_product_order_confirmation_email, send_product_order_admin_notification
                     
-                    # Queue customer confirmation email
-                    send_product_order_confirmation_email.delay(order.id)
-                    email_sent = True
-                    logger.info(f"Customer confirmation email queued for order {order.order_number}")
-                except Exception as email_error:
-                    logger.error(f"Error queueing customer email for order {order.order_number}: {str(email_error)}")
-                
-                try:
-                    # Queue admin notification email
-                    send_product_order_admin_notification.delay(order.id)
-                    admin_email_sent = True
-                    logger.info(f"Admin notification email queued for order {order.order_number}")
-                except Exception as email_error:
-                    logger.error(f"Error queueing admin email for order {order.order_number}: {str(email_error)}")
+                    # Queue customer confirmation email (non-blocking)
+                    try:
+                        send_product_order_confirmation_email.delay(order.id)
+                        email_sent = True
+                        logger.info(f"Customer confirmation email queued for order {order.order_number}")
+                    except Exception as email_error:
+                        logger.error(f"Error queueing customer email for order {order.order_number}: {str(email_error)}")
+                    
+                    # Queue admin notification email (non-blocking)
+                    try:
+                        send_product_order_admin_notification.delay(order.id)
+                        admin_email_sent = True
+                        logger.info(f"Admin notification email queued for order {order.order_number}")
+                    except Exception as email_error:
+                        logger.error(f"Error queueing admin email for order {order.order_number}: {str(email_error)}")
+                        
+                except ImportError as import_error:
+                    logger.warning(f"Celery tasks not available: {str(import_error)}. Emails will not be sent.")
                 
                 return Response({
                     'success': True,
@@ -571,8 +693,12 @@ def verify_payment(request):
                 }, status=status.HTTP_400_BAD_REQUEST)
         
     except Exception as e:
+        logger.error(f"Payment verification error: {str(e)}", exc_info=True)
+        error_message = 'Payment verification failed. Please contact support if amount was deducted.'
+        if settings.DEBUG:
+            error_message += f' Error: {str(e)}'
         return Response({
-            'error': f'Payment verification failed: {str(e)}'
+            'error': error_message
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
