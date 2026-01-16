@@ -4,7 +4,7 @@
 /* Colors: #442D1C, #652810, #8E5022, #C85428, #EDD8B4 */
 
 .workshops-page {
-  background: linear-gradient(180deg, #fafafa 0%, #ffffff 100%);
+  background: transparent;
   min-height: 100vh;
 }
 
@@ -140,15 +140,12 @@
   padding: 60px 30px;
 }
 
-/* LIST SECTION - Clean background */
+/* LIST SECTION - Cream background for white cards */
 .workshops-list-section {
   position: relative;
   z-index: 10;
-  background-image: url('../images/gallery/wrk.png');
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 100px 0 120px;
+  background: transparent;
+  padding: 0;
   min-height: 100vh;
 }
 
@@ -256,67 +253,36 @@
   z-index: 10;
 }
 
-/* Workshop Card - Background Image Design */
+/* Workshop Card - New Clean Design */
 .workshop-card {
   background: white;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 50px;
+  border-radius: 32px;
   overflow: hidden;
-  box-shadow: 20px 20px 60px #bebebe,
-    -20px -20px 60px #ffffff;
-  transition: box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 20px 40px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  border: none;
   position: relative;
-  height: 500px;
+  height: auto;
   animation: fadeIn 0.6s ease-out;
-}
-
-.workshop-card-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom,
-      rgba(0, 0, 0, 0.1) 0%,
-      rgba(0, 0, 0, 0.3) 40%,
-      rgba(68, 45, 28, 0.85) 100%);
-  z-index: 1;
-}
-
-.workshop-card::after {
-  content: 'Click for more details';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: rgba(101, 40, 16, 0.95);
-  color: white;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 700;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 10;
-  white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-}
-
-.workshop-card:hover::after {
-  opacity: 1;
+  padding: 0;
 }
 
 .workshop-card:hover {
-  box-shadow: 25px 25px 70px #bebebe,
-    -25px -25px 70px #ffffff;
-  transform: scale(1.02) translateY(-5px);
+  box-shadow: 0 25px 50px -5px rgba(0, 0, 0, 0.08);
+  transform: scale(1.01);
+}
+
+/* Image Section - Fixed height */
+.workshop-card-image {
+  position: relative;
+  width: 100%;
+  height: 256px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
 }
 
 .workshop-placeholder-bg {
@@ -329,185 +295,195 @@
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #8E5022 0%, #C85428 100%);
-  z-index: 0;
 }
 
 .workshop-icon {
-  font-size: 5rem;
+  font-size: 4rem;
   opacity: 0.9;
 }
 
+/* Badges - Overlay on Image */
 .workshop-badge {
   position: absolute;
   top: 20px;
-  right: 20px;
-  padding: 8px 18px;
-  border-radius: 25px;
-  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-size: 10px;
   font-weight: 700;
   color: white;
   backdrop-filter: blur(10px);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  letter-spacing: 1.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   z-index: 3;
 }
 
-.workshop-badge.featured {
-  background: rgba(200, 84, 40, 0.95);
-}
-
 .workshop-badge.popular {
-  background: rgba(101, 40, 16, 0.95);
-  top: 20px;
-  right: auto;
   left: 20px;
+  background: #A85D3F;
 }
 
-.workshop-content {
-  position: relative;
-  z-index: 2;
+.workshop-badge.featured {
+  right: 20px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #1A202C;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Content Section - White Background */
+.workshop-card-content {
   padding: 24px;
-  flex: 1;
+  background: white;
   display: flex;
   flex-direction: column;
+  position: relative;
+  flex: 1;
+  /* Make content fill remaining height */
   justify-content: flex-start;
-  padding-top: -4px;
-  gap: 12px;
 }
 
-.workshop-content-top {
-  flex-shrink: 0;
-}
-
-.workshop-content-bottom {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.workshop-content h3 {
-  font-size: 1.8rem;
-  color: #ffffff;
-  margin-bottom: 8px;
-  font-weight: 800;
-  line-height: 1.2;
-  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-}
-
-.workshop-type {
-  color: #EDD8B4;
-  font-size: 0.85rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+/* Header Row - Type and Slots */
+.workshop-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 12px;
 }
 
-.workshop-description {
-  font-size: 0.9rem;
-  color: #ffffff;
+.workshop-type-label {
+  font-size: 10px;
+  color: #A85D3F;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+}
+
+.workshop-slots {
+  font-size: 12px;
+  color: #A85D3F;
+  font-weight: 600;
+  background: #F8F1EE;
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+/* Title */
+.workshop-title {
+  font-size: 1.5rem;
+  color: #1A202C !important;
+  margin: 0 0 12px 0;
+  font-weight: 700;
+  line-height: 1.3;
+  font-family: 'Georgia', 'Garamond', serif;
+  opacity: 1 !important;
+}
+
+/* Description */
+.workshop-description-new {
+  font-size: 0.8rem;
+  color: #000000 !important;
   line-height: 1.6;
-  margin: 12px 0;
-  flex: 1;
+  margin: 0 0 24px 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  opacity: 0.95;
+  font-family: 'Inter', sans-serif;
+  opacity: 1 !important;
 }
 
-.workshop-info {
+/* Divider */
+.workshop-divider {
+  height: 1px;
+  width: 100%;
+  background: #F3F4F6;
+  margin-bottom: 24px;
+}
+
+/* Info Row - Centered Stacked Icons */
+.workshop-info-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin: 12px 0;
-  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  padding: 0 8px;
+  margin-top: auto;
+  /* Push to bottom */
 }
 
-.workshop-info span {
-  font-size: 0.82rem;
-  color: #EDD8B4;
+.workshop-info-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  font-weight: 600;
+  gap: 6px;
+  color: #6B7280;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
-.workshop-footer {
+.workshop-info-item svg {
+  color: #A85D3F;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Footer - Price and Button */
+.workshop-footer-new {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 15px 0 12px;
-  padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  gap: 16px;
 }
 
-.workshop-price {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #EDD8B4;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+.workshop-price-section {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.workshop-availability {
-  font-size: 0.75rem;
-  color: #ffffff;
+.workshop-price-label {
+  font-size: 10px;
+  color: #6B7280;
   font-weight: 600;
-  background: rgba(200, 84, 40, 0.7);
-  padding: 6px 12px;
-  border-radius: 12px;
-  backdrop-filter: blur(5px);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
 }
 
-.workshop-register-btn {
-  /* Variables */
-  --button_radius: 0.75em;
-  --button_color: #EDD8B4;
-  --button_outline_color: #442D1C;
-  font-size: 17px;
-  font-weight: bold;
+.workshop-price-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1A202C;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Register Button - Copper/Clay Color */
+.workshop-register-btn-new {
+  background: #A85D3F;
+  color: white;
   border: none;
+  padding: 12px 24px;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
-  border-radius: var(--button_radius);
-  background: var(--button_outline_color);
-  width: 100%;
-  padding: 0;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 20px -5px rgba(168, 93, 63, 0.3);
+  white-space: nowrap;
 }
 
-.workshop-register-btn .button_top {
-  display: block;
-  box-sizing: border-box;
-  border: 2px solid var(--button_outline_color);
-  border-radius: var(--button_radius);
-  padding: 0.75em 1.5em;
-  background: var(--button_color);
-  color: var(--button_outline_color);
-  transform: translateY(-0.2em);
-  transition: transform 0.1s ease;
+.workshop-register-btn-new:hover:not(:disabled) {
+  background: #8B4A31;
 }
 
-.workshop-register-btn:hover:not(:disabled) .button_top {
-  /* Pull the button upwards when hovered */
-  transform: translateY(-0.33em);
+.workshop-register-btn-new:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-.workshop-register-btn:active:not(:disabled) .button_top {
-  /* Push the button downwards when pressed */
-  transform: translateY(0);
-}
-
-.workshop-register-btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.workshop-register-btn:disabled .button_top {
+.workshop-register-btn-new:disabled {
   background: #ccc;
   color: #888;
-  border-color: #999;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
 /* Modal Overlay */
@@ -1017,7 +993,7 @@
 .infinite-scroll-track {
   display: flex;
   gap: 30px;
-  animation: scroll-left 40 s linear infinite;
+  animation: scroll-left 25s linear infinite;
   width: fit-content;
 }
 

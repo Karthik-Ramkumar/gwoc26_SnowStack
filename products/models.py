@@ -177,6 +177,76 @@ class CustomOrder(models.Model):
 
 
 # ====================
+# CORPORATE INQUIRY MODEL
+# Purpose: Stores corporate inquiry form submissions
+# ====================
+class CorporateInquiry(models.Model):
+    """
+    Stores corporate inquiry requests from the corporate page
+    Used for managing B2B inquiries and corporate partnerships
+    """
+    
+    SERVICE_TYPE_CHOICES = [
+        ('gifting', 'Corporate Gifting'),
+        ('workshop', 'Team Workshop'),
+        ('collaboration', 'Brand Collaboration'),
+        ('other', 'Other'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('new', 'New'),
+        ('contacted', 'Customer Contacted'),
+        ('in_progress', 'In Progress'),
+        ('completed', 'Completed'),
+        ('declined', 'Declined'),
+    ]
+    
+    # Company Information
+    company_name = models.CharField(max_length=200)
+    contact_name = models.CharField(max_length=200)
+    email = models.EmailField()
+    phone = models.CharField(max_length=20, blank=True)
+    
+    # Inquiry Details
+    service_type = models.CharField(max_length=20, choices=SERVICE_TYPE_CHOICES)
+    team_size = models.CharField(max_length=100, blank=True, help_text="Number of participants or recipients")
+    budget_range = models.CharField(max_length=100, blank=True, help_text="Estimated budget")
+    message = models.TextField(help_text="Detailed inquiry message")
+    
+    # Status & Tracking
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new')
+    inquiry_number = models.CharField(max_length=50, unique=True, editable=False)
+    
+    # Internal Notes
+    internal_notes = models.TextField(blank=True, help_text="Staff notes (not visible to customer)")
+    
+    # Timestamps
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = 'Corporate Inquiry'
+        verbose_name_plural = 'Corporate Inquiries'
+    
+    def __str__(self):
+        return f"{self.inquiry_number} - {self.company_name}"
+    
+    def save(self, *args, **kwargs):
+        """Auto-generate inquiry number if not exists"""
+        if not self.inquiry_number:
+            from datetime import datetime
+            # Format: CORP-YYYY-sequential
+            year = datetime.now().year
+            # Count existing inquiries this year
+            count = CorporateInquiry.objects.filter(
+                inquiry_number__startswith=f"CORP-{year}"
+            ).count() + 1
+            self.inquiry_number = f"CORP-{year}-{count:03d}"
+        super().save(*args, **kwargs)
+
+
+# ====================
 # CART ITEM MODEL (Optional - for future use)
 # Purpose: Store cart items for logged-in users
 # ====================
