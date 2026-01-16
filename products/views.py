@@ -664,6 +664,35 @@ def verify_payment(request):
 # URL: /api/products/track-order/
 # Method: POST (read-only lookup)
 # ====================
+
+# Simple in-memory rate limiting for order tracking
+from django.core.cache import cache
+from django.http import JsonResponse
+
+def rate_limit_check(request, limit=5, window=60):
+    """
+    Simple rate limiting: max 'limit' requests per 'window' seconds per IP.
+    Returns True if rate limit exceeded.
+    """
+    # Get client IP
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR', 'unknown')
+    
+    cache_key = f'track_order_rate_{ip}'
+    
+    # Get current count
+    request_count = cache.get(cache_key, 0)
+    
+    if request_count >= limit:
+        return True  # Rate limit exceeded
+    
+    # Increment counter
+    cache.set(cache_key, request_count + 1, window)
+    return False
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def track_order(request):
@@ -690,6 +719,12 @@ def track_order(request):
         "error": "Order not found. Please check your order number and email."
     }
     """
+    # Check rate limit (5 requests per minute per IP)
+    if rate_limit_check(request, limit=5, window=60):
+        return Response({
+            'found': False,
+            'error': 'Too many requests. Please wait a moment and try again.'
+        }, status=status.HTTP_429_TOO_MANY_REQUESTS)
     try:
         order_number = request.data.get('order_number', '').strip().upper()
         email = request.data.get('email', '').strip().lower()
@@ -707,38 +742,70 @@ def track_order(request):
                 'error': 'Please enter your email address.'
             }, status=status.HTTP_400_BAD_REQUEST)
         
-        # Look up order (case-insensitive for order number)
-        try:
-            order = Order.objects.get(
-                order_number__iexact=order_number,
-                customer_email__iexact=email
-            )
-        except Order.DoesNotExist:
-            return Response({
-                'found': False,
-                'error': 'Order not found. Please check your order number and email.'
-            }, status=status.HTTP_404_NOT_FOUND)
+        # Check if it's a Custom Order (CO-) or Product Order (ORD-)
+        is_custom_order = order_number.startswith('CO-')
         
-        # Build response with order status
-        response_data = {
-            'found': True,
-            'order_number': order.order_number,
-            'status': order.status,
-            'status_display': order.get_status_display(),
-            'created_at': order.created_at.isoformat(),
-            'total_amount': float(order.total_amount),
-        }
+        if is_custom_order:
+            # Look up Custom Order
+            try:
+                custom_order = CustomOrder.objects.get(
+                    order_number__iexact=order_number,
+                    email__iexact=email
+                )
+            except CustomOrder.DoesNotExist:
+                return Response({
+                    'found': False,
+                    'error': 'Order not found. Please check your order number and email.'
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Build response for Custom Order
+            response_data = {
+                'found': True,
+                'order_type': 'custom',
+                'order_number': custom_order.order_number,
+                'status': custom_order.status,
+                'status_display': custom_order.get_status_display(),
+                'created_at': custom_order.created_at.isoformat(),
+                'project_type': custom_order.get_project_type_display(),
+                'budget': custom_order.get_budget_display() if custom_order.budget else None,
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
         
-        # Include tracking info if shipped
-        if order.status in ['shipped', 'delivered']:
-            response_data['tracking_number'] = order.tracking_number or None
-            response_data['courier_service'] = order.courier_service or None
-        
-        # Include delivery date if delivered
-        if order.status == 'delivered' and order.delivered_at:
-            response_data['delivered_at'] = order.delivered_at.isoformat()
-        
-        return Response(response_data, status=status.HTTP_200_OK)
+        else:
+            # Look up Product Order (ORD-)
+            try:
+                order = Order.objects.get(
+                    order_number__iexact=order_number,
+                    customer_email__iexact=email
+                )
+            except Order.DoesNotExist:
+                return Response({
+                    'found': False,
+                    'error': 'Order not found. Please check your order number and email.'
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Build response for Product Order
+            response_data = {
+                'found': True,
+                'order_type': 'product',
+                'order_number': order.order_number,
+                'status': order.status,
+                'status_display': order.get_status_display(),
+                'created_at': order.created_at.isoformat(),
+                'total_amount': float(order.total_amount),
+            }
+            
+            # Include tracking info if shipped
+            if order.status in ['shipped', 'delivered']:
+                response_data['tracking_number'] = order.tracking_number or None
+                response_data['courier_service'] = order.courier_service or None
+            
+            # Include delivery date if delivered
+            if order.status == 'delivered' and order.delivered_at:
+                response_data['delivered_at'] = order.delivered_at.isoformat()
+            
+            return Response(response_data, status=status.HTTP_200_OK)
         
     except Exception as e:
         return Response({

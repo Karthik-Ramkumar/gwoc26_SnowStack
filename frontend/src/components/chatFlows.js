@@ -104,7 +104,7 @@ const chatFlows = {
         id: 'PRODUCTS_CUSTOM',
         message: "We love bringing your vision to life!\n\nCustom orders are perfect for:\n• Corporate gifts\n• Wedding favors\n• Personalized home decor\n• Restaurant tableware\n\nMinimum order quantities may apply.",
         buttons: [
-            { label: 'Request Custom Order', action: 'NAVIGATE', route: '/corporate' },
+            { label: 'Request Custom Order', action: 'NAVIGATE', route: '/products?category=Custom%20Creations' },
             { label: 'View Corporate Gifts', action: 'NAVIGATE', route: '/corporate' },
             { label: 'Back', next: 'PRODUCTS_MENU' },
         ],
