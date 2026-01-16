@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'workshops',  # Basho Workshops App
     'studio',  # Basho Studio App
     'media_content',  # Basho Media App
+    'homepage', # Basho Homepage App
 ]
 
 MIDDLEWARE = [
@@ -191,28 +192,6 @@ COMPANY_ADDRESS = 'Pottery Studio, India'
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S1lAGZcFMuNU0Y')
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'AI3Nxw061P2yE5nTj95yaG8S')
 
-
-# Celery Configuration
-# Redis as message broker for background tasks
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
-
-# Celery Configuration
-# Redis as message broker for background tasks
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
 
 # Celery Configuration
 # Redis as message broker for background tasks
