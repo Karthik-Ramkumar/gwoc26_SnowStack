@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import "./Products.css";
 import "./Workshops.css";
 import ProductList from "./ProductList";
@@ -13,6 +14,9 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("all");
   const [sortBy, setSortBy] = useState("featured");
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
@@ -22,13 +26,25 @@ function Products() {
         const params = {
           category: category !== "all" ? category : undefined,
           sort: sortBy,
+          page: page,
+          page_size: itemsPerPage
         };
 
         const response = await axios.get(`${API_BASE_URL}/products/products/`, {
           params,
         });
 
-        setProducts(response.data.results || response.data);
+        // Handle both paginated and non-paginated responses
+        if (response.data.results) {
+          setProducts(response.data.results);
+          // Calculate total pages if count is available
+          if (response.data.count) {
+            setTotalPages(Math.ceil(response.data.count / itemsPerPage));
+          }
+        } else {
+          setProducts(response.data);
+          setTotalPages(1);
+        }
       } catch (err) {
         console.error("Error fetching products:", err);
       } finally {
@@ -37,7 +53,20 @@ function Products() {
     };
 
     fetchProducts();
-  }, [category, sortBy]);
+  }, [category, sortBy, page, itemsPerPage]);
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setPage(newPage);
+      // Scroll to top of products grid
+      const productsGrid = document.querySelector('.products-main');
+      if (productsGrid) {
+        productsGrid.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
 
   const handleProductClick = (product) => {
     setSelectedProduct(product);
@@ -173,7 +202,7 @@ function Products() {
             <div className="filter-container">
               <div className="filter-group">
                 <label>Category</label>
-                <select value={category} onChange={(e) => setCategory(e.target.value)}>
+                <select value={category} onChange={(e) => { setCategory(e.target.value); setPage(1); }}>
                   <option value="all">All Collections</option>
                   <option value="tableware">Tableware</option>
                   <option value="art">Art Pieces</option>
@@ -183,11 +212,26 @@ function Products() {
 
               <div className="filter-group">
                 <label>Sort by</label>
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1); }}>
                   <option value="featured">Featured</option>
                   <option value="price-low">Price: Low to High</option>
                   <option value="price-high">Price: High to Low</option>
                   <option value="newest">Newest</option>
+                </select>
+              </div>
+
+              <div className="filter-group">
+                <label>Show</label>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value));
+                    setPage(1);
+                  }}
+                >
+                  <option value={12}>12</option>
+                  <option value={24}>24</option>
+                  <option value={36}>36</option>
                 </select>
               </div>
             </div>
@@ -195,6 +239,31 @@ function Products() {
 
           {/* Products Grid */}
           <ProductList products={products} loading={loading} onProductClick={handleProductClick} />
+
+          {/* Pagination Controls */}
+          {!loading && totalPages > 1 && (
+            <div className="pagination-container">
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(page - 1)}
+                disabled={page === 1}
+              >
+                <ChevronLeft size={20} />
+              </button>
+
+              <span className="pagination-info">
+                Page {page} of {totalPages}
+              </span>
+
+              <button
+                className="pagination-btn"
+                onClick={() => handlePageChange(page + 1)}
+                disabled={page === totalPages}
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
