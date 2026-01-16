@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Users, ChartBar } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import './Workshops.css';
+import wrkBg from '../images/gallery/wrk.png';
 
 const Workshops = () => {
   const [workshops, setWorkshops] = useState([]);
@@ -55,58 +56,73 @@ const Workshops = () => {
   };
 
   const WorkshopCard = ({ workshop }) => (
-    <div 
-      className="workshop-card" 
-      onClick={() => handleWorkshopClick(workshop)}
-      style={{
-        backgroundImage: workshop.image_url ? `url(${workshop.image_url})` : 'none'
-      }}
-    >
-      <div className="workshop-card-overlay"></div>
-      {!workshop.image_url && (
-        <div className="workshop-placeholder-bg">
-          <span className="workshop-icon">🎨</span>
-        </div>
-      )}
-      {workshop.is_featured && <span className="workshop-badge featured">Featured</span>}
-      {workshop.is_popular && <span className="workshop-badge popular">Popular</span>}
-      
-      <div className="workshop-content">
-        <div className="workshop-content-top">
-          <h3>{workshop.name}</h3>
-          <p className="workshop-type">{workshop.workshop_type_display}</p>
-        </div>
-        
-        <div className="workshop-content-bottom">
-          <p className="workshop-description">{workshop.short_description}</p>
-          <div className="workshop-info">
-            <span className="workshop-duration">
-              <Gauge color="#EDD8B4" strokeWidth={2.5} size={16} /> {workshop.duration_hours}h
-            </span>
-            <span className="workshop-difficulty">
-              <ChartBar color="#EDD8B4" strokeWidth={2.5} size={16} /> {workshop.difficulty_level_display}
-            </span>
-            <span className="workshop-participants">
-              <Users color="#EDD8B4" strokeWidth={2.5} size={16} /> Max {workshop.max_participants}
-            </span>
+    <div className="workshop-card" onClick={() => handleWorkshopClick(workshop)}>
+      {/* Image Section */}
+      <div
+        className="workshop-card-image"
+        style={{
+          backgroundImage: workshop.image_url ? `url(${workshop.image_url})` : 'none'
+        }}
+      >
+        {!workshop.image_url && (
+          <div className="workshop-placeholder-bg">
+            <span className="workshop-icon">🎨</span>
           </div>
-          <div className="workshop-footer">
-            <span className="workshop-price">₹{workshop.price}</span>
-            <span className="workshop-availability">
-              {workshop.available_slots > 0 ? `${workshop.available_slots} slots` : 'Sold Out'}
-            </span>
+        )}
+
+        {/* Badges - Top corners */}
+        {workshop.is_popular && <span className="workshop-badge popular">POPULAR</span>}
+        {workshop.is_featured && <span className="workshop-badge featured">FEATURED</span>}
+      </div>
+
+      {/* Content Section - White background */}
+      <div className="workshop-card-content">
+        {/* Workshop Type and Slots */}
+        <div className="workshop-header-row">
+          <span className="workshop-type-label">{workshop.workshop_type_display?.toUpperCase()}</span>
+          <span className="workshop-slots">{workshop.available_slots} slots</span>
+        </div>
+
+        {/* Title */}
+        <h3 className="workshop-title">{workshop.name}</h3>
+
+        {/* Description */}
+        <p className="workshop-description-new">{workshop.short_description}</p>
+
+        {/* Info Icons Row */}
+        <div className="workshop-info-row">
+          <div className="workshop-info-item">
+            <Gauge size={18} strokeWidth={2.5} />
+            <span>{workshop.duration_hours}h</span>
           </div>
-          <button 
-            className="workshop-register-btn"
+          <div className="workshop-info-item">
+            <ChartBar size={18} strokeWidth={2.5} />
+            <span>{workshop.difficulty_level_display}</span>
+          </div>
+          <div className="workshop-info-item">
+            <Users size={18} strokeWidth={2.5} />
+            <span>Max {workshop.max_participants}</span>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div className="workshop-divider"></div>
+
+        {/* Footer - Price and Button */}
+        <div className="workshop-footer-new">
+          <div className="workshop-price-section">
+            <span className="workshop-price-label">STARTING AT</span>
+            <span className="workshop-price-value">₹{workshop.price.toLocaleString('en-IN')}</span>
+          </div>
+          <button
+            className="workshop-register-btn-new"
             onClick={(e) => {
               e.stopPropagation();
               handleRegisterClick(workshop);
             }}
             disabled={workshop.available_slots === 0}
           >
-            <span className="button_top">
-              {workshop.available_slots > 0 ? 'Register Now' : 'Fully Booked'}
-            </span>
+            {workshop.available_slots > 0 ? 'Register Now' : 'Fully Booked'}
           </button>
         </div>
       </div>
@@ -138,7 +154,7 @@ const Workshops = () => {
               <p className="modal-type">{workshop.workshop_type_display}</p>
               <div className="modal-price">₹{workshop.price}</div>
               <p className="modal-description">{workshop.description}</p>
-              
+
               <div className="modal-details-grid">
                 <div className="detail-item">
                   <strong>Duration:</strong> {workshop.duration_hours} hours
@@ -165,7 +181,7 @@ const Workshops = () => {
                 </div>
               )}
 
-              <button 
+              <button
                 className="modal-register-btn"
                 onClick={() => {
                   onClose();
@@ -223,7 +239,7 @@ const Workshops = () => {
 
     const handleSubmit = async (e) => {
       e.preventDefault();
-      
+
       // Validate slot selection
       if (!formData.slot) {
         alert('Please select a date and time slot');
@@ -258,7 +274,7 @@ const Workshops = () => {
 
       addToCart(workshopCartItem);
       setSuccess(true);
-      
+
       setTimeout(() => {
         onClose();
       }, 1500);
@@ -351,17 +367,17 @@ const Workshops = () => {
                   <option value="">-- Select a time slot --</option>
                   {availableSlots.map((slot) => (
                     <option key={slot.id} value={slot.id}>
-                      {new Date(slot.date).toLocaleDateString('en-IN', { 
-                        weekday: 'short', 
-                        year: 'numeric', 
-                        month: 'short', 
-                        day: 'numeric' 
+                      {new Date(slot.date).toLocaleDateString('en-IN', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
                       })} - {formatTime(slot.start_time)} to {formatTime(slot.end_time)} ({slot.available_spots} spots left)
                     </option>
                   ))}
                 </select>
               ) : (
-                <p style={{color: '#d32f2f', marginTop: '0.5rem'}}>No available slots at the moment. Please check back later.</p>
+                <p style={{ color: '#d32f2f', marginTop: '0.5rem' }}>No available slots at the moment. Please check back later.</p>
               )}
             </div>
 
@@ -394,9 +410,9 @@ const Workshops = () => {
               <strong>Total Amount:</strong> ₹{(workshop.price * formData.number_of_participants).toLocaleString('en-IN')}
             </div>
 
-            <button 
-              type="submit" 
-              className="submit-btn" 
+            <button
+              type="submit"
+              className="submit-btn"
               disabled={availableSlots.length === 0}
             >
               Add to Cart
@@ -424,57 +440,62 @@ const Workshops = () => {
 
       {/* WORKSHOPS LIST SECTION */}
       <section className="workshops-list-section">
+        {/* Workshop Background */}
+        <div className="workshops-background">
+          <img src={wrkBg} alt="" className="workshops-background-image" />
+        </div>
+
         <div className="workshops-list-content">
-        <div className="workshops-filter">
-          <button
-            className={selectedType === 'all' ? 'active' : ''}
-            onClick={() => setSelectedType('all')}
-          >
-            All Workshops
-          </button>
-          <button
-            className={selectedType === 'group' ? 'active' : ''}
-            onClick={() => setSelectedType('group')}
-          >
-            Group Workshops
-          </button>
-          <button
-            className={selectedType === 'one-on-one' ? 'active' : ''}
-            onClick={() => setSelectedType('one-on-one')}
-          >
-            One-on-One
-          </button>
-          <button
-            className={selectedType === 'couple' ? 'active' : ''}
-            onClick={() => setSelectedType('couple')}
-          >
-            Couple Dates
-          </button>
-          <button
-            className={selectedType === 'birthday' ? 'active' : ''}
-            onClick={() => setSelectedType('birthday')}
-          >
-            Birthday Parties
-          </button>
-          <button
-            className={selectedType === 'party' ? 'active' : ''}
-            onClick={() => setSelectedType('party')}
-          >
-            Mini Parties
-          </button>
-        </div>
-
-        <div className="workshops-grid">
-          {filteredWorkshops.map(workshop => (
-            <WorkshopCard key={workshop.id} workshop={workshop} />
-          ))}
-        </div>
-
-        {filteredWorkshops.length === 0 && (
-          <div className="no-workshops">
-            <p>No workshops available in this category.</p>
+          <div className="workshops-filter">
+            <button
+              className={selectedType === 'all' ? 'active' : ''}
+              onClick={() => setSelectedType('all')}
+            >
+              All Workshops
+            </button>
+            <button
+              className={selectedType === 'group' ? 'active' : ''}
+              onClick={() => setSelectedType('group')}
+            >
+              Group Workshops
+            </button>
+            <button
+              className={selectedType === 'one-on-one' ? 'active' : ''}
+              onClick={() => setSelectedType('one-on-one')}
+            >
+              One-on-One
+            </button>
+            <button
+              className={selectedType === 'couple' ? 'active' : ''}
+              onClick={() => setSelectedType('couple')}
+            >
+              Couple Dates
+            </button>
+            <button
+              className={selectedType === 'birthday' ? 'active' : ''}
+              onClick={() => setSelectedType('birthday')}
+            >
+              Birthday Parties
+            </button>
+            <button
+              className={selectedType === 'party' ? 'active' : ''}
+              onClick={() => setSelectedType('party')}
+            >
+              Mini Parties
+            </button>
           </div>
-        )}
+
+          <div className="workshops-grid">
+            {filteredWorkshops.map(workshop => (
+              <WorkshopCard key={workshop.id} workshop={workshop} />
+            ))}
+          </div>
+
+          {filteredWorkshops.length === 0 && (
+            <div className="no-workshops">
+              <p>No workshops available in this category.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -497,8 +518,8 @@ const Workshops = () => {
           <div className="infinite-scroll-track">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
               <div key={`set1-${num}`} className="scroll-item">
-                <img 
-                  src={`/static/images/gallery/past-creations-${num}.png`} 
+                <img
+                  src={`/static/images/gallery/past-creations-${num}.png`}
                   alt={`Past Creation ${num}`}
                 />
               </div>
@@ -506,8 +527,8 @@ const Workshops = () => {
             {/* Duplicate for seamless loop */}
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
               <div key={`set2-${num}`} className="scroll-item">
-                <img 
-                  src={`/static/images/gallery/past-creations-${num}.png`} 
+                <img
+                  src={`/static/images/gallery/past-creations-${num}.png`}
                   alt={`Past Creation ${num}`}
                 />
               </div>

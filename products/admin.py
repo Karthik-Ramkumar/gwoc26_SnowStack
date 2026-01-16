@@ -9,7 +9,7 @@ from django.utils.safestring import mark_safe
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import Product, CustomOrder, CartItem, Order, OrderItem, ShippingConfig
+from .models import Product, CustomOrder, CorporateInquiry, CartItem, Order, OrderItem, ShippingConfig
 from workshops.models import WorkshopRegistration
 
 
@@ -368,6 +368,166 @@ class CustomOrderAdmin(admin.ModelAdmin):
         updated = queryset.update(status='pending')
         self.message_user(request, f'🔔 {updated} order(s) marked as PENDING')
     mark_pending.short_description = "🔔 Mark as PENDING REVIEW"
+
+
+# ====================
+# CORPORATE INQUIRY ADMIN
+# Purpose: Manage corporate inquiry form submissions
+# ====================
+@admin.register(CorporateInquiry)
+class CorporateInquiryAdmin(admin.ModelAdmin):
+    """
+    User-friendly interface for managing corporate inquiries
+    View B2B requests, update status, contact companies
+    """
+    
+    list_display = [
+        'inquiry_badge',
+        'company_info',
+        'service_type_badge',
+        'status_badge',
+        'created_date',
+        'action_needed',
+    ]
+    
+    list_filter = [
+        'status',
+        'service_type',
+        'created_at',
+    ]
+    
+    search_fields = [
+        'inquiry_number',
+        'company_name',
+        'contact_name',
+        'email',
+        'phone',
+        'message'
+    ]
+    
+    readonly_fields = ['inquiry_number', 'created_at', 'updated_at']
+    
+    list_per_page = 20
+    
+    date_hierarchy = 'created_at'
+    
+    fieldsets = (
+        ('🏢 Inquiry Information', {
+            'fields': ('inquiry_number', 'status'),
+            'description': 'Inquiry tracking details'
+        }),
+        ('🏭 Company Contact', {
+            'fields': ('company_name', 'contact_name', 'email', 'phone'),
+            'description': 'Company information for follow-up'
+        }),
+        ('📋 Inquiry Details', {
+            'fields': ('service_type', 'team_size', 'budget_range', 'message'),
+            'description': 'What the company is interested in'
+        }),
+        ('📝 Internal Notes', {
+            'fields': ('internal_notes',),
+            'description': 'Staff notes (not visible to customer)'
+        }),
+        ('🕒 Timeline', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
+    )
+    
+    # Custom displays
+    def inquiry_badge(self, obj):
+        """Show inquiry number as a badge"""
+        return format_html(
+            '<code style="background: #e3f2fd; color: #1976d2; padding: 4px 8px; border-radius: 4px; font-weight: 600;">{}</code>',
+            obj.inquiry_number
+        )
+    inquiry_badge.short_description = 'Inquiry #'
+    inquiry_badge.admin_order_field = 'inquiry_number'
+    
+    def company_info(self, obj):
+        """Show company and contact information"""
+        return format_html(
+            '<strong>{}</strong><br/><small style="color: #666;">👤 {} | 📧 {}</small>',
+            obj.company_name, obj.contact_name, obj.email
+        )
+    company_info.short_description = 'Company'
+    
+    def service_type_badge(self, obj):
+        """Show service type with color"""
+        colors = {
+            'gifting': '#4CAF50',
+            'workshop': '#9C27B0',
+            'collaboration': '#FF5722',
+            'other': '#607D8B',
+        }
+        color = colors.get(obj.service_type, '#757575')
+        return format_html(
+            '<span style="background: {}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 500;">{}</span>',
+            color, obj.get_service_type_display()
+        )
+    service_type_badge.short_description = 'Service Type'
+    
+    def status_badge(self, obj):
+        """Show status with color indicator"""
+        status_config = {
+            'new': ('🆕 New', '#2196F3', '#E3F2FD'),
+            'contacted': ('📞 Contacted', '#9C27B0', '#F3E5F5'),
+            'in_progress': ('⚙️ In Progress', '#FF9800', '#FFF3E0'),
+            'completed': ('✅ Completed', '#4CAF50', '#E8F5E9'),
+            'declined': ('❌ Declined', '#F44336', '#FFEBEE'),
+        }
+        label, border_color, bg_color = status_config.get(obj.status, ('Unknown', '#999', '#f5f5f5'))
+        return format_html(
+            '<span style="background: {}; border-left: 3px solid {}; padding: 6px 12px; border-radius: 4px; font-weight: 600; display: inline-block; min-width: 120px;">{}</span>',
+            bg_color, border_color, label
+        )
+    status_badge.short_description = 'Status'
+    
+    def created_date(self, obj):
+        """Show when inquiry was received"""
+        return obj.created_at.strftime('%b %d, %Y')
+    created_date.short_description = 'Received'
+    created_date.admin_order_field = 'created_at'
+    
+    def action_needed(self, obj):
+        """Show if action is needed"""
+        if obj.status == 'new':
+            return format_html('<span style="color: #F44336; font-weight: 600;">{}</span>', '⚠️ ACTION NEEDED')
+        return '-'
+    action_needed.short_description = 'Alert'
+    
+    # Bulk actions for managing inquiries
+    actions = ['mark_contacted', 'mark_in_progress', 'mark_completed', 'mark_new', 'mark_declined']
+    
+    def mark_contacted(self, request, queryset):
+        """Update status to contacted"""
+        updated = queryset.update(status='contacted')
+        self.message_user(request, f'📞 {updated} inquiry(ies) marked as CONTACTED')
+    mark_contacted.short_description = "📞 Mark as CONTACTED"
+    
+    def mark_in_progress(self, request, queryset):
+        """Update status to in progress"""
+        updated = queryset.update(status='in_progress')
+        self.message_user(request, f'⚙️ {updated} inquiry(ies) marked as IN PROGRESS')
+    mark_in_progress.short_description = "⚙️ Mark as IN PROGRESS"
+    
+    def mark_completed(self, request, queryset):
+        """Update status to completed"""
+        updated = queryset.update(status='completed')
+        self.message_user(request, f'✅ {updated} inquiry(ies) marked as COMPLETED')
+    mark_completed.short_description = "✅ Mark as COMPLETED"
+    
+    def mark_new(self, request, queryset):
+        """Update status back to new"""
+        updated = queryset.update(status='new')
+        self.message_user(request, f'🆕 {updated} inquiry(ies) marked as NEW')
+    mark_new.short_description = "🆕 Mark as NEW"
+    
+    def mark_declined(self, request, queryset):
+        """Update status to declined"""
+        updated = queryset.update(status='declined')
+        self.message_user(request, f'❌ {updated} inquiry(ies) marked as DECLINED')
+    mark_declined.short_description = "❌ Mark as DECLINED"
 
 
 # ====================

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   const navigate = useNavigate();
+  const currentYear = new Date().getFullYear();
 
   const handleNavigate = (page) => {
     navigate(`/${page}`);
@@ -60,7 +61,7 @@ const Footer = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2025 Basho by Shivangi. All rights reserved.</p>
+          <p>&copy; {currentYear} Basho by Shivangi. All rights reserved.</p>
         </div>
       </div>
     </footer>

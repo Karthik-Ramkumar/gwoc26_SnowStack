@@ -218,9 +218,7 @@ function Products() {
       </section>
 
       {/* Custom Order Form */}
-      <div className="custom-order-background-wrapper">
-        <CustomOrderForm />
-      </div>
+      <CustomOrderForm />
 
       {/* Product Care */}
       <ProductCare />
