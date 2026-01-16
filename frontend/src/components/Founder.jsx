@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Founder.css';
 
 const Founder = () => {
+    const navigate = useNavigate();
     const sectionRef = useRef(null);
 
     useEffect(() => {
@@ -35,14 +37,16 @@ const Founder = () => {
         >
             <div className="founder-container">
 
-                {/* Image Side - Left/Center */}
-                <div className="founder-pimage-wrapper fade-in">
-                    <div className="founder-frame">
-                        <img
-                            src="/static/images/gallery/founder.png"
-                            alt="Shivangi - Founder of Basho"
-                            className="founder-img"
-                        />
+                {/* Image Side - Left */}
+                <div className="founder-image-section">
+                    <div className="founder-pimage-wrapper fade-in">
+                        <div className="founder-frame">
+                            <img
+                                src="/static/images/gallery/founder.png"
+                                alt="Shivangi - Founder of Basho"
+                                className="founder-img"
+                            />
+                        </div>
                     </div>
                 </div>
 
@@ -73,6 +77,22 @@ const Founder = () => {
                     </div>
                 </div>
 
+            </div>
+
+            {/* Call to Action Buttons - Full Width Bottom */}
+            <div className="founder-cta-buttons">
+                <button 
+                    className="founder-cta-btn founder-cta-btn-secondary" 
+                    onClick={() => navigate('/products')}
+                >
+                    Explore Collections
+                </button>
+                <button 
+                    className="founder-cta-btn founder-cta-btn-secondary" 
+                    onClick={() => navigate('/workshops')}
+                >
+                    Join Workshops
+                </button>
             </div>
         </section>
     );
