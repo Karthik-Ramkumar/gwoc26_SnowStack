@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Users, ChartBar } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import './Workshops.css';
+import wrkBg from '../images/gallery/wrk.png';
 
 const Workshops = () => {
   const [workshops, setWorkshops] = useState([]);
@@ -439,6 +440,11 @@ const Workshops = () => {
 
       {/* WORKSHOPS LIST SECTION */}
       <section className="workshops-list-section">
+        {/* Workshop Background */}
+        <div className="workshops-background">
+          <img src={wrkBg} alt="" className="workshops-background-image" />
+        </div>
+
         <div className="workshops-list-content">
           <div className="workshops-filter">
             <button
