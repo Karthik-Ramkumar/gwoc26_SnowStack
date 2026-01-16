@@ -171,11 +171,7 @@ const ProductList = ({ products, loading, onProductClick }) => {
                   </div>
                   <div className="product-info">
                     <h3 className="product-name">{product.name}</h3>
-                    <div className="product-meta">
-                      {product.tags && product.tags.map((tag, index) => (
-                        <span key={index} className="meta-tag">{tag}</span>
-                      ))}
-                    </div>
+                    {/* Tags removed - now shown only in product detail modal */}
                     <p className="product-description">
                       {product.short_description || product.description}
                     </p>

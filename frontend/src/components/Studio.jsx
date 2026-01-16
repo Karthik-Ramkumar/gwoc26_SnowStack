@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import studioHeaderBg from '../images/gallery/studio_header.jpg';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Navigation, Autoplay } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -107,6 +108,15 @@ function Studio() {
             >
               Get Directions →
             </a>
+          </div>
+          <div className="studio-map-wrapper">
+            <iframe
+              src="https://maps.google.com/maps?q=21.130000,72.724000&hl=en&z=14&output=embed"
+              allowFullScreen=""
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Basho Studio Location"
+            />
           </div>
           <div className="studio-map-wrapper">
             <iframe

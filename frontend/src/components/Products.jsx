@@ -90,6 +90,16 @@ function Products() {
             <div className="modal-info">
               <h2>{product.name}</h2>
               <p className="modal-type">{product.category}</p>
+
+              {/* Product Tags - between category and price */}
+              {product.tags && product.tags.length > 0 && (
+                <div className="product-tags-modal">
+                  {product.tags.map((tag, idx) => (
+                    <span key={idx} className="modal-tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+
               <div className="modal-price">₹{parseFloat(product.price).toLocaleString('en-IN')}</div>
 
               <p className="modal-description">{product.description}</p>
@@ -123,17 +133,6 @@ function Products() {
                 <div className="modal-features">
                   <h3>Care Instructions:</h3>
                   <p style={{ whiteSpace: 'pre-line' }}>{product.care_instructions}</p>
-                </div>
-              )}
-
-              {product.tags && product.tags.length > 0 && (
-                <div className="modal-features">
-                  <h3>Features:</h3>
-                  <ul>
-                    {product.tags.map((tag, idx) => (
-                      <li key={idx}>✓ {tag}</li>
-                    ))}
-                  </ul>
                 </div>
               )}
             </div>
