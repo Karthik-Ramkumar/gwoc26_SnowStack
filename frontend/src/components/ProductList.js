@@ -36,17 +36,17 @@ const ProductList = ({ products, loading, onProductClick }) => {
         <div className="product-grid">
           {products.length > 0 ? (
             products.map((product) => (
-              <div 
-                key={product.id} 
-                className="product-card fade-in" 
+              <div
+                key={product.id}
+                className="product-card fade-in"
                 data-category={product.category}
                 data-price={product.price}
                 onClick={() => onProductClick && onProductClick(product)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className="product-image">
-                  <img 
-                    src={product.image_url_full || product.image || '/static/images/products/placeholder.svg'} 
+                  <img
+                    src={product.image_url_full || product.image || '/static/images/products/placeholder.svg'}
                     alt={product.name}
                     className="placeholder-img"
                   />
@@ -59,19 +59,14 @@ const ProductList = ({ products, loading, onProductClick }) => {
                 </div>
                 <div className="product-info">
                   <h3 className="product-name">{product.name}</h3>
-                  <div className="product-meta">
-                    {product.tags && product.tags.map((tag, index) => (
-                      <span key={index} className="meta-tag">{tag}</span>
-                    ))}
-                  </div>
                   <p className="product-description">
                     {product.short_description || product.description}
                   </p>
                   <div className="product-details">
                     <span className="product-price">₹{parseFloat(product.price).toLocaleString('en-IN')}</span>
                     <div className="product-actions">
-                      <button 
-                        className="btn-icon" 
+                      <button
+                        className="btn-icon"
                         onClick={(e) => handleAddToCart(product, e)}
                         title="Add to Cart"
                       >
@@ -83,7 +78,7 @@ const ProductList = ({ products, loading, onProductClick }) => {
               </div>
             ))
           ) : (
-            <p style={{textAlign: 'center', width: '100%', padding: 'var(--spacing-xl)'}}>
+            <p style={{ textAlign: 'center', width: '100%', padding: 'var(--spacing-xl)' }}>
               No products found in this category.
             </p>
           )}
