@@ -4,7 +4,7 @@
 
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Product, CustomOrder, Order, OrderItem
+from .models import Product, CustomOrder, CorporateInquiry, Order, OrderItem
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -94,6 +94,50 @@ class CustomOrderSerializer(serializers.ModelSerializer):
     
     def validate_phone(self, value):
         """Validate phone number"""
+        import re
+        # Remove spaces and dashes
+        cleaned = re.sub(r'[\s\-\(\)]', '', value)
+        if not re.match(r'^\+?[\d]{10,15}$', cleaned):
+            raise serializers.ValidationError("Invalid phone number format")
+        return value
+
+
+class CorporateInquirySerializer(serializers.ModelSerializer):
+    """
+    Serializer for CorporateInquiry model
+    Handles corporate inquiry form submissions from React
+    """
+    
+    class Meta:
+        model = CorporateInquiry
+        fields = [
+            'id',
+            'company_name',
+            'contact_name',
+            'email',
+            'phone',
+            'service_type',
+            'team_size',
+            'budget_range',
+            'message',
+            'status',
+            'inquiry_number',
+            'created_at',
+        ]
+        read_only_fields = ['id', 'inquiry_number', 'status', 'created_at']
+    
+    def validate_email(self, value):
+        """Validate email format"""
+        import re
+        pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(pattern, value):
+            raise serializers.ValidationError("Invalid email format")
+        return value
+    
+    def validate_phone(self, value):
+        """Validate phone number if provided"""
+        if not value:  # Phone is optional
+            return value
         import re
         # Remove spaces and dashes
         cleaned = re.sub(r'[\s\-\(\)]', '', value)

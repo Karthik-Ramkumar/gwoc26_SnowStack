@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'workshops',  # Basho Workshops App
     'studio',  # Basho Studio App
     'media_content',  # Basho Media App
+    'homepage', # Basho Homepage App
 ]
 
 MIDDLEWARE = [
@@ -128,14 +129,20 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# Only include paths that exist
 STATICFILES_DIRS = [
     BASE_DIR / 'static',
-    BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
-    BASE_DIR / 'frontend' / 'build',  # React build root (for images, css folders)
 ]
+
+# Add frontend build paths only if they exist
+if (BASE_DIR / 'frontend' / 'build').exists():
+    STATICFILES_DIRS.extend([
+        BASE_DIR / 'frontend' / 'build' / 'static',  # React build static files
+        BASE_DIR / 'frontend' / 'build',  # React build root (for images, css folders)
+    ])
 
 # WhiteNoise configuration
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -185,17 +192,6 @@ COMPANY_ADDRESS = 'Pottery Studio, India'
 RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S1lAGZcFMuNU0Y')
 RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'AI3Nxw061P2yE5nTj95yaG8S')
 
-
-# Celery Configuration
-# Redis as message broker for background tasks
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
-CELERY_TASK_TRACK_STARTED = True
-CELERY_TASK_TIME_LIMIT = 30 * 60  # 30 minutes max task time
 
 # Celery Configuration
 # Redis as message broker for background tasks

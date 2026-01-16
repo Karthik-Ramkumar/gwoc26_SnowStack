@@ -12,6 +12,7 @@ function Navigation() {
   const { currentUser, logout } = useAuth();
   const cartCount = getCartCount();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -38,8 +39,8 @@ function Navigation() {
       </Link>
 
       {/* Mobile Menu Toggle */}
-      <button 
-        className="mobile-menu-toggle" 
+      <button
+        className="mobile-menu-toggle"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
       >
@@ -102,9 +103,24 @@ function Navigation() {
 
         {currentUser ? (
           <div className="user-menu">
-            <div className="user-avatar" title={currentUser.displayName || currentUser.email}>
-              {(currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()}
-            </div>
+            <Link
+              to="/profile"
+              className="user-avatar"
+              title={currentUser.displayName || currentUser.email}
+              onClick={handleNavClick}
+            >
+              {currentUser.photoURL && !imageError ? (
+                <img
+                  src={currentUser.photoURL}
+                  alt={currentUser.displayName || 'Profile'}
+                  className="user-avatar-img"
+                  referrerPolicy="no-referrer"
+                  onError={() => setImageError(true)}
+                />
+              ) : (
+                (currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()
+              )}
+            </Link>
             <button onClick={handleLogout} className="logout-btn" title="Logout">
               <LogOut size={20} color="#652810" strokeWidth={2} />
             </button>

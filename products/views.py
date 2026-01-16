@@ -9,8 +9,8 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
-from .models import Product, CustomOrder, Order, OrderItem
-from .serializers import ProductSerializer, CustomOrderSerializer, OrderSerializer
+from .models import Product, CustomOrder, CorporateInquiry, Order, OrderItem
+from .serializers import ProductSerializer, CustomOrderSerializer, CorporateInquirySerializer, OrderSerializer
 
 
 # ====================
@@ -130,6 +130,106 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
             'success': True,
             'order_number': custom_order.order_number,
             'message': 'Custom order request received. We will contact you within 24 hours.',
+            'data': serializer.data
+        }, status=status.HTTP_201_CREATED)
+
+
+# ====================
+# CORPORATE INQUIRY API VIEWSET
+# Purpose: Handle corporate inquiry form submissions
+# URL: /api/corporate-inquiries/
+# ====================
+class CorporateInquiryViewSet(viewsets.ModelViewSet):
+    """
+    API ViewSet for CorporateInquiry model
+    Handles corporate inquiry form submissions from the corporate page
+    """
+    queryset = CorporateInquiry.objects.all()
+    serializer_class = CorporateInquirySerializer
+    http_method_names = ['get', 'post', 'head', 'options']  # Only allow GET and POST
+    
+    def create(self, request, *args, **kwargs):
+        """
+        Create new corporate inquiry and send email notifications asynchronously
+        Falls back to synchronous email sending if Celery is unavailable
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        inquiry = serializer.save()
+        
+        # Try to send emails asynchronously via Celery, fallback to synchronous if it fails
+        try:
+            from .tasks import send_corporate_inquiry_admin_notification, send_corporate_inquiry_customer_email
+            
+            # Try to queue async email tasks
+            try:
+                # Send admin notification in background
+                send_corporate_inquiry_admin_notification.delay(
+                    inquiry_id=inquiry.id,
+                    inquiry_number=inquiry.inquiry_number,
+                    company_name=inquiry.company_name,
+                    contact_name=inquiry.contact_name,
+                    email=inquiry.email,
+                    phone=inquiry.phone or 'Not provided',
+                    service_type_display=inquiry.get_service_type_display(),
+                    team_size=inquiry.team_size or 'Not specified',
+                    budget_range=inquiry.budget_range or 'Not specified',
+                    message=inquiry.message
+                )
+                
+                # Send customer confirmation email in background
+                send_corporate_inquiry_customer_email.delay(
+                    inquiry_number=inquiry.inquiry_number,
+                    company_name=inquiry.company_name,
+                    contact_name=inquiry.contact_name,
+                    email=inquiry.email,
+                    service_type_display=inquiry.get_service_type_display()
+                )
+                
+                print(f"✓ Corporate inquiry emails queued via Celery for {inquiry.inquiry_number}")
+                
+            except Exception as celery_error:
+                # Celery failed, fall back to synchronous email sending
+                print(f"⚠ Celery unavailable, using synchronous email fallback: {str(celery_error)}")
+                
+                from .email_utils import (
+                    send_corporate_inquiry_customer_email_sync,
+                    send_corporate_inquiry_admin_notification_sync
+                )
+                
+                # Send customer email synchronously
+                send_corporate_inquiry_customer_email_sync(
+                    inquiry_number=inquiry.inquiry_number,
+                    company_name=inquiry.company_name,
+                    contact_name=inquiry.contact_name,
+                    email=inquiry.email,
+                    service_type_display=inquiry.get_service_type_display()
+                )
+                
+                # Send admin email synchronously
+                send_corporate_inquiry_admin_notification_sync(
+                    inquiry_id=inquiry.id,
+                    inquiry_number=inquiry.inquiry_number,
+                    company_name=inquiry.company_name,
+                    contact_name=inquiry.contact_name,
+                    email=inquiry.email,
+                    phone=inquiry.phone or 'Not provided',
+                    service_type_display=inquiry.get_service_type_display(),
+                    team_size=inquiry.team_size or 'Not specified',
+                    budget_range=inquiry.budget_range or 'Not specified',
+                    message=inquiry.message
+                )
+                
+                print(f"✓ Corporate inquiry emails sent synchronously for {inquiry.inquiry_number}")
+            
+        except Exception as e:
+            # Email sending completely failed - log but don't fail the request
+            print(f"✗ Failed to send corporate inquiry emails for {inquiry.inquiry_number}: {str(e)}")
+        
+        return Response({
+            'success': True,
+            'inquiry_number': inquiry.inquiry_number,
+            'message': 'Thank you! We\'ll get back to you within 24 hours.',
             'data': serializer.data
         }, status=status.HTTP_201_CREATED)
 

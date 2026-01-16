@@ -12,6 +12,7 @@ app_name = 'products'
 router = DefaultRouter()
 router.register(r'products', views.ProductViewSet, basename='product')
 router.register(r'custom-orders', views.CustomOrderViewSet, basename='customorder')
+router.register(r'corporate-inquiries', views.CorporateInquiryViewSet, basename='corporateinquiry')
 router.register(r'orders', views.OrderViewSet, basename='order')
 
 urlpatterns = [

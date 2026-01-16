@@ -1,0 +1,251 @@
+/* ===================================================================
+   ProductList.css - Cart Interaction Styles
+   Dynamic Add to Cart Button, Quantity Stepper, and Toast Notifications
+   =================================================================== */
+
+/* Import Bricolage Grotesque font */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&display=swap');
+
+/* ========== COLOR TOKENS ========== */
+:root {
+    --cart-deep-terracotta: #652810;
+    --cart-terracotta-hover: #4D1F0C;
+    --cart-bone-white: #FCF9F5;
+    --cart-jade-green: #2D5A27;
+    --cart-toast-bg: rgba(255, 255, 255, 0.90);
+}
+
+/* ========== ADD TO CART BUTTON ========== */
+.add-to-cart-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    min-width: 150px;
+    background-color: var(--cart-deep-terracotta);
+    color: var(--cart-bone-white);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(101, 40, 16, 0.25);
+}
+
+.add-to-cart-btn:hover {
+    background-color: #EDD8B4;
+    color: var(--cart-deep-terracotta);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(101, 40, 16, 0.35);
+}
+
+.add-to-cart-btn:hover svg {
+    stroke: var(--cart-deep-terracotta);
+}
+
+.add-to-cart-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(101, 40, 16, 0.25);
+}
+
+.add-to-cart-btn svg {
+    flex-shrink: 0;
+}
+
+.add-to-cart-btn span {
+    white-space: nowrap;
+}
+
+/* ========== QUANTITY STEPPER ========== */
+.cart-stepper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--cart-deep-terracotta);
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(101, 40, 16, 0.25);
+    min-width: 120px;
+}
+
+.cart-stepper__btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 38px;
+    background: transparent;
+    border: none;
+    color: var(--cart-bone-white);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cart-stepper__btn:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.cart-stepper__btn:active {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.cart-stepper__btn--minus:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.cart-stepper__btn--plus:hover {
+    background-color: rgba(255, 255, 255, 0.18);
+}
+
+.cart-stepper__qty {
+    min-width: 36px;
+    text-align: center;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--cart-bone-white);
+    padding: 0 4px;
+    user-select: none;
+}
+
+/* ========== TOAST NOTIFICATION ========== */
+.cart-toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 24px;
+    background: var(--cart-toast-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.12),
+        0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+    z-index: 10000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cart-toast--visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.cart-toast__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background-color: var(--cart-jade-green);
+    border-radius: 50%;
+    color: white;
+    flex-shrink: 0;
+}
+
+.cart-toast__message {
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+    white-space: nowrap;
+}
+
+/* ========== PRODUCT ACTIONS LAYOUT ========== */
+.product-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-50%) translateY(100px);
+    }
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+    .add-to-cart-btn {
+        padding: 8px 16px;
+        min-width: 130px;
+        font-size: 0.8rem;
+    }
+
+    .cart-stepper {
+        min-width: 110px;
+    }
+
+    .cart-stepper__btn {
+        width: 32px;
+        height: 34px;
+    }
+
+    .cart-stepper__qty {
+        min-width: 32px;
+        font-size: 0.85rem;
+    }
+
+    .cart-toast {
+        bottom: 20px;
+        padding: 12px 20px;
+        left: 16px;
+        right: 16px;
+        transform: translateX(0) translateY(100px);
+        width: auto;
+    }
+
+    .cart-toast--visible {
+        transform: translateX(0) translateY(0);
+    }
+
+    .cart-toast__message {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-to-cart-btn {
+        padding: 8px 12px;
+        min-width: 120px;
+        gap: 6px;
+    }
+
+    .add-to-cart-btn span {
+        font-size: 0.75rem;
+    }
+
+    .cart-stepper {
+        min-width: 100px;
+    }
+}
