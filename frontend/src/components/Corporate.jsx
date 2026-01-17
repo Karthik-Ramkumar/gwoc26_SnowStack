@@ -88,7 +88,7 @@ function Corporate() {
                 </p>
               </div>
               <div className="service-image-new">
-                <img src="/images/gallery/giftbox.png" alt="Corporate Gifting" />
+                <img src="/static/images/gallery/corporate-gifting.png" alt="Corporate Gifting" />
               </div >
             </div >
 
