@@ -24,6 +24,7 @@ A full-stack e-commerce platform for handcrafted ceramic products, pottery works
 | **Frontend** | React 19.2.3, React Router, Axios, Lucide Icons |
 | **Backend** | Django 6.0, Django REST Framework 3.16 |
 | **Database** | PostgreSQL (production), SQLite (development) |
+| **Media Storage** | Cloudinary (persistent cloud storage for uploads) |
 | **Payments** | Razorpay Payment Gateway |
 | **Email** | Gmail SMTP with Celery (async) or sync fallback |
 | **Task Queue** | Celery + Redis (optional for production) |
@@ -113,6 +114,12 @@ EMAIL_HOST_PASSWORD=your-gmail-app-password
 RAZORPAY_KEY_ID=rzp_test_xxxx
 RAZORPAY_KEY_SECRET=your_secret_key
 
+# Cloudinary (Optional - for production media storage)
+# Leave blank for local development (uses local media/ folder)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
 # Celery/Redis (Optional - for async emails)
 CELERY_ENABLED=False
 REDIS_URL=redis://localhost:6379
@@ -121,6 +128,7 @@ REDIS_URL=redis://localhost:6379
 **Getting API Keys:**
 - **Razorpay:** Sign up at [razorpay.com](https://razorpay.com) → Dashboard → Settings → API Keys
 - **Gmail App Password:** Google Account → Security → 2-Step Verification → App Passwords
+- **Cloudinary:** Sign up at [cloudinary.com](https://cloudinary.com/users/register_free) → Dashboard (credentials shown on homepage)
 
 ### 5. Run the Development Server
 ```bash
@@ -172,6 +180,11 @@ EMAIL_HOST_PASSWORD=your-gmail-app-password
 RAZORPAY_KEY_ID=rzp_live_xxxx
 RAZORPAY_KEY_SECRET=your_razorpay_secret
 
+# Cloudinary (REQUIRED for production - prevents file loss on restart)
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
 # Email Mode (set to False for free tier)
 CELERY_ENABLED=False
 ```
@@ -186,6 +199,8 @@ CELERY_ENABLED=False
    - Start the server
 
 Your site will be live at `https://your-app.onrender.com`
+
+> **Important:** Set up Cloudinary environment variables BEFORE uploading images! Render's free tier has ephemeral storage - uploaded files are deleted on restart (~20 minutes). Cloudinary provides persistent cloud storage. See `CLOUDINARY_SETUP.md` for detailed instructions.
 
 > **Note:** Emails will send synchronously (5-10s) with `CELERY_ENABLED=False`. For faster async emails, add Redis and Celery worker services (see `REDIS_CELERY_RENDER.md`).
 
@@ -229,7 +244,12 @@ gwoc26_SnowStack/
 │   └── build/                # Production build (auto-generated)
 │
 ├── static/                    # Django static files
-│   └── images/               # Product images, backgrounds
+│   └── images/               # Static images, backgrounds
+│
+├── media/                     # User uploaded files (local dev only)
+│   ├── products/             # Product images (via Cloudinary in production)
+│   ├── workshops/            # Workshop images
+│   └── studio/               # Studio gallery images
 │
 ├── templates/                 # Django HTML templates
 │   └── emails/               # Email notification templates
