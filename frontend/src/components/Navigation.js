@@ -88,11 +88,6 @@ function Navigation() {
       <div className="nav-center-desktop">
         <NavLinks />
       </div>
-<<<<<<< HEAD
-
-      {/* RIGHT: Actions */}
-      <div className="nav-right">
-=======
 
       {/* RIGHT: Actions */}
       <div className="nav-right">
@@ -106,14 +101,13 @@ function Navigation() {
             rel="noopener noreferrer"
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#652810" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-              <path d="M2 17l10 5 10-5"/>
-              <path d="M2 12l10 5 10-5"/>
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
             </svg>
           </a>
         )}
 
->>>>>>> c0c29b90927ff3afed6f1717adf0cd201a6ecc91
         {/* Cart */}
         <Link
           to="/cart"
@@ -187,8 +181,6 @@ function Navigation() {
 
           {currentUser ? (
             <>
-<<<<<<< HEAD
-=======
               {isStaff && (
                 <a
                   href="/admin/"
@@ -200,7 +192,6 @@ function Navigation() {
                   Admin Panel
                 </a>
               )}
->>>>>>> c0c29b90927ff3afed6f1717adf0cd201a6ecc91
               <Link
                 to="/profile"
                 className={currentPath === "/profile" ? "active" : ""}
@@ -223,10 +214,11 @@ function Navigation() {
             >
               Login
             </Link>
-          )}
-        </div>
-      </div>
-    </nav>
+          )
+          }
+        </div >
+      </div >
+    </nav >
   );
 }
 
