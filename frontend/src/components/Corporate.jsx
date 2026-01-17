@@ -52,7 +52,7 @@ function Corporate() {
   return (
     <div className="corporate-page">
       {/* HEADER - Corporate Services */}
-      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2) 100%), url('/images/gallery/corpo.jpg')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/CollectionHeaderbg.png')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
         <h1 className="funnel-title">
           <span className="japanese-accent">法人</span>
           Corporate Services
@@ -60,19 +60,15 @@ function Corporate() {
         <p>Elevate Your Corporate Culture with Artisanal Excellence</p>
       </header>
 
-      {/* Combined Quote and Services Section */}
-      <section className="intro-quote" style={{ backgroundImage: 'url(/static/images/gallery/corporate-why.jpg)', backgroundSize: '100%', backgroundPosition: 'center 20%', backgroundBlendMode: 'overlay', backgroundColor: 'rgba(237, 216, 180, 0.87)', filter: 'contrast(1.05)', paddingBottom: '5rem' }}>
-        <div className="quote-container" style={{ filter: 'contrast(0.952)' }}>
-          <h2 className="quote-text">
-            "We bridge traditional craftsmanship with modern business needs to create meaningful connections that last."
-          </h2>
-        </div>
-
+      {/* Our Offerings Section */}
+      <section className="intro-quote offerings-section porcelain-section" style={{ paddingBottom: '5rem' }}>
+        {/* Abstract Glaze Pour Texture */}
+        <div className="glaze-texture"></div>
+        
         {/* Services Section */}
-        <div className="container-new" style={{ marginTop: '3rem', filter: 'contrast(0.952)' }}>
+        <div className="container-new" style={{ position: 'relative', zIndex: 1 }}>
           <div className="section-header-new">
             <h2 className="section-title-new">Our Offerings</h2>
-            <p className="section-subtitle-new">Curated solutions designed to foster connection and appreciation.</p>
           </div>
 
           <div className="services-grid-new">

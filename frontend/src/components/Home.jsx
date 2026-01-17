@@ -5,6 +5,7 @@ import Inspiration from "./Inspiration";
 import Founder from "./Founder";
 import Masonry from "./Masonry";
 import StudioDuo from "./StudioDuo";
+import LoadingScreen from "./LoadingScreen";
 import "./Home.css";
 
 function Home() {
@@ -12,6 +13,19 @@ function Home() {
   const navigate = useNavigate();
   const [creations, setCreations] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
+
+  // Retrieve/Set loading state (Optional: if we only want it once per session, we could use sessionStorage)
+  // For now, we show it on every mount of Home as requested.
+
+  useEffect(() => {
+    // Show loading screen for enough time to read a quote/see transition
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 3000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Detect mobile screen size
   useEffect(() => {
@@ -41,6 +55,10 @@ function Home() {
 
     fetchCreations();
   }, []);
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
 
   /* Scroll/Stacking effect is handled by CSS sticky positioning in Inspiration.css */
 
@@ -109,7 +127,7 @@ function Home() {
         ref={paperRef}
         className="whatisbasho-section"
         style={{
-          backgroundImage: "url(/static/images/gallery/whatisbasho.jpg)",
+          backgroundImage: "url(/images/gallery/whatisbasho.jpg)",
         }}
       >
         <div className="whatisbasho-inner">

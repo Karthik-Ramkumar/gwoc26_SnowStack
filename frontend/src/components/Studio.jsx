@@ -8,10 +8,12 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import './Studio.css';
+import 'aframe';
 
 const API_BASE_URL = '/api';
 
 function Studio() {
+  const [showTour, setShowTour] = useState(false);
   const [exhibitions, setExhibitions] = useState([]);
   const [pastPopups, setPastPopups] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -108,6 +110,13 @@ function Studio() {
             >
               Get Directions →
             </a>
+
+            <button
+              className="studio-tour-btn"
+              onClick={() => setShowTour(true)}
+            >
+              360° VIRTUAL STUDIO TOUR
+            </button>
           </div>
           <div className="studio-map-wrapper">
             <iframe
@@ -120,6 +129,25 @@ function Studio() {
           </div>
         </div>
       </section>
+
+      {/* ================= 360 TOUR OVERLAY ================= */}
+      {showTour && (
+        <div className="tour-overlay">
+          <button
+            className="tour-close-btn"
+            onClick={() => setShowTour(false)}
+          >
+            Close 360° View
+          </button>
+          <a-scene embedded style={{ width: '100%', height: '100%' }}>
+            <a-assets>
+              <img id="sky360" src={`${process.env.PUBLIC_URL || ''}/images/gallery/36.png`} crossOrigin="anonymous" alt="360 view" />
+            </a-assets>
+            <a-sky src="#sky360" rotation="0 -130 0"></a-sky>
+            <a-camera position="0 0 0" look-controls="enabled: true; touchEnabled: true"></a-camera>
+          </a-scene>
+        </div>
+      )}
 
       {/* ================= STUDIO DETAILS (Visit & Policies) ================= */}
       <section

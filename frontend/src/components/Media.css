@@ -964,8 +964,28 @@
 }
 
 @media (max-width: 768px) {
+    .media-hero {
+        height: auto;
+        min-height: 280px;
+        padding: 60px 20px;
+        background-attachment: scroll;
+    }
+
+    .media-hero-content {
+        padding: 20px 10px;
+    }
+
     .media-hero h1 {
-        font-size: 2.2rem;
+        font-size: 3.5rem;
+        margin-bottom: 0.5rem;
+        line-height: 1.1;
+    }
+
+    .media-hero p {
+        font-size: 0.95rem;
+        max-width: 100%;
+        line-height: 1.5;
+        padding: 0 10px;
     }
 
     .gallery-masonry {
