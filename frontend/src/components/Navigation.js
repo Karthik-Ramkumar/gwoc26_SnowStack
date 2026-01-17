@@ -28,71 +28,73 @@ function Navigation() {
     setMobileMenuOpen(false);
   };
 
-  return (
-    <nav className="navbar">
-      {/* Logo */}
-      <Link to="/" className="logo" style={{ cursor: "pointer", textDecoration: "none" }} onClick={handleNavClick}>
-        <img
-          src="https://i.postimg.cc/nLh2w8mP/transbashologo.png"
-          alt="Basho Logo"
-        />
+  const NavLinks = () => (
+    <>
+      <Link
+        to="/products"
+        className={currentPath === "/products" ? "active" : ""}
+        onClick={handleNavClick}
+      >
+        Collections
       </Link>
 
-      {/* Mobile Menu Toggle */}
-      <button
-        className="mobile-menu-toggle"
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-        aria-label="Toggle menu"
+      <Link
+        to="/workshops"
+        className={currentPath === "/workshops" ? "active" : ""}
+        onClick={handleNavClick}
       >
-        {mobileMenuOpen ? <X size={28} color="#652810" /> : <Menu size={28} color="#652810" />}
-      </button>
+        Workshops
+      </Link>
 
-      {/* Navigation Links */}
-      <div className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
-        <Link
-          to="/products"
-          className={currentPath === "/products" ? "active" : ""}
-          onClick={handleNavClick}
-        >
-          Collections
+      <Link
+        to="/studio"
+        className={currentPath === "/studio" ? "active" : ""}
+        onClick={handleNavClick}
+      >
+        Studio
+      </Link>
+
+      <Link
+        to="/corporate"
+        className={currentPath === "/corporate" ? "active" : ""}
+        onClick={handleNavClick}
+      >
+        Corporate
+      </Link>
+
+      <Link
+        to="/media"
+        className={currentPath === "/media" ? "active" : ""}
+        onClick={handleNavClick}
+      >
+        Media
+      </Link>
+    </>
+  );
+
+  return (
+    <nav className="navbar">
+      {/* LEFT: Logo */}
+      <div className="nav-left">
+        <Link to="/" className="logo" onClick={handleNavClick}>
+          <img
+            src="https://i.postimg.cc/nLh2w8mP/transbashologo.png"
+            alt="Basho Logo"
+          />
         </Link>
+      </div>
 
-        <Link
-          to="/workshops"
-          className={currentPath === "/workshops" ? "active" : ""}
-          onClick={handleNavClick}
-        >
-          Workshops
-        </Link>
+      {/* CENTER: Desktop Links */}
+      <div className="nav-center-desktop">
+        <NavLinks />
+      </div>
 
-        <Link
-          to="/studio"
-          className={currentPath === "/studio" ? "active" : ""}
-          onClick={handleNavClick}
-        >
-          Studio
-        </Link>
-
-        <Link
-          to="/corporate"
-          className={currentPath === "/corporate" ? "active" : ""}
-          onClick={handleNavClick}
-        >
-          Corporate
-        </Link>
-
-        <Link
-          to="/media"
-          className={currentPath === "/media" ? "active" : ""}
-          onClick={handleNavClick}
-        >
-          Media
-        </Link>
-
+      {/* RIGHT: Actions */}
+      <div className="nav-right">
+        {/* Cart */}
         <Link
           to="/cart"
           className={`cart-icon ${currentPath === "/cart" ? "active" : ""}`}
-          style={{ position: "relative" }}
           onClick={handleNavClick}
         >
           <ShoppingCart size={24} color="#652810" strokeWidth={2} />
@@ -101,6 +103,7 @@ function Navigation() {
           )}
         </Link>
 
+        {/* User Menu */}
         {currentUser ? (
           <div className="user-menu">
             <Link
@@ -134,6 +137,57 @@ function Navigation() {
             <User size={24} color="#652810" strokeWidth={2} />
           </Link>
         )}
+
+        {/* Mobile Toggle */}
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          {mobileMenuOpen ? <X size={28} color="#652810" /> : <Menu size={28} color="#652810" />}
+        </button>
+      </div>
+
+      {/* MOBILE MENU OVERLAY */}
+      <div className={`mobile-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <NavLinks />
+
+        {/* Mobile Specific Actions */}
+        <div className="mobile-menu-actions">
+          <Link
+            to="/cart"
+            className={currentPath === "/cart" ? "active" : ""}
+            onClick={handleNavClick}
+          >
+            Cart ({cartCount})
+          </Link>
+
+          {currentUser ? (
+            <>
+              <Link
+                to="/profile"
+                className={currentPath === "/profile" ? "active" : ""}
+                onClick={handleNavClick}
+              >
+                Profile
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="mobile-logout-btn"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className={currentPath === "/login" ? "active" : ""}
+              onClick={handleNavClick}
+            >
+              Login
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );

@@ -96,6 +96,25 @@
   width: 100%;
   overflow: hidden;
   border-radius: 20px;
+  cursor: grab;
+  user-select: none;
+}
+
+/* When dragging, enable horizontal scroll and pause animation */
+.workshop-carousel-container.is-dragging {
+  overflow-x: auto;
+  cursor: grabbing;
+  /* Hide scrollbar while dragging */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.workshop-carousel-container.is-dragging::-webkit-scrollbar {
+  display: none;
+}
+
+.workshop-carousel-container.is-dragging .workshop-carousel-track {
+  animation-play-state: paused;
 }
 
 /* ==============================================

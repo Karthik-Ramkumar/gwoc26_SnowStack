@@ -477,28 +477,60 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .main-title {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 
   .japanese-accent {
-    font-size: 1.8rem;
+    font-size: 1.4rem;
   }
 
   .hero-subtitle {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .products-hero {
-    height: 30vh;
-    min-height: 240px;
+    height: 25vh;
+    min-height: 180px;
+  }
+
+  .products-main {
+    padding: 1rem 0;
+  }
+
+  /* ZERO SIDE PADDING */
+  .products-content {
+    padding: 0 4px !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Filter Section */
+  .filter-section {
+    padding: 10px 4px;
+    margin: 0 0 10px 0;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
   }
 
   .filter-container {
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 10px;
   }
 
   .filter-group {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .filter-group label {
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+  }
+
+  .filter-group select {
+    padding: 10px 36px 10px 12px;
+    font-size: 0.9rem;
     width: 100%;
   }
 
@@ -509,23 +541,10 @@
   .pottery-deco-5,
   .pottery-deco-6,
   .pottery-deco-7,
-  .pottery-deco-8 {
-    width: 80px;
-    height: auto;
-  }
-
+  .pottery-deco-8,
   .pottery-hero-1,
   .pottery-hero-2 {
-    width: 100px;
-    height: 100px;
-  }
-
-  .products-content {
-    padding: 0 1rem;
-  }
-
-  .filter-section {
-    padding: 1.5rem;
+    display: none;
   }
 }
 

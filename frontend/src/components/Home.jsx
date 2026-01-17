@@ -11,6 +11,16 @@ function Home() {
   const paperRef = useRef(null);
   const navigate = useNavigate();
   const [creations, setCreations] = useState([]);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Fetch Creations for Masonry Gallery
   useEffect(() => {
@@ -41,7 +51,7 @@ function Home() {
       <section className="video-hero">
         <video
           className="hero-video"
-          src="/static/basho-here.mp4"
+          src="/basho-here.mp4"
           autoPlay
           muted
           loop
@@ -81,7 +91,7 @@ function Home() {
           </div>
           <div className="creations-container">
             <Masonry
-              items={creations}
+              items={isMobile ? creations.slice(0, 5) : creations}
               animateFrom="bottom"
               scaleOnHover={true}
               hoverScale={0.97}

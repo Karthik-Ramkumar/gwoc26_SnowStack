@@ -4,6 +4,7 @@
   justify-content: center;
   align-items: center;
   min-height: 420px;
+  width: 100%;
 }
 
 /* Override CardSwap absolute positioning within this section */
@@ -12,6 +13,59 @@
   transform: none;
   right: auto;
   bottom: auto;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+  .text-testimonial-stack {
+    min-height: 380px;
+    justify-content: center !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  
+  .text-testimonial-stack .card-swap-container {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .text-testimonial-stack {
+    min-height: 340px;
+    padding: 10px 0;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    overflow: visible;
+  }
+  
+  .text-testimonial-stack .card-swap-container {
+    position: relative !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    transform: scale(0.75) !important;
+    transform-origin: center center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-testimonial-stack {
+    min-height: 300px;
+  }
+  
+  .text-testimonial-stack .card-swap-container {
+    transform: scale(0.6) !important;
+  }
 }
 
 .testimonial-card {
