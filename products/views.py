@@ -195,38 +195,6 @@ class CorporateInquiryViewSet(viewsets.ModelViewSet):
         except Exception as e:
             # Log the error but don't fail the request
             print(f"Failed to send corporate inquiry emails: {str(e)}")
-                    send_corporate_inquiry_customer_email_sync,
-                    send_corporate_inquiry_admin_notification_sync
-                )
-                
-                # Send customer email synchronously
-                send_corporate_inquiry_customer_email_sync(
-                    inquiry_number=inquiry.inquiry_number,
-                    company_name=inquiry.company_name,
-                    contact_name=inquiry.contact_name,
-                    email=inquiry.email,
-                    service_type_display=inquiry.get_service_type_display()
-                )
-                
-                # Send admin email synchronously
-                send_corporate_inquiry_admin_notification_sync(
-                    inquiry_id=inquiry.id,
-                    inquiry_number=inquiry.inquiry_number,
-                    company_name=inquiry.company_name,
-                    contact_name=inquiry.contact_name,
-                    email=inquiry.email,
-                    phone=inquiry.phone or 'Not provided',
-                    service_type_display=inquiry.get_service_type_display(),
-                    team_size=inquiry.team_size or 'Not specified',
-                    budget_range=inquiry.budget_range or 'Not specified',
-                    message=inquiry.message
-                )
-                
-                print(f"✓ Corporate inquiry emails sent synchronously for {inquiry.inquiry_number}")
-            
-        except Exception as e:
-            # Email sending completely failed - log but don't fail the request
-            print(f"✗ Failed to send corporate inquiry emails for {inquiry.inquiry_number}: {str(e)}")
         
         return Response({
             'success': True,
