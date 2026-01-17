@@ -80,7 +80,7 @@ function Studio() {
   return (
     <div className="studio-page">
       {/* ================= HERO SECTION ================= */}
-      <header className="studio-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/images/gallery/studiobg1.jpg')" }}>
+      <header className="studio-hero" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/studiobg1.jpg')" }}>
         <div className="studio-hero-content">
           <h1>The Studio</h1>
           <p>
@@ -94,7 +94,7 @@ function Studio() {
       {/* ================= LOCATION SECTION ================= */}
       <section
         className="studio-location"
-        style={{ backgroundImage: "url('/images/gallery/visitus.png')" }}
+        style={{ backgroundImage: "url('/static/images/gallery/visitus.png')" }}
       >
         <div className="studio-location-container">
           <div className="studio-address">
@@ -155,7 +155,7 @@ function Studio() {
       {/* ================= STUDIO DETAILS (Visit & Policies) ================= */}
       <section
         className="studio-info-section alt-bg"
-        style={{ backgroundImage: "url('/images/gallery/vstd.png')" }}
+        style={{ backgroundImage: "url('/static/images/gallery/vstd.png')" }}
       >
         <div className="studio-info-container">
           <div className="studio-info-grid">

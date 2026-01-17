@@ -13,6 +13,7 @@ function Home() {
   const navigate = useNavigate();
   const [creations, setCreations] = useState([]);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+<<<<<<< HEAD
   const [isLoading, setIsLoading] = useState(true); // Loading state
 
   // Retrieve/Set loading state (Optional: if we only want it once per session, we could use sessionStorage)
@@ -26,6 +27,8 @@ function Home() {
 
     return () => clearTimeout(timer);
   }, []);
+=======
+>>>>>>> c0c29b90927ff3afed6f1717adf0cd201a6ecc91
 
   // Detect mobile screen size
   useEffect(() => {

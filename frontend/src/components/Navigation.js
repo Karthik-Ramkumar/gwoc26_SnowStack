@@ -9,7 +9,7 @@ function Navigation() {
   const navigate = useNavigate();
   const currentPath = location.pathname;
   const { getCartCount } = useCart();
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isStaff } = useAuth();
   const cartCount = getCartCount();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [imageError, setImageError] = useState(false);
@@ -88,9 +88,32 @@ function Navigation() {
       <div className="nav-center-desktop">
         <NavLinks />
       </div>
+<<<<<<< HEAD
 
       {/* RIGHT: Actions */}
       <div className="nav-right">
+=======
+
+      {/* RIGHT: Actions */}
+      <div className="nav-right">
+        {/* Admin Button - Only show for staff users */}
+        {currentUser && isStaff && (
+          <a
+            href="/admin/"
+            className="admin-btn"
+            title="Admin Panel"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#652810" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </a>
+        )}
+
+>>>>>>> c0c29b90927ff3afed6f1717adf0cd201a6ecc91
         {/* Cart */}
         <Link
           to="/cart"
@@ -164,6 +187,20 @@ function Navigation() {
 
           {currentUser ? (
             <>
+<<<<<<< HEAD
+=======
+              {isStaff && (
+                <a
+                  href="/admin/"
+                  className="admin-link"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={handleNavClick}
+                >
+                  Admin Panel
+                </a>
+              )}
+>>>>>>> c0c29b90927ff3afed6f1717adf0cd201a6ecc91
               <Link
                 to="/profile"
                 className={currentPath === "/profile" ? "active" : ""}

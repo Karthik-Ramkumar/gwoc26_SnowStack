@@ -22,10 +22,13 @@ urlpatterns = [
     # User creation endpoint
     path('create-user/', views.create_user, name='create_user'),
     
+    # Check if user is staff
+    path('check-staff/', views.check_user_staff, name='check_staff'),
+    
     # Shipping calculator
     path('calculate-shipping/', views.calculate_shipping, name='calculate_shipping'),
     
-    # Razorpay payment endpoints
+    # JavaScript-based Razorpay payment endpoints
     path('create-razorpay-order/', views.create_razorpay_order, name='create_razorpay_order'),
     path('verify-payment/', views.verify_payment, name='verify_payment'),
     

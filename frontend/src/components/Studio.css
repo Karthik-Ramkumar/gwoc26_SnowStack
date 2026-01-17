@@ -887,8 +887,9 @@
 
     .studio-map-wrapper {
         border-radius: 0 0 24px 24px;
-        min-height: 300px;
+        min-height: 320px;
     }
+
 
     .studio-info-grid {
         grid-template-columns: 1fr;
@@ -906,7 +907,7 @@
     }
 
     .studio-map-wrapper iframe {
-        height: 300px;
+        height: 320px;
     }
 
     .carousel-card {
