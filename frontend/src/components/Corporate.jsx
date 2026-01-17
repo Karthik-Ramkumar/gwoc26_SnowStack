@@ -52,7 +52,7 @@ function Corporate() {
   return (
     <div className="corporate-page">
       {/* HEADER - Corporate Services */}
-      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2) 100%), url('static/images/gallery/corpo.jpg')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/CollectionHeaderbg.png')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
         <h1 className="funnel-title">
           <span className="japanese-accent">法人</span>
           Corporate Services
@@ -60,19 +60,14 @@ function Corporate() {
         <p>Elevate Your Corporate Culture with Artisanal Excellence</p>
       </header>
 
-      {/* Combined Quote and Services Section */}
-      <section className="intro-quote" style={{ backgroundImage: 'url(/static/images/gallery/corporate-why.jpg)', backgroundSize: '100%', backgroundPosition: 'center 20%', backgroundBlendMode: 'overlay', backgroundColor: 'rgba(237, 216, 180, 0.87)', filter: 'contrast(1.05)', paddingBottom: '5rem' }}>
-        <div className="quote-container" style={{ filter: 'contrast(0.952)' }}>
-          <h2 className="quote-text">
-            "We bridge traditional craftsmanship with modern business needs to create meaningful connections that last."
-          </h2>
-        </div>
-
+      {/* Our Offerings Section */}
+      <section className="intro-quote offerings-section porcelain-section" style={{ paddingBottom: '5rem' }}>
+        {/* Abstract Glaze Pour Texture */}
+        <div className="glaze-texture"></div>
         {/* Services Section */}
-        <div className="container-new" style={{ marginTop: '3rem', filter: 'contrast(0.952)' }}>
+        <div className="container-new" style={{ position: 'relative', zIndex: 1 }}>
           <div className="section-header-new">
             <h2 className="section-title-new">Our Offerings</h2>
-            <p className="section-subtitle-new">Curated solutions designed to foster connection and appreciation.</p>
           </div>
 
           <div className="services-grid-new">
@@ -93,12 +88,12 @@ function Corporate() {
                 </p>
               </div>
               <div className="service-image-new">
-                <img src="static/images/gallery/giftbox.png" alt="Corporate Gifting" />
-              </div>
-            </div>
+                <img src="/images/gallery/giftbox.png" alt="Corporate Gifting" />
+              </div >
+            </div >
 
             {/* Service 2 */}
-            <div className="service-card-new">
+            < div className="service-card-new" >
               <div className="service-icon-new">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#652810" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -116,10 +111,10 @@ function Corporate() {
               <div className="service-image-new">
                 <img src="/static/images/gallery/workshop-team.png" alt="Team Workshop" />
               </div>
-            </div>
+            </div >
 
             {/* Service 3 */}
-            <div className="service-card-new">
+            < div className="service-card-new" >
               <div className="service-icon-new">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#652810" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   {/* Two interlocking ceramic bowls */}
@@ -138,65 +133,66 @@ function Corporate() {
               <div className="service-image-new">
                 <img src="/static/images/gallery/collaboration.png" alt="Brand Collaborations" />
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            </div >
+          </div >
+        </div >
+      </section >
 
       {/* Artisanal Difference */}
-      <section className="difference-section">
+      < section className="difference-section" >
         {/* Living Glaze Trails - Animated Background */}
-        <svg
+        < svg
           className="glaze-trails-svg"
           width="100%"
           height="100%"
           viewBox="0 0 1400 800"
           preserveAspectRatio="xMidYMid slice"
-          style={{ position: 'absolute', top: 0, left: 0, opacity: 0.07, pointerEvents: 'none', zIndex: 0 }}
+          style={{ position: 'absolute', top: 0, left: 0, opacity: 0.07, pointerEvents: 'none', zIndex: 0 }
+          }
         >
           {/* Trail 1 - Large sweeping curve */}
-          <path
+          < path
             className="glaze-trail glaze-trail-1"
             d="M-50 150 Q200 50, 400 180 T800 120 T1200 200 T1500 100"
             fill="none" stroke="#652810" strokeWidth="3" strokeLinecap="round"
           />
           {/* Trail 2 - Mid-height wave */}
-          <path
+          < path
             className="glaze-trail glaze-trail-2"
             d="M-100 350 Q150 280, 350 380 T750 320 T1100 400 T1450 340"
             fill="none" stroke="#652810" strokeWidth="2.5" strokeLinecap="round"
           />
           {/* Trail 3 - Lower gentle curve */}
-          <path
+          < path
             className="glaze-trail glaze-trail-3"
             d="M-80 550 Q250 480, 500 580 T900 520 T1300 600 T1500 540"
             fill="none" stroke="#652810" strokeWidth="3.5" strokeLinecap="round"
           />
           {/* Trail 4 - Top delicate line */}
-          <path
+          < path
             className="glaze-trail glaze-trail-4"
             d="M0 80 Q300 20, 600 100 T1000 60 T1400 120"
             fill="none" stroke="#652810" strokeWidth="2" strokeLinecap="round"
           />
           {/* Trail 5 - Bottom flowing stroke */}
-          <path
+          < path
             className="glaze-trail glaze-trail-5"
             d="M-50 680 Q200 620, 450 700 T850 650 T1250 720 T1500 680"
             fill="none" stroke="#652810" strokeWidth="2.8" strokeLinecap="round"
           />
           {/* Trail 6 - Central organic brush */}
-          <path
+          < path
             className="glaze-trail glaze-trail-6"
             d="M-100 420 Q180 350, 420 450 T820 380 T1180 480 T1500 400"
             fill="none" stroke="#652810" strokeWidth="3.2" strokeLinecap="round"
           />
           {/* Trail 7 - Upper accent */}
-          <path
+          < path
             className="glaze-trail glaze-trail-7"
             d="M100 250 Q350 180, 600 280 T1000 220 T1350 300"
             fill="none" stroke="#652810" strokeWidth="2.2" strokeLinecap="round"
           />
-        </svg>
+        </svg >
 
         <div className="container-new">
           <div className="difference-header">
@@ -229,17 +225,17 @@ function Corporate() {
             </div>
           </div>
         </div>
-      </section>
+      </section >
 
       {/* Inquiry Form */}
-      <section className="inquiry-modern">
+      < section className="inquiry-modern" >
 
         {/* DESCRIPTION SECTION - Restored White Quote Card */}
-        <div className="quote-container-restored">
+        < div className="quote-container-restored" >
           <p style={{ fontSize: '1.5rem', color: '#652810', fontWeight: 500, lineHeight: 1.6, margin: 0, fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', textAlign: 'center' }}>
             "Bring the warmth of artisanal heritage to your team and clients through curated experiences, sustainable gifts, and meaningful collaborations. We bridge traditional craftsmanship with modern business needs to create connections that last."
           </p>
-        </div>
+        </div >
 
         <div className="container-new" style={{ marginTop: '4rem' }}>
           <div className="inquiry-card">
@@ -358,8 +354,8 @@ function Corporate() {
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </section >
+    </div >
   );
 }
 

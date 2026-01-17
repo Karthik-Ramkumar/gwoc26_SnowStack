@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import UpcomingExhibition, PastPopup, EventGalleryImage
+from .models import UpcomingExhibition, PastPopup, EventGalleryImage, StudioTourSettings
 
 
 class UpcomingExhibitionSerializer(serializers.ModelSerializer):
@@ -41,6 +41,22 @@ class EventGalleryImageSerializer(serializers.ModelSerializer):
         model = EventGalleryImage
         fields = ['id', 'image_url', 'alt_text', 'order']
     
+    def get_image_url(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
+
+
+class StudioTourSettingsSerializer(serializers.ModelSerializer):
+    image_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = StudioTourSettings
+        fields = ['active', 'image_url']
+
     def get_image_url(self, obj):
         if obj.image:
             request = self.context.get('request')

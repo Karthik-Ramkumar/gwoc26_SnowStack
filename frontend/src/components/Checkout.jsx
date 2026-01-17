@@ -215,7 +215,7 @@ function Checkout() {
       });
 
       const orderData = await orderResponse.json();
-      
+
       console.log('Order creation response:', orderData);
       console.log('Order response status:', orderResponse.status);
 
@@ -284,7 +284,7 @@ function Checkout() {
       console.log('Creating Razorpay instance...');
       try {
         const razorpay = new window.Razorpay(options);
-        
+
         // Handle errors during Razorpay initialization
         razorpay.on('payment.failed', function (response) {
           setIsProcessing(false);
@@ -292,7 +292,7 @@ function Checkout() {
           const errorMsg = response.error?.description || 'Payment failed. Please try again.';
           showError(`Payment failed: ${errorMsg}`);
         });
-        
+
         console.log('Opening Razorpay checkout...');
         razorpay.open();
       } catch (razorpayError) {
@@ -361,10 +361,10 @@ function Checkout() {
         // Show success message with order details
         const successMessage = `Payment successful! Order #${result.order_number}. Confirmation email sent to ${formData.email}`;
         showSuccess(successMessage);
-        
+
         // Clear the cart
         clearCart();
-        
+
         // Redirect to home after 2 seconds to let user see the success message
         setTimeout(() => {
           navigate('/');
@@ -375,7 +375,7 @@ function Checkout() {
       }
     } catch (error) {
       console.error('Error verifying payment:', error);
-      const errorMessage = paymentResponse?.razorpay_payment_id 
+      const errorMessage = paymentResponse?.razorpay_payment_id
         ? `Payment received but order creation failed. Please contact support with Payment ID: ${paymentResponse.razorpay_payment_id}`
         : 'Payment verification failed. Please try again or contact support.';
       showError(errorMessage);
@@ -420,7 +420,7 @@ function Checkout() {
       <div className="checkout-page">
         {/* Hero Section */}
         <section className="checkout-hero" style={{
-          backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/static/images/gallery/checkout.jpg')",
+          backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,0.7) 100%), url('/images/gallery/checkout.jpg')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           position: 'relative'

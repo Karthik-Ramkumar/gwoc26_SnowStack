@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.html import format_html
-from .models import UpcomingExhibition, PastPopup, EventGalleryImage
+from .models import UpcomingExhibition, PastPopup, EventGalleryImage, StudioTourSettings
 
 
 # ====================
@@ -252,3 +252,33 @@ class EventGalleryImageAdmin(admin.ModelAdmin):
             return obj.alt_text
         return format_html('<em style="color: #999;">Gallery Image #{}</em>', obj.id)
     alt_text_display.short_description = 'Description'
+
+
+@admin.register(StudioTourSettings)
+class StudioTourSettingsAdmin(admin.ModelAdmin):
+    list_display = ['image_preview', 'active']
+    readonly_fields = ['image_preview_large']
+
+    def image_preview(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="width: 100px; height: 60px; object-fit: cover; border-radius: 4px;" />',
+                obj.image.url
+            )
+        return "No Image"
+    image_preview.short_description = "Preview"
+
+    def image_preview_large(self, obj):
+        if obj.image:
+            return format_html(
+                '<img src="{}" style="max-width: 500px; max-height: 500px; border-radius: 8px;" />',
+                obj.image.url
+            )
+        return "No Image"
+    image_preview_large.short_description = "Current Image"
+
+    def has_add_permission(self, request):
+        # Singleton pattern: prevent adding more than one
+        if self.model.objects.exists():
+            return False
+        return super().has_add_permission(request)

@@ -840,23 +840,49 @@
 }
 
 @media (max-width: 768px) {
+    .studio-hero {
+        height: auto;
+        min-height: 280px;
+        padding-top: 60px;
+        padding-bottom: 60px;
+    }
+
+    .studio-hero-content {
+        padding: 20px;
+    }
+
     .studio-hero h1 {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .studio-hero p {
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 100%;
+        padding: 0 10px;
+    }
+
+    .studio-location {
+        padding: 60px 20px;
     }
 
     .studio-location-container {
         grid-template-columns: 1fr;
         gap: 0;
+        margin: 0 10px;
+        width: auto;
     }
 
     .studio-address {
-        padding: 50px 40px;
+        padding: 40px 25px;
         text-align: center;
         align-items: center;
     }
 
     .studio-address h2 {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .studio-map-wrapper {
@@ -864,18 +890,24 @@
         min-height: 320px;
     }
 
+
     .studio-info-grid {
         grid-template-columns: 1fr;
-        gap: 40px;
+        gap: 25px;
+        margin: 0 10px;
+    }
+
+    .info-column {
+        padding: 30px 25px;
+    }
+
+    .info-column h2 {
+        font-size: 1.6rem;
+        text-align: center;
     }
 
     .studio-map-wrapper iframe {
         height: 320px;
-    }
-
-    .studio-info-grid {
-        grid-template-columns: 1fr;
-        gap: 40px;
     }
 
     .carousel-card {
@@ -888,51 +920,156 @@
 
     /* Swiper Carousel Responsive */
     .swiper-nav-btn {
-        width: 36px;
-        height: 36px;
+        width: 40px;
+        height: 40px;
+        background: rgba(237, 216, 180, 0.9);
     }
 
     .swiper-nav-prev {
-        left: 1%;
+        left: 10px;
     }
 
     .swiper-nav-next {
-        right: 1%;
+        right: 10px;
     }
 
     .swiper-carousel-wrapper {
-        padding: 0 3%;
+        padding: 0;
     }
 
     .gallery-slide-item {
-        height: 300px;
+        height: 280px;
         border-radius: 16px;
     }
 
-    .studio-gallery h2 {
-        font-size: 2.5rem;
+    .studio-gallery h2,
+    .studio-exhibitions h2,
+    .studio-past-popups h2 {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        padding: 0 10px;
     }
 
     .studio-info-section,
     .studio-exhibitions,
     .studio-past-popups,
     .studio-gallery {
-        padding: 60px 20px;
+        padding: 50px 10px;
     }
 }
 
 @media (max-width: 480px) {
-    .swiper-nav-btn {
-        width: 32px;
-        height: 32px;
+    .studio-hero h1 {
+        font-size: 1.6rem;
+    }
+
+    .carousel-card {
+        flex: 0 0 100%;
+        max-width: 320px;
     }
 
     .gallery-slide-item {
-        height: 250px;
+        height: 240px;
         border-radius: 12px;
     }
 
     .popup-slide-card {
         border-radius: 12px;
+    }
+
+    .studio-info-section,
+    .studio-exhibitions,
+    .studio-past-popups,
+    .studio-gallery {
+        padding: 40px 10px;
+    }
+}
+
+/* =========================
+   360 TOUR STYLES
+========================= */
+
+/* White Pill Button */
+.studio-tour-btn {
+    display: inline-block;
+    background: #FFFFFF;
+    color: #652810;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 12px 28px;
+    border-radius: 50px;
+    border: 1px solid rgba(101, 40, 16, 0.2);
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    margin-top: 16px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    width: fit-content;
+}
+
+.studio-tour-btn:hover {
+    background: #652810;
+    color: #FFFFFF;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(101, 40, 16, 0.15);
+}
+
+/* Full Screen Overlay */
+.tour-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: #000;
+}
+
+.tour-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    background: #000000;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    padding: 10px 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+}
+
+.tour-close-btn:hover {
+    background: #FFFFFF;
+    color: #000000;
+}
+
+/* Fix for A-Frame Canvas */
+.tour-overlay canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Mobile Adjustments for Address Section to accommodate the new button */
+@media (max-width: 768px) {
+    .studio-address {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .studio-tour-btn {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 280px;
     }
 }
