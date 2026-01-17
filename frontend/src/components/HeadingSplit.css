@@ -6,6 +6,7 @@
   letter-spacing: -0.02em;
   color: #3d1a0a;
   font-weight: 800;
+  word-break: break-word;
 }
 
 .split-wrapper {
@@ -16,4 +17,35 @@
 .split-char {
   display: inline-block;
   will-change: transform, opacity;
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+  .heading-split {
+    text-align: center !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .heading-split {
+    text-align: center !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    flex-wrap: wrap;
+  }
+  
+  .split-char {
+    font-size: clamp(2rem, 10vw, 3rem) !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .split-char {
+    font-size: clamp(1.8rem, 9vw, 2.5rem) !important;
+  }
 }

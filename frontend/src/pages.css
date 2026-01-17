@@ -251,6 +251,8 @@
     padding-top: 1rem;
     margin-top: 0.5rem;
     border-top: 1px solid rgba(101, 40, 16, 0.1);
+    gap: 8px;
+    flex-wrap: nowrap;
 }
 
 /* Product Price - Work Sans Bold Terracotta */
@@ -740,10 +742,13 @@
     .product-details {
         padding-top: 0.6rem;
         margin-top: 0.4rem;
+        flex-wrap: nowrap;
+        gap: 6px;
     }
 
     .product-price {
         font-size: 1rem;
+        flex-shrink: 0;
     }
 
     .btn-icon {

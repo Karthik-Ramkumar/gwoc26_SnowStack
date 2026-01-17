@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Gauge, Users, ChartBar } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import './Workshops.css';
 import wrkBg from '../images/gallery/wrk.png';
+import workshopHeaderBg from '../images/gallery/workshop_header.jpg';
 
 const Workshops = () => {
   const [workshops, setWorkshops] = useState([]);
@@ -11,6 +12,48 @@ const Workshops = () => {
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const [showRegistrationForm, setShowRegistrationForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+  // Drag scroll state for Past Creations
+  const scrollContainerRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(0);
+
+  // Drag scroll handlers for desktop
+  const handleMouseDown = (e) => {
+    if (!scrollContainerRef.current) return;
+    setIsDragging(true);
+    setStartX(e.pageX - scrollContainerRef.current.offsetLeft);
+    setScrollLeft(scrollContainerRef.current.scrollLeft);
+    scrollContainerRef.current.style.cursor = 'grabbing';
+    scrollContainerRef.current.style.userSelect = 'none';
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.cursor = 'grab';
+      scrollContainerRef.current.style.userSelect = '';
+    }
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging || !scrollContainerRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - scrollContainerRef.current.offsetLeft;
+    const walk = (x - startX) * 2; // Multiply for faster scroll
+    scrollContainerRef.current.scrollLeft = scrollLeft - walk;
+  };
+
+  const handleMouseLeave = () => {
+    if (isDragging) {
+      setIsDragging(false);
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.style.cursor = 'grab';
+        scrollContainerRef.current.style.userSelect = '';
+      }
+    }
+  };
 
   const filterWorkshops = useCallback(() => {
     if (selectedType === 'all') {
@@ -430,7 +473,7 @@ const Workshops = () => {
   return (
     <div className="workshops-page">
       {/* HEADER - 1/3 screen with pattern and Japanese text */}
-      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 100%), url('/static/images/gallery/pattern-brown.jpg.png')" }}>
+      <header className="workshops-header" style={{ backgroundImage: `linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.5) 100%), url(${workshopHeaderBg})` }}>
         <h1 className="funnel-title">
           <span className="japanese-accent">ワークショップ</span>
           Pottery Workshops & Experiences
@@ -499,11 +542,15 @@ const Workshops = () => {
         </div>
       </section>
 
-      {/* DESCRIPTION SECTION - Clean centered text */}
+      {/* DESCRIPTION SECTION - Philosophy Card Design */}
       <section className="workshops-description-section">
-        <div className="workshops-description-center">
-          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 400, lineHeight: 1.8, maxWidth: '800px', margin: '0 auto', fontFamily: "'Cormorant Garamond', 'Noto Serif JP', Georgia, serif", fontStyle: 'italic', letterSpacing: '0.3px' }}>
-            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create meaningful pieces through shared experience.
+        <div className="philosophy-card">
+          <div className="philosophy-header">
+            <span className="philosophy-label">OUR CRAFT</span>
+            <div className="philosophy-divider"></div>
+          </div>
+          <p className="philosophy-text">
+            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends <strong>hands-on learning</strong> with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand <strong>the craft</strong>, and create meaningful pieces through shared experience.
           </p>
         </div>
       </section>
@@ -514,7 +561,14 @@ const Workshops = () => {
           <span className="japanese-accent">過去の作品</span>
           Our Past Creations
         </h2>
-        <div className="infinite-scroll-container">
+        <div 
+          className={`infinite-scroll-container ${isDragging ? 'is-dragging' : ''}`}
+          ref={scrollContainerRef}
+          onMouseDown={handleMouseDown}
+          onMouseUp={handleMouseUp}
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+        >
           <div className="infinite-scroll-track">
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15].map((num) => (
               <div key={`set1-${num}`} className="scroll-item">

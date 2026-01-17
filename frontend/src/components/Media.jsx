@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import './Media.css';
 import DomeGallery from './DomeGallery';
@@ -10,7 +10,24 @@ import VideoTestimonialsHero from './VideoTestimonialsHero';
 
 const API_BASE_URL = '/api';
 
+// Custom hook for responsive detection
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth <= breakpoint : false
+  );
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= breakpoint);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
 function Media() {
+  const isMobile = useIsMobile();
+  
   const [galleryImages, setGalleryImages] = useState([]);
   const [workshopGalleryImages, setWorkshopGalleryImages] = useState([]);
   const [studioGalleryImages, setStudioGalleryImages] = useState([]);
@@ -21,6 +38,18 @@ function Media() {
   const [lightboxImage, setLightboxImage] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [videoModal, setVideoModal] = useState(null);
+
+  // Memoize dome gallery config based on screen size
+  const domeConfig = useMemo(() => ({
+    fit: isMobile ? 0.65 : 0.48,
+    maxVerticalRotationDeg: isMobile ? 3 : 4,
+    dragSensitivity: isMobile ? 16 : 24,
+    minRadius: isMobile ? 600 : 1500,
+    imageBorderRadius: isMobile ? "10px" : "18px",
+    openedImageBorderRadius: isMobile ? "14px" : "22px",
+    openedImageWidth: isMobile ? "260px" : "320px",
+    openedImageHeight: isMobile ? "340px" : "420px"
+  }), [isMobile]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -109,16 +138,16 @@ function Media() {
                 src: img.image_url,
                 alt: img.caption || img.title || 'Gallery image'
               }))}
-              fit={0.48}
+              fit={domeConfig.fit}
               padFactor={0.02}
-              maxVerticalRotationDeg={4}
-              dragSensitivity={24}
-              minRadius={1500}
+              maxVerticalRotationDeg={domeConfig.maxVerticalRotationDeg}
+              dragSensitivity={domeConfig.dragSensitivity}
+              minRadius={domeConfig.minRadius}
               grayscale={false}
-              imageBorderRadius="18px"
-              openedImageBorderRadius="22px"
-              openedImageWidth="320px"
-              openedImageHeight="420px"
+              imageBorderRadius={domeConfig.imageBorderRadius}
+              openedImageBorderRadius={domeConfig.openedImageBorderRadius}
+              openedImageWidth={domeConfig.openedImageWidth}
+              openedImageHeight={domeConfig.openedImageHeight}
             />
           </div>
         )}

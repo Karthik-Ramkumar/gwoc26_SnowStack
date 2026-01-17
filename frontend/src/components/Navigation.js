@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { ShoppingCart, User, LogOut, Menu, X } from "lucide-react";
+import { ShoppingCart, User, LogOut } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../contexts/AuthContext";
 import { useState } from "react";
@@ -38,13 +38,59 @@ function Navigation() {
         />
       </Link>
 
+      {/* Mobile Nav Icons (Visible on Mobile Only) */}
+      <div className="mobile-nav-icons">
+        <Link
+          to="/cart"
+          className="cart-icon"
+          style={{ position: "relative" }}
+          onClick={handleNavClick}
+        >
+          <ShoppingCart size={22} color="#652810" strokeWidth={2} />
+          {cartCount > 0 && (
+            <span className="cart-badge">{cartCount}</span>
+          )}
+        </Link>
+
+        {currentUser ? (
+          <Link
+            to="/profile"
+            className="user-avatar"
+            title={currentUser.displayName || currentUser.email}
+            onClick={handleNavClick}
+          >
+            {currentUser.photoURL && !imageError ? (
+              <img
+                src={currentUser.photoURL}
+                alt={currentUser.displayName || 'Profile'}
+                className="user-avatar-img"
+                referrerPolicy="no-referrer"
+                onError={() => setImageError(true)}
+              />
+            ) : (
+              (currentUser.displayName || currentUser.email || 'U').charAt(0).toUpperCase()
+            )}
+          </Link>
+        ) : (
+          <Link
+            to="/login"
+            className="login-link"
+            onClick={handleNavClick}
+          >
+            <User size={22} color="#652810" strokeWidth={2} />
+          </Link>
+        )}
+      </div>
+
       {/* Mobile Menu Toggle */}
       <button
-        className="mobile-menu-toggle"
+        className={`mobile-menu-toggle ${mobileMenuOpen ? 'is-open' : ''}`}
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle menu"
       >
-        {mobileMenuOpen ? <X size={28} color="#652810" /> : <Menu size={28} color="#652810" />}
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
+        <span className="hamburger-line"></span>
       </button>
 
       {/* Navigation Links */}

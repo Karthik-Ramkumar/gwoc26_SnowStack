@@ -35,3 +35,9 @@
 .item-wrapper:hover .item-img {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
+
+@media (max-width: 768px) {
+    .item-wrapper {
+        padding: 5px;
+    }
+}

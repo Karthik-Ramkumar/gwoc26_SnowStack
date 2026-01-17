@@ -51,6 +51,37 @@ export default function VideoTestimonialsHero({ videos = [], onPlay }) {
             )}
           </div>
         </div>
+        
+        {/* Mobile Navigation Arrows - Below Video */}
+        <div className="video-mobile-nav">
+          <button 
+            className="mobile-nav-arrow prev" 
+            aria-label="Previous review" 
+            onClick={() => setIndex((i) => (i - 1 + len) % len)}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div className="video-nav-dots">
+            {videos.map((_, i) => (
+              <span 
+                key={i} 
+                className={`nav-dot ${i === index ? 'active' : ''}`}
+                onClick={() => setIndex(i)}
+              />
+            ))}
+          </div>
+          <button 
+            className="mobile-nav-arrow next" 
+            aria-label="Next review" 
+            onClick={() => setIndex((i) => (i + 1) % len)}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
       </div>
 
       {/* Right name bars */}

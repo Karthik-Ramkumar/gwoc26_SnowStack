@@ -280,9 +280,9 @@
     max-width: 1200px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
+    grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 60px;
+    gap: 40px;
 }
 
 .testimonial-left {
@@ -290,7 +290,7 @@
     flex-direction: column;
     gap: 20px;
     justify-content: center;
-    margin-left: 70px;
+    padding-left: 40px;
 }
 
 .testimonial-left .testimonial-subtext {
@@ -302,17 +302,57 @@
 
 .testimonial-right {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
+    align-items: center;
 }
 
 @media (max-width: 900px) {
     .testimonial-layout {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+        padding: 0 20px;
+    }
+
+    .testimonial-left {
+        padding-left: 0;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .testimonial-left .testimonial-subtext {
+        margin-left: 0;
+        text-align: center;
+        width: 100%;
     }
 
     .testimonial-right {
+        display: flex;
         justify-content: center;
+        align-items: center;
         margin-top: 16px;
+        width: 100%;
+        overflow: visible;
+    }
+}
+
+@media (max-width: 480px) {
+    .media-testimonials {
+        padding: 40px 10px;
+    }
+
+    .testimonial-layout {
+        padding: 0;
+        gap: 20px;
+    }
+    
+    .testimonial-right {
+        min-height: 260px;
     }
 }
 
@@ -799,5 +839,22 @@
 
     .dome-header h2 {
         font-size: 1.8rem !important;
+    }
+}
+
+/* Mobile-specific Dome Gallery improvements */
+@media (max-width: 480px) {
+    .dome-gallery-wrapper {
+        height: min(55vh, 400px);
+        min-height: 300px;
+    }
+    
+    .dome-header {
+        left: 15px;
+        padding: 6px 14px;
+    }
+    
+    .dome-header h2 {
+        font-size: 1.5rem !important;
     }
 }

@@ -167,6 +167,7 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-shrink: 0;
 }
 
 /* ========== ANIMATIONS ========== */
@@ -236,16 +237,41 @@
 
 @media (max-width: 480px) {
     .add-to-cart-btn {
-        padding: 8px 12px;
-        min-width: 120px;
-        gap: 6px;
+        padding: 0;
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        gap: 0;
     }
 
     .add-to-cart-btn span {
-        font-size: 0.75rem;
+        display: none;
+    }
+
+    .add-to-cart-btn svg {
+        width: 18px;
+        height: 18px;
     }
 
     .cart-stepper {
-        min-width: 100px;
+        min-width: 80px;
+        height: 32px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    .cart-stepper__btn {
+        width: 26px;
+        height: 32px;
+    }
+
+    .cart-stepper__btn svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .cart-stepper__qty {
+        min-width: 22px;
+        font-size: 0.85rem;
     }
 }

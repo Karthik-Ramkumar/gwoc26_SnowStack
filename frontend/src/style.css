@@ -1054,7 +1054,14 @@ p {
 
     .footer-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .footer-col-logo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
     .footer-col-explore,
@@ -1062,9 +1069,26 @@ p {
         margin-right: 0;
     }
 
+    .footer-col-explore,
+    .footer-col-connect {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-nav-list,
+    .connect-list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 0;
+    }
+
     .footer-col-image {
         order: 5;
         margin-top: 1rem;
+        display: flex;
+        justify-content: center;
     }
 
     .footer-col-image-right {
@@ -1074,22 +1098,24 @@ p {
     }
 
     .footer-handmade-image {
-        width: 180px;
+        width: 150px;
     }
 
     .footer-top-right-image {
-        max-width: 150px;
+        max-width: 80px;
         height: auto;
     }
 
     .footer-logo {
-        max-width: 150px;
+        max-width: 140px;
         height: auto;
+        margin: 0 auto 0.5rem auto !important;
     }
 
     .footer-tagline,
     .footer-address {
         font-size: 0.85rem;
+        text-align: center;
     }
 
     .footer-section-heading {
@@ -1103,10 +1129,44 @@ p {
 
     .connect-link {
         font-size: 0.9rem;
+        justify-content: center;
     }
 
     .footer-bottom {
         text-align: center;
+        font-size: 0.85rem;
+        padding-top: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-footer {
+        padding: 1.5rem 0.75rem 1rem;
+    }
+
+    .footer-grid {
+        gap: 1.2rem;
+    }
+
+    .footer-handmade-image {
+        width: 120px;
+    }
+
+    .footer-logo {
+        max-width: 120px;
+    }
+
+    .footer-tagline,
+    .footer-address {
+        font-size: 0.8rem;
+    }
+
+    .footer-section-heading {
+        font-size: 1rem;
+    }
+
+    .footer-nav-link,
+    .connect-link {
         font-size: 0.85rem;
     }
 }

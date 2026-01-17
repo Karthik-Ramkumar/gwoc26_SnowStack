@@ -23,14 +23,27 @@
   -webkit-backface-visibility: hidden;
 }
 
+@media (max-width: 900px) {
+  .card-swap-container {
+    position: relative !important;
+    bottom: auto !important;
+    right: auto !important;
+    left: auto !important;
+    transform: scale(0.85) !important;
+    transform-origin: center center !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
 @media (max-width: 768px) {
   .card-swap-container {
-    transform: scale(0.75) translate(25%, 25%);
+    transform: scale(0.75) !important;
   }
 }
 
 @media (max-width: 480px) {
   .card-swap-container {
-    transform: scale(0.55) translate(25%, 25%);
+    transform: scale(0.6) !important;
   }
 }
