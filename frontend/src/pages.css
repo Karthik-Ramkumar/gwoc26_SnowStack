@@ -757,7 +757,7 @@
     }
 
     .product-details {
-        <<<<<<< HEAD padding-top: 16px;
+        padding-top: 16px;
         margin-top: 12px;
         flex-direction: row;
         justify-content: space-between;
@@ -767,17 +767,6 @@
 
     .product-price {
         font-size: 1.35rem;
-        =======padding-top: 6px;
-        margin-top: 4px;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .product-price {
-        font-size: 0.95rem;
-        >>>>>>>c0c29b90927ff3afed6f1717adf0cd201a6ecc91 font-weight: 700;
     }
 
     .product-actions {
@@ -785,13 +774,10 @@
     }
 
     .btn-icon {
-        <<<<<<< HEAD width: 44px;
+        width: 44px;
         height: 44px;
         border-radius: 10px;
-        =======width: 30px;
-        height: 30px;
-        border-radius: 5px;
-        >>>>>>>c0c29b90927ff3afed6f1717adf0cd201a6ecc91 padding: 0;
+        padding: 0;
     }
 
     .btn-icon svg {
@@ -835,8 +821,6 @@
     .btn-icon {
         width: 40px;
         height: 40px;
-        =======width: 14px;
-        height: 14px;
     }
 
     .product-badge {
