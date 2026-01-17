@@ -196,6 +196,34 @@
     margin-bottom: 2rem;
 }
 
+.studio-address {
+    padding: 70px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+}
+
+.studio-address h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 500;
+    color: #3d2a1f;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.studio-address-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 2.2;
+    letter-spacing: 0.01em;
+    color: #5a4a40;
+    margin-bottom: 2rem;
+}
+
 .studio-address-text span {
     display: block;
 }
@@ -228,6 +256,7 @@
 /* =========================
    INFO SECTIONS (Visit & Policies)
 ========================= */
+
 /* Import Bricolage Grotesque and Work Sans */
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600&family=Work+Sans:wght@300;400&display=swap');
 
@@ -833,6 +862,11 @@
     .studio-map-wrapper {
         border-radius: 0 0 24px 24px;
         min-height: 320px;
+    }
+
+    .studio-info-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
     }
 
     .studio-map-wrapper iframe {

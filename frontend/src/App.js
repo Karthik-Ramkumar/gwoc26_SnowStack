@@ -18,6 +18,7 @@ import Profile from "./components/Profile";
 import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import ChatbotWidget from "./components/ChatbotWidget";
 
 // Component to scroll to top on route change
 function ScrollToTop() {
@@ -55,6 +56,7 @@ function App() {
               </Routes>
 
               <Footer />
+              <ChatbotWidget />
             </div>
           </ToastProvider>
         </CartProvider>

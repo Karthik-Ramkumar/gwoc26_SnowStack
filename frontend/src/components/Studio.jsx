@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import studioHeaderBg from '../images/gallery/studio_header.jpg';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { FreeMode, Navigation, Autoplay } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';

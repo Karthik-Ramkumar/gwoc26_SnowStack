@@ -499,11 +499,19 @@ const Workshops = () => {
         </div>
       </section>
 
-      {/* DESCRIPTION SECTION - Clean centered text */}
-      <section className="workshops-description-section">
-        <div className="workshops-description-center">
-          <p style={{ fontSize: '1.4rem', color: '#442D1C', fontWeight: 400, lineHeight: 1.8, maxWidth: '800px', margin: '0 auto', fontFamily: "'Cormorant Garamond', 'Noto Serif JP', Georgia, serif", fontStyle: 'italic', letterSpacing: '0.3px' }}>
-            At Basho, our workshops and experiences invite you to slow down and engage with clay in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create meaningful pieces through shared experience.
+      {/* DESCRIPTION SECTION - Porcelain Quote Design */}
+      <section className="porcelain-section">
+        {/* Abstract Glaze Pour Texture Background */}
+        <div className="glaze-texture"></div>
+
+        {/* Porcelain Quote Card */}
+        <div className="porcelain-card">
+          {/* Philosophy Header */}
+          <span className="porcelain-label">OUR CRAFT</span>
+
+          {/* Quote Text */}
+          <p className="porcelain-quote">
+            At Basho, our workshops and experiences invite you to slow down and <strong className="porcelain-keyword">engage with clay</strong> in its most honest form. Guided by skilled artisans, each session blends hands-on learning with thoughtful design — creating spaces where individuals, couples, and groups come together to explore pottery, understand the craft, and create <strong className="porcelain-keyword">meaningful pieces</strong> through shared experience.
           </p>
         </div>
       </section>

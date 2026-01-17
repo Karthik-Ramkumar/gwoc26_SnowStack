@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import axios from 'axios';
 import './Media.css';
 import DomeGallery from './DomeGallery';
@@ -10,7 +10,24 @@ import VideoTestimonialsHero from './VideoTestimonialsHero';
 
 const API_BASE_URL = '/api';
 
+// Custom hook for responsive detection
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== 'undefined' ? window.innerWidth <= breakpoint : false
+  );
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= breakpoint);
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [breakpoint]);
+
+  return isMobile;
+}
+
 function Media() {
+  const isMobile = useIsMobile();
+
   const [galleryImages, setGalleryImages] = useState([]);
   const [workshopGalleryImages, setWorkshopGalleryImages] = useState([]);
   const [studioGalleryImages, setStudioGalleryImages] = useState([]);
@@ -21,6 +38,21 @@ function Media() {
   const [lightboxImage, setLightboxImage] = useState(null);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [videoModal, setVideoModal] = useState(null);
+
+  // Mobile gallery pagination - show 8 initially, load 8 more each time
+  const [mobileGalleryLimit, setMobileGalleryLimit] = useState(8);
+
+  // Memoize dome gallery config based on screen size
+  const domeConfig = useMemo(() => ({
+    fit: isMobile ? 0.85 : 0.48,
+    maxVerticalRotationDeg: isMobile ? 2 : 4,
+    dragSensitivity: isMobile ? 12 : 24,
+    minRadius: isMobile ? 200 : 1500,
+    imageBorderRadius: isMobile ? "8px" : "18px",
+    openedImageBorderRadius: isMobile ? "12px" : "22px",
+    openedImageWidth: isMobile ? "240px" : "320px",
+    openedImageHeight: isMobile ? "320px" : "420px"
+  }), [isMobile]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -98,8 +130,8 @@ function Media() {
 
       {/* ================= PRODUCT GALLERY ================= */}
       <section className="media-gallery">
-        {/* 3D Dome Gallery */}
-        {galleryImages.length > 0 && (
+        {/* 3D Dome Gallery - Desktop Only */}
+        {galleryImages.length > 0 && !isMobile && (
           <div className="dome-gallery-wrapper">
             <div className="section-header dome-header">
               <h2>Product Gallery</h2>
@@ -120,6 +152,70 @@ function Media() {
               openedImageWidth="320px"
               openedImageHeight="420px"
             />
+          </div>
+        )}
+
+        {/* Mobile Gallery - Beautiful Stacked Cards */}
+        {galleryImages.length > 0 && isMobile && (
+          <div className="mobile-product-gallery">
+            <div className="mobile-gallery-header">
+              <span className="gallery-label">OUR COLLECTION</span>
+              <h2 className="gallery-title">Product Gallery</h2>
+              <p className="gallery-subtitle">Handcrafted with intention</p>
+            </div>
+            <div className="mobile-gallery-scroll">
+              {galleryImages.slice(0, mobileGalleryLimit).map((img, index) => (
+                <div
+                  key={index}
+                  className="mobile-gallery-card"
+                  onClick={() => {
+                    setLightboxIndex(index);
+                    setLightboxImage(img.image_url);
+                  }}
+                >
+                  <div className="card-image-wrapper">
+                    <img
+                      src={img.image_url}
+                      alt={img.caption || img.title || 'Gallery image'}
+                      loading="lazy"
+                    />
+                    <div className="card-overlay">
+                      <span className="view-text">View</span>
+                    </div>
+                  </div>
+                  {img.caption && (
+                    <p className="card-caption">{img.caption}</p>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Load More Button */}
+            {mobileGalleryLimit < galleryImages.length && (
+              <div className="load-more-container">
+                <button
+                  className="load-more-btn"
+                  onClick={() => setMobileGalleryLimit(prev => prev + 8)}
+                >
+                  <span>Load More</span>
+                  <span className="load-more-count">
+                    ({galleryImages.length - mobileGalleryLimit} remaining)
+                  </span>
+                </button>
+              </div>
+            )}
+
+            {/* Show All / Less Toggle when limit reached */}
+            {mobileGalleryLimit >= galleryImages.length && galleryImages.length > 8 && (
+              <div className="load-more-container">
+                <button
+                  className="load-more-btn show-less"
+                  onClick={() => setMobileGalleryLimit(8)}
+                >
+                  Show Less
+                </button>
+              </div>
+            )}
           </div>
         )}
       </section>

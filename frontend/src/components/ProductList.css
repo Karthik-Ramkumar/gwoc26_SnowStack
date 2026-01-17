@@ -197,30 +197,42 @@
 /* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
     .add-to-cart-btn {
-        padding: 8px 16px;
-        min-width: 130px;
-        font-size: 0.8rem;
+        padding: 6px 10px;
+        min-width: auto;
+        font-size: 0.7rem;
+        gap: 4px;
+    }
+
+    .add-to-cart-btn svg {
+        width: 12px;
+        height: 12px;
     }
 
     .cart-stepper {
-        min-width: 110px;
+        min-width: 80px;
+        border-radius: 5px;
     }
 
     .cart-stepper__btn {
-        width: 32px;
-        height: 34px;
+        width: 26px;
+        height: 28px;
+    }
+
+    .cart-stepper__btn svg {
+        width: 12px;
+        height: 12px;
     }
 
     .cart-stepper__qty {
-        min-width: 32px;
-        font-size: 0.85rem;
+        min-width: 24px;
+        font-size: 0.75rem;
     }
 
     .cart-toast {
         bottom: 20px;
-        padding: 12px 20px;
-        left: 16px;
-        right: 16px;
+        padding: 10px 16px;
+        left: 12px;
+        right: 12px;
         transform: translateX(0) translateY(100px);
         width: auto;
     }
@@ -230,22 +242,37 @@
     }
 
     .cart-toast__message {
-        font-size: 0.85rem;
+        font-size: 0.8rem;
     }
 }
 
 @media (max-width: 480px) {
     .add-to-cart-btn {
-        padding: 8px 12px;
-        min-width: 120px;
-        gap: 6px;
+        padding: 5px 8px;
+        min-width: auto;
+        gap: 3px;
     }
 
     .add-to-cart-btn span {
-        font-size: 0.75rem;
+        font-size: 0.65rem;
+    }
+
+    .add-to-cart-btn svg {
+        width: 11px;
+        height: 11px;
     }
 
     .cart-stepper {
-        min-width: 100px;
+        min-width: 70px;
+    }
+
+    .cart-stepper__btn {
+        width: 22px;
+        height: 24px;
+    }
+
+    .cart-stepper__qty {
+        min-width: 20px;
+        font-size: 0.7rem;
     }
 }

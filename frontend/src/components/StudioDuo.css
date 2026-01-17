@@ -28,7 +28,8 @@
 .studio-duo-section .kintsaku-svg {
     width: 100%;
     height: 100%;
-    opacity: 0.08;
+    opacity: 0.4;
+    /* Increased from 0.08 to make it pop */
     /* Crisp high-contrast */
 }
 
@@ -36,7 +37,8 @@
 .studio-duo-section .kintsaku-line {
     stroke: #FFFFFF;
     /* Brilliant White */
-    stroke-width: 1.5;
+    stroke-width: 2.5;
+    /* Increased from 1.5 */
     fill: none;
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
@@ -462,7 +464,15 @@
         flex-direction: column;
     }
 
+    /* Make product image square to reduce height */
+    .studio-duo-section .duo-product-img {
+        aspect-ratio: 1/1;
+    }
+
+    /* Make workshop card match approximate total height of product card */
     .studio-duo-section .duo-workshop-card {
-        min-height: 300px;
+        min-height: auto;
+        aspect-ratio: 2/3.2;
+        /* Taller to match product card length */
     }
 }
