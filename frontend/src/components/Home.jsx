@@ -51,7 +51,7 @@ function Home() {
       <section className="video-hero">
         <video
           className="hero-video"
-          src="/basho-here.mp4"
+          src="/static/basho-here.mp4"
           autoPlay
           muted
           loop

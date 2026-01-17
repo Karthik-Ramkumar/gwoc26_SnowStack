@@ -52,7 +52,7 @@ function Corporate() {
   return (
     <div className="corporate-page">
       {/* HEADER - Corporate Services */}
-      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2) 100%), url('/images/gallery/corpo.jpg')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
+      <header className="workshops-header" style={{ backgroundImage: "linear-gradient(90deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.05) 50%, rgba(0,0,0,0.2) 100%), url('static/images/gallery/corpo.jpg')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}>
         <h1 className="funnel-title">
           <span className="japanese-accent">法人</span>
           Corporate Services
@@ -93,7 +93,7 @@ function Corporate() {
                 </p>
               </div>
               <div className="service-image-new">
-                <img src="/images/gallery/giftbox.png" alt="Corporate Gifting" />
+                <img src="static/images/gallery/giftbox.png" alt="Corporate Gifting" />
               </div>
             </div>
 

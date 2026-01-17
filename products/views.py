@@ -383,6 +383,48 @@ def create_user(request):
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def check_user_staff(request):
+    """
+    Check if a user has staff privileges
+    
+    Request body: {
+        "username": "firebase_uid"
+    }
+    
+    Returns: {
+        "is_staff": true/false
+    }
+    """
+    try:
+        username = request.data.get('username')
+        
+        if not username:
+            return Response({
+                'is_staff': False,
+                'error': 'Username is required'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            user = User.objects.get(username=username)
+            return Response({
+                'is_staff': user.is_staff,
+                'is_superuser': user.is_superuser
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                'is_staff': False,
+                'message': 'User not found'
+            }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response({
+            'is_staff': False,
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 # ====================
 # RAZORPAY PAYMENT INTEGRATION
 # ====================

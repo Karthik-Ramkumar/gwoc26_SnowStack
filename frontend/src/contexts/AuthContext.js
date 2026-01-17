@@ -54,6 +54,27 @@ export const AuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [isStaff, setIsStaff] = useState(false);
+
+    // Check if user is staff in Django backend
+    const checkStaffStatus = async (user) => {
+        if (!user) {
+            setIsStaff(false);
+            return;
+        }
+
+        try {
+            const response = await axios.post('/api/products/check-staff/', {
+                username: user.uid
+            });
+            
+            setIsStaff(response.data.is_staff || false);
+            console.log('👤 Staff status:', response.data.is_staff);
+        } catch (error) {
+            console.error('Error checking staff status:', error);
+            setIsStaff(false);
+        }
+    };
 
     // Sign up with email and password
     const signup = async (email, password, displayName) => {
@@ -152,8 +173,9 @@ export const AuthProvider = ({ children }) => {
             return;
         }
 
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
+            await checkStaffStatus(user);
             setLoading(false);
         });
 
@@ -170,7 +192,8 @@ export const AuthProvider = ({ children }) => {
         updateUserProfile,
         error,
         loading,
-        isConfigured: isFirebaseConfigured
+        isConfigured: isFirebaseConfigured,
+        isStaff
     };
 
     return (
