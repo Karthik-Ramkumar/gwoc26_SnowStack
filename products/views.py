@@ -100,12 +100,14 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         custom_order = serializer.save()
         
-        # Trigger asynchronous email tasks
+        # Trigger email tasks (with automatic Celery/sync fallback)
         try:
             from .tasks import send_custom_order_admin_email, send_custom_order_customer_email
+            from .email_utils import send_email_with_celery_fallback
             
-            # Send admin email in background
-            send_custom_order_admin_email.delay(
+            # Send admin email (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(
+                send_custom_order_admin_email,
                 order_id=custom_order.id,
                 order_number=custom_order.order_number,
                 name=custom_order.name,
@@ -116,8 +118,9 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
                 description=custom_order.description
             )
             
-            # Send customer confirmation email in background
-            send_custom_order_customer_email.delay(
+            # Send customer confirmation email (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(
+                send_custom_order_customer_email,
                 order_number=custom_order.order_number,
                 name=custom_order.name,
                 email=custom_order.email,
@@ -126,8 +129,7 @@ class CustomOrderViewSet(viewsets.ModelViewSet):
             
         except Exception as e:
             # Log the error but don't fail the request
-            # Emails will still be attempted by Celery
-            print(f"Failed to queue email tasks: {str(e)}")
+            print(f"Failed to send email: {str(e)}")
         
         return Response({
             'success': True,
@@ -153,49 +155,46 @@ class CorporateInquiryViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """
-        Create new corporate inquiry and send email notifications asynchronously
-        Falls back to synchronous email sending if Celery is unavailable
+        Create new corporate inquiry and send email notifications
+        Automatically uses Celery if available, falls back to sync
         """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         inquiry = serializer.save()
         
-        # Try to send emails asynchronously via Celery, fallback to synchronous if it fails
+        # Send emails (with automatic Celery/sync fallback)
         try:
             from .tasks import send_corporate_inquiry_admin_notification, send_corporate_inquiry_customer_email
+            from .email_utils import send_email_with_celery_fallback
             
-            # Try to queue async email tasks
-            try:
-                # Send admin notification in background
-                send_corporate_inquiry_admin_notification.delay(
-                    inquiry_id=inquiry.id,
-                    inquiry_number=inquiry.inquiry_number,
-                    company_name=inquiry.company_name,
-                    contact_name=inquiry.contact_name,
-                    email=inquiry.email,
-                    phone=inquiry.phone or 'Not provided',
-                    service_type_display=inquiry.get_service_type_display(),
-                    team_size=inquiry.team_size or 'Not specified',
-                    budget_range=inquiry.budget_range or 'Not specified',
-                    message=inquiry.message
-                )
-                
-                # Send customer confirmation email in background
-                send_corporate_inquiry_customer_email.delay(
-                    inquiry_number=inquiry.inquiry_number,
-                    company_name=inquiry.company_name,
-                    contact_name=inquiry.contact_name,
-                    email=inquiry.email,
-                    service_type_display=inquiry.get_service_type_display()
-                )
-                
-                print(f"✓ Corporate inquiry emails queued via Celery for {inquiry.inquiry_number}")
-                
-            except Exception as celery_error:
-                # Celery failed, fall back to synchronous email sending
-                print(f"⚠ Celery unavailable, using synchronous email fallback: {str(celery_error)}")
-                
-                from .email_utils import (
+            # Send admin notification (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(
+                send_corporate_inquiry_admin_notification,
+                inquiry_id=inquiry.id,
+                inquiry_number=inquiry.inquiry_number,
+                company_name=inquiry.company_name,
+                contact_name=inquiry.contact_name,
+                email=inquiry.email,
+                phone=inquiry.phone or 'Not provided',
+                service_type_display=inquiry.get_service_type_display(),
+                team_size=inquiry.team_size or 'Not specified',
+                budget_range=inquiry.budget_range or 'Not specified',
+                message=inquiry.message
+            )
+            
+            # Send customer confirmation (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(
+                send_corporate_inquiry_customer_email,
+                inquiry_number=inquiry.inquiry_number,
+                company_name=inquiry.company_name,
+                contact_name=inquiry.contact_name,
+                email=inquiry.email,
+                service_type_display=inquiry.get_service_type_display()
+            )
+            
+        except Exception as e:
+            # Log the error but don't fail the request
+            print(f"Failed to send corporate inquiry emails: {str(e)}")
                     send_corporate_inquiry_customer_email_sync,
                     send_corporate_inquiry_admin_notification_sync
                 )
@@ -656,27 +655,28 @@ def verify_payment(request):
                 order.internal_notes = f"Razorpay Payment\nOrder ID: {razorpay_order_id}\nPayment ID: {razorpay_payment_id}"
                 order.save()
                 
-                # Send email confirmations asynchronously using Celery
+                # Send email confirmations (with automatic Celery/sync fallback)
                 email_sent = False
                 admin_email_sent = False
                 
                 try:
                     from .tasks import send_product_order_confirmation_email, send_product_order_admin_notification
+                    from .email_utils import send_email_with_celery_fallback
                     
-                    # Queue customer confirmation email
-                    send_product_order_confirmation_email.delay(order.id)
+                    # Send customer confirmation email (async if Celery enabled, sync otherwise)
+                    send_email_with_celery_fallback(send_product_order_confirmation_email, order.id)
                     email_sent = True
-                    logger.info(f"Customer confirmation email queued for order {order.order_number}")
+                    logger.info(f"Customer confirmation email sent for order {order.order_number}")
                 except Exception as email_error:
-                    logger.error(f"Error queueing customer email for order {order.order_number}: {str(email_error)}")
+                    logger.error(f"Error sending customer email for order {order.order_number}: {str(email_error)}")
                 
                 try:
-                    # Queue admin notification email
-                    send_product_order_admin_notification.delay(order.id)
+                    # Send admin notification email (async if Celery enabled, sync otherwise)
+                    send_email_with_celery_fallback(send_product_order_admin_notification, order.id)
                     admin_email_sent = True
-                    logger.info(f"Admin notification email queued for order {order.order_number}")
+                    logger.info(f"Admin notification email sent for order {order.order_number}")
                 except Exception as email_error:
-                    logger.error(f"Error queueing admin email for order {order.order_number}: {str(email_error)}")
+                    logger.error(f"Error sending admin email for order {order.order_number}: {str(email_error)}")
                 
                 return Response({
                     'success': True,

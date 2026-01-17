@@ -67,35 +67,36 @@ class WorkshopRegistrationViewSet(viewsets.ModelViewSet):
                 slot.is_available = False
             slot.save()
         
-        # Send email confirmations asynchronously using Celery
-        email_queued = False
-        admin_email_queued = False
+        # Send email confirmations (with automatic Celery/sync fallback)
+        email_sent = False
+        admin_email_sent = False
         
         try:
             from products.tasks import send_workshop_confirmation_email, send_workshop_admin_notification
+            from products.email_utils import send_email_with_celery_fallback
             
-            # Queue customer confirmation email
-            send_workshop_confirmation_email.delay(registration.id)
-            email_queued = True
-            logger.info(f"Workshop confirmation email queued for registration {registration.registration_number}")
+            # Send customer confirmation email (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(send_workshop_confirmation_email, registration.id)
+            email_sent = True
+            logger.info(f"Workshop confirmation email sent for registration {registration.registration_number}")
         except Exception as email_error:
-            logger.error(f"Error queueing customer email for registration {registration.registration_number}: {str(email_error)}")
+            logger.error(f"Error sending customer email for registration {registration.registration_number}: {str(email_error)}")
         
         try:
-            # Queue admin notification email
-            send_workshop_admin_notification.delay(registration.id)
-            admin_email_queued = True
-            logger.info(f"Admin notification email queued for registration {registration.registration_number}")
+            # Send admin notification email (async if Celery enabled, sync otherwise)
+            send_email_with_celery_fallback(send_workshop_admin_notification, registration.id)
+            admin_email_sent = True
+            logger.info(f"Admin notification email sent for registration {registration.registration_number}")
         except Exception as email_error:
-            logger.error(f"Error queueing admin email for registration {registration.registration_number}: {str(email_error)}")
+            logger.error(f"Error sending admin email for registration {registration.registration_number}: {str(email_error)}")
         
         headers = self.get_success_headers(serializer.data)
         return Response(
             {
                 'message': 'Registration successful! You will receive a confirmation email shortly.',
                 'registration': serializer.data,
-                'email_queued': email_queued,
-                'admin_notified': admin_email_queued
+                'email_sent': email_sent,
+                'admin_notified': admin_email_sent
             },
             status=status.HTTP_201_CREATED,
             headers=headers

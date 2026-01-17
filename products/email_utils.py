@@ -12,6 +12,42 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def send_email_with_celery_fallback(task_func, *args, **kwargs):
+    """
+    Smart email sender - uses Celery if enabled, otherwise sends synchronously
+    
+    Args:
+        task_func: The Celery task function to call
+        *args, **kwargs: Arguments to pass to the task
+        
+    Returns:
+        Result from task execution or None if failed
+    """
+    # Check if Celery is enabled
+    celery_enabled = getattr(settings, 'CELERY_ENABLED', False)
+    
+    if celery_enabled:
+        # Try async with Celery
+        try:
+            return task_func.delay(*args, **kwargs)
+        except Exception as e:
+            # If Celery fails (Redis not available), fall back to sync
+            logger.warning(f"Celery failed ({e}), executing task synchronously")
+            try:
+                # Call the task function directly (sync)
+                return task_func(*args, **kwargs)
+            except Exception as sync_error:
+                logger.error(f"Sync email also failed: {sync_error}")
+                return None
+    else:
+        # Celery disabled - execute synchronously
+        try:
+            return task_func(*args, **kwargs)
+        except Exception as e:
+            logger.error(f"Sync email failed: {e}")
+            return None
+
+
 def send_order_confirmation_email(order):
     """
     Send order confirmation email to customer after successful payment
