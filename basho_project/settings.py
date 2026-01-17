@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'rest_framework',  # Django REST Framework
     'corsheaders',  # CORS headers for React
     'django_filters',  # Django filter backend
+    'cloudinary_storage',  # Cloudinary for media storage
+    'cloudinary',  # Cloudinary
     'products',  # Basho Products App
     'workshops',  # Basho Workshops App
     'studio',  # Basho Studio App
@@ -190,9 +192,26 @@ CACHES = {
 CACHE_MIDDLEWARE_SECONDS = 600  # 10 minutes
 CACHE_MIDDLEWARE_KEY_PREFIX = 'basho'
 
+# Cloudinary configuration
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY', ''),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET', ''),
+}
+
 # Media files (User uploaded images)
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = '/media/'
+
+# Use Cloudinary for media storage in production
+if os.environ.get('CLOUDINARY_CLOUD_NAME'):
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+else:
+    # Local storage for development
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
