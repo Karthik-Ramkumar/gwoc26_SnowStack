@@ -41,7 +41,7 @@ const LoadingScreen = () => {
             <div className="japanese-vertical right">芭蕉</div>
             <div className="loading-content">
                 <img
-                    src="/images/gallery/brownlogo.png"
+                    src="/static/images/gallery/brownlogo.png"
                     alt="Basho Logo"
                     className="loading-logo"
                 />
