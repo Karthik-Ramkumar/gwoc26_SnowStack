@@ -127,7 +127,7 @@ Basho By Shivangi Team
         msg.attach_alternative(html_content, "text/html")
         
         # Attach header image inline
-        header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        header_image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(header_image_path):
             with open(header_image_path, 'rb') as img_file:
                 img = MIMEImage(img_file.read())
@@ -263,7 +263,7 @@ BASHO BY SHIVANGI
         msg.attach_alternative(html_content, "text/html")
 
         # Attach header image inline
-        header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        header_image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(header_image_path):
             with open(header_image_path, 'rb') as img_file:
                 img = MIMEImage(img_file.read())

@@ -322,7 +322,7 @@ BASHO BY SHIVANGI
         import os
         from email.mime.image import MIMEImage
         
-        image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(image_path):
             with open(image_path, 'rb') as f:
                 img = MIMEImage(f.read())
@@ -404,7 +404,7 @@ BASHO BY SHIVANGI
         import os
         from email.mime.image import MIMEImage
         
-        image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(image_path):
             with open(image_path, 'rb') as f:
                 img = MIMEImage(f.read())
@@ -584,7 +584,7 @@ Basho By Shivangi Team
         import os
         from email.mime.image import MIMEImage
         
-        header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        header_image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(header_image_path):
             with open(header_image_path, 'rb') as img_file:
                 img = MIMEImage(img_file.read())
@@ -747,7 +747,7 @@ Team Basho By Shivangi
         import os
         from email.mime.image import MIMEImage
         
-        header_image_path = os.path.join(settings.BASE_DIR, 'email_header.jpg')
+        header_image_path = os.path.join(settings.BASE_DIR, 'static', 'images', 'email_header.jpg')
         if os.path.exists(header_image_path):
             with open(header_image_path, 'rb') as img_file:
                 img = MIMEImage(img_file.read())
