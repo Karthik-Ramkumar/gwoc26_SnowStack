@@ -5,4 +5,5 @@ urlpatterns = [
     path('studio/exhibitions/', views.UpcomingExhibitionListView.as_view(), name='studio-exhibitions'),
     path('studio/past-popups/', views.PastPopupListView.as_view(), name='studio-past-popups'),
     path('studio/gallery/', views.EventGalleryListView.as_view(), name='studio-gallery'),
+    path('studio/tour-settings/', views.StudioTourSettingsView.as_view(), name='studio-tour-settings'),
 ]

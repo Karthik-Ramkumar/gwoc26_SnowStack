@@ -17,6 +17,7 @@ function Studio() {
   const [exhibitions, setExhibitions] = useState([]);
   const [pastPopups, setPastPopups] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
+  const [tourSettings, setTourSettings] = useState(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const [lightboxImage, setLightboxImage] = useState(null);
 
@@ -29,15 +30,17 @@ function Studio() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [exhibitionsRes, popupsRes, galleryRes] = await Promise.all([
+        const [exhibitionsRes, popupsRes, galleryRes, tourRes] = await Promise.all([
           axios.get(`${API_BASE_URL}/studio/exhibitions/`),
           axios.get(`${API_BASE_URL}/studio/past-popups/`),
-          axios.get(`${API_BASE_URL}/studio/gallery/`)
+          axios.get(`${API_BASE_URL}/studio/gallery/`),
+          axios.get(`${API_BASE_URL}/studio/tour-settings/`)
         ]);
 
         setExhibitions(exhibitionsRes.data.results || exhibitionsRes.data);
         setPastPopups(popupsRes.data.results || popupsRes.data);
         setGalleryImages(galleryRes.data.results || galleryRes.data);
+        setTourSettings(tourRes.data);
       } catch (error) {
         console.error('Error fetching studio data:', error);
       }
@@ -141,7 +144,7 @@ function Studio() {
           </button>
           <a-scene embedded style={{ width: '100%', height: '100%' }}>
             <a-assets>
-              <img id="sky360" src={`${process.env.PUBLIC_URL || ''}/images/gallery/36.png`} crossOrigin="anonymous" alt="360 view" />
+              <img id="sky360" src={tourSettings?.image_url || `${process.env.PUBLIC_URL || ''}/images/gallery/36.png`} crossOrigin="anonymous" alt="360 view" />
             </a-assets>
             <a-sky src="#sky360" rotation="0 -130 0"></a-sky>
             <a-camera position="0 0 0" look-controls="enabled: true; touchEnabled: true"></a-camera>

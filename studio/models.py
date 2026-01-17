@@ -56,3 +56,16 @@ class EventGalleryImage(models.Model):
     
     def __str__(self):
         return self.alt_text or f"Gallery Image {self.id}"
+
+
+class StudioTourSettings(models.Model):
+    """Model for 360 tour settings"""
+    image = models.ImageField(upload_to='studio/360-tour/', help_text="Upload 360 tour image here")
+    active = models.BooleanField(default=True, help_text="If unchecked, component might use default or hide")
+
+    class Meta:
+        verbose_name = "Studio Tour Settings"
+        verbose_name_plural = "Studio Tour Settings"
+
+    def __str__(self):
+        return "Studio Tour Configuration"

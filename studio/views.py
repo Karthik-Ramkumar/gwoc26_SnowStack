@@ -1,9 +1,12 @@
 from rest_framework import generics
-from .models import UpcomingExhibition, PastPopup, EventGalleryImage
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from .models import UpcomingExhibition, PastPopup, EventGalleryImage, StudioTourSettings
 from .serializers import (
     UpcomingExhibitionSerializer, 
     PastPopupSerializer, 
-    EventGalleryImageSerializer
+    EventGalleryImageSerializer,
+    StudioTourSettingsSerializer
 )
 
 
@@ -25,3 +28,14 @@ class EventGalleryListView(generics.ListAPIView):
     """List all event gallery images"""
     queryset = EventGalleryImage.objects.all()
     serializer_class = EventGalleryImageSerializer
+
+
+class StudioTourSettingsView(APIView):
+    """Get 360 studio tour settings"""
+    
+    def get(self, request):
+        settings = StudioTourSettings.objects.first()
+        if not settings:
+            return Response({'active': False, 'image_url': None})
+        serializer = StudioTourSettingsSerializer(settings, context={'request': request})
+        return Response(serializer.data)
