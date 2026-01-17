@@ -190,8 +190,8 @@ COMPANY_ADDRESS = 'Pottery Studio, India'
 # IMPORTANT: Never commit real API keys to version control!
 # Set these in your .env file (create from .env.example)
 # TODO: Move these credentials to .env file before pushing to git!
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S1lAGZcFMuNU0Y')
-RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'AI3Nxw061P2yE5nTj95yaG8S')
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S4ezVTfh8fiaA8')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'x3UnTVk26x7CLpF0ETJtaZ84')
 
 
 # Celery Configuration

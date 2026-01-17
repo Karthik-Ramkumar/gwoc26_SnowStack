@@ -32,15 +32,43 @@ function Checkout() {
 
   // Load Razorpay script
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
-    script.async = true;
-    document.body.appendChild(script);
+    const loadRazorpayScript = () => {
+      return new Promise((resolve, reject) => {
+        // Check if already loaded
+        if (window.Razorpay) {
+          resolve(window.Razorpay);
+          return;
+        }
 
-    return () => {
-      document.body.removeChild(script);
+        // Check if script already exists
+        const existingScript = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+        if (existingScript) {
+          existingScript.onload = () => resolve(window.Razorpay);
+          existingScript.onerror = reject;
+          return;
+        }
+
+        // Create and load script
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.async = true;
+        script.onload = () => {
+          if (window.Razorpay) {
+            resolve(window.Razorpay);
+          } else {
+            reject(new Error('Razorpay SDK failed to load'));
+          }
+        };
+        script.onerror = () => reject(new Error('Failed to load Razorpay script'));
+        document.body.appendChild(script);
+      });
     };
-  }, []);
+
+    loadRazorpayScript().catch(error => {
+      console.error('Error loading Razorpay:', error);
+      showError('Failed to load payment system. Please refresh the page and try again.');
+    });
+  }, [showError]);
 
   // Calculate shipping when cart changes
   useEffect(() => {
@@ -166,6 +194,13 @@ function Checkout() {
       const customerName = `${formData.firstName} ${formData.lastName}`;
 
       // Step 1: Create Razorpay order
+      console.log('Creating Razorpay order with data:', {
+        amount: totalAmount,
+        customer_name: customerName,
+        customer_email: formData.email,
+        customer_phone: formData.phone
+      });
+
       const orderResponse = await fetch('/api/products/create-razorpay-order/', {
         method: 'POST',
         headers: {
@@ -182,9 +217,28 @@ function Checkout() {
       const orderData = await orderResponse.json();
       
       console.log('Order creation response:', orderData);
+      console.log('Order response status:', orderResponse.status);
 
       if (!orderData.success) {
+        console.error('Order creation failed:', orderData);
         throw new Error(orderData.error || 'Failed to create payment order');
+      }
+
+      console.log('About to initialize Razorpay with options:', {
+        key: orderData.key,
+        amount: orderData.amount,
+        currency: orderData.currency,
+        order_id: orderData.order_id,
+        prefill: {
+          name: customerName,
+          email: formData.email,
+          contact: formData.phone
+        }
+      });
+
+      // Check if Razorpay is loaded
+      if (!window.Razorpay) {
+        throw new Error('Razorpay SDK not loaded. Please refresh the page and try again.');
       }
 
       // Step 2: Initialize Razorpay payment
@@ -194,10 +248,11 @@ function Checkout() {
         currency: orderData.currency,
         name: 'Basho By Shivangi',
         description: 'Product Purchase',
-        order_id: orderData.orderId,  // Changed from order_id to orderId
+        order_id: orderData.order_id,  // Changed from orderId to order_id
         handler: async function (response) {
+          console.log('Payment success response:', response);
           // Step 3: Verify payment and create order
-          await handlePaymentSuccess(response, orderData.orderId);  // Changed from order_id to orderId
+          await handlePaymentSuccess(response, orderData.order_id);  // Changed from orderId to order_id
         },
         prefill: {
           name: customerName,
@@ -226,17 +281,24 @@ function Checkout() {
         }
       };
 
-      const razorpay = new window.Razorpay(options);
-      
-      // Handle errors during Razorpay initialization
-      razorpay.on('payment.failed', function (response) {
-        setIsProcessing(false);
-        console.error('Payment failed:', response.error);
-        const errorMsg = response.error.description || 'Payment failed. Please try again.';
-        showError(errorMsg);
-      });
-      
-      razorpay.open();
+      console.log('Creating Razorpay instance...');
+      try {
+        const razorpay = new window.Razorpay(options);
+        
+        // Handle errors during Razorpay initialization
+        razorpay.on('payment.failed', function (response) {
+          setIsProcessing(false);
+          console.error('Payment failed:', response.error);
+          const errorMsg = response.error?.description || 'Payment failed. Please try again.';
+          showError(`Payment failed: ${errorMsg}`);
+        });
+        
+        console.log('Opening Razorpay checkout...');
+        razorpay.open();
+      } catch (razorpayError) {
+        console.error('Error creating Razorpay instance:', razorpayError);
+        throw new Error(`Failed to initialize payment: ${razorpayError.message}`);
+      }
 
     } catch (error) {
       console.error('Error initiating payment:', error);
@@ -258,7 +320,7 @@ function Checkout() {
         shipping_pincode: formData.pincode,
         billing_address: '', // Same as shipping for now
         payment_method: 'razorpay',
-        payment_status: true,
+        payment_status: false,
         subtotal: getCartTotal(),
         shipping_charge: shippingCost,
         tax_amount: 0,

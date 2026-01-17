@@ -9,6 +9,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.views.decorators.csrf import csrf_exempt
+from django.conf import settings
+import razorpay
 from .models import Product, CustomOrder, CorporateInquiry, Order, OrderItem
 from .serializers import ProductSerializer, CustomOrderSerializer, CorporateInquirySerializer, OrderSerializer
 
@@ -386,6 +389,7 @@ def create_user(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@csrf_exempt
 def create_razorpay_order(request):
     """
     Create Razorpay order for payment
@@ -405,9 +409,6 @@ def create_razorpay_order(request):
     }
     """
     try:
-        import razorpay
-        from django.conf import settings
-        
         # Initialize Razorpay client
         client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
         
@@ -518,6 +519,7 @@ def calculate_shipping(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@csrf_exempt
 def verify_payment(request):
     """
     Verify Razorpay payment signature
@@ -532,8 +534,6 @@ def verify_payment(request):
     }
     """
     try:
-        import razorpay
-        from django.conf import settings
         import logging
         
         logger = logging.getLogger(__name__)
@@ -812,8 +812,3 @@ def track_order(request):
             'found': False,
             'error': 'An error occurred while looking up your order. Please try again.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-
-
-
