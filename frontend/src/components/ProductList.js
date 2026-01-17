@@ -161,6 +161,8 @@ const ProductList = ({ products, loading, onProductClick }) => {
                       src={product.image_url_full || product.image || '/static/images/products/placeholder.svg'}
                       alt={product.name}
                       className="placeholder-img"
+                      loading="lazy"
+                      decoding="async"
                     />
                     {product.is_bestseller && (
                       <span className="product-badge">Bestseller</span>

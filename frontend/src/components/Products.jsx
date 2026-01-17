@@ -80,7 +80,7 @@ function Products() {
           <div className="modal-content">
             <div className="modal-image">
               {product.image_url_full || product.image ? (
-                <img src={product.image_url_full || product.image} alt={product.name} />
+                <img src={product.image_url_full || product.image} alt={product.name} loading="lazy" decoding="async" />
               ) : (
                 <div className="workshop-placeholder-large">
                   <span className="workshop-icon">🏺</span>
