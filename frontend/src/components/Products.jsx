@@ -13,7 +13,7 @@ function Products() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState("all");
-  const [sortBy, setSortBy] = useState("featured");
+  const [sortBy, setSortBy] = useState("newest");
   const [itemsPerPage, setItemsPerPage] = useState(12);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -212,10 +212,10 @@ function Products() {
               <div className="filter-group">
                 <label>Sort by</label>
                 <select value={sortBy} onChange={(e) => { setSortBy(e.target.value); setPage(1); }}>
+                  <option value="newest">Newest</option>
                   <option value="featured">Featured</option>
                   <option value="price-low">Price: Low to High</option>
                   <option value="price-high">Price: High to Low</option>
-                  <option value="newest">Newest</option>
                 </select>
               </div>
 
