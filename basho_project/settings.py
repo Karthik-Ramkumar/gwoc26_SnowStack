@@ -196,6 +196,7 @@ CACHE_MIDDLEWARE_KEY_PREFIX = 'basho'
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+from pathlib import Path
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME', ''),
@@ -245,23 +246,21 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'karthik.sb.ram@gmail.com'
-EMAIL_HOST_PASSWORD = 'dbhf ozns pwlu bwgi'  # Gmail App Password (no spaces)
-DEFAULT_FROM_EMAIL = 'karthik.sb.ram@gmail.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')  # Gmail App Password
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER', 'noreply@basho.com')
 
 # Company Information
 COMPANY_NAME = 'Basho By Shivangi'
-COMPANY_EMAIL = 'karthik.sb.ram@gmail.com'  # Admin email address
+COMPANY_EMAIL = os.environ.get('COMPANY_EMAIL', os.environ.get('EMAIL_HOST_USER', ''))
 COMPANY_PHONE = '+91 98795 75601'
 COMPANY_ADDRESS = 'Pottery Studio, India'
 
 # Razorpay Configuration
 # Get these from: https://dashboard.razorpay.com/app/keys
-# IMPORTANT: Never commit real API keys to version control!
-# Set these in your .env file (create from .env.example)
-# TODO: Move these credentials to .env file before pushing to git!
-RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', 'rzp_test_S4ezVTfh8fiaA8')
-RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', 'x3UnTVk26x7CLpF0ETJtaZ84')
+# IMPORTANT: Set these in Render environment variables!
+RAZORPAY_KEY_ID = os.environ.get('RAZORPAY_KEY_ID', '')
+RAZORPAY_KEY_SECRET = os.environ.get('RAZORPAY_KEY_SECRET', '')
 
 
 # Celery Configuration
