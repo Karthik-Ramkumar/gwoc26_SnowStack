@@ -5,7 +5,6 @@ import {
     signOut,
     onAuthStateChanged,
     GoogleAuthProvider,
-    signInWithPopup,
     signInWithRedirect,
     getRedirectResult,
     sendPasswordResetEmail,
@@ -121,22 +120,11 @@ export const AuthProvider = ({ children }) => {
             setError(null);
             const provider = new GoogleAuthProvider();
 
-            // Use redirect on production (more reliable), popup on localhost
-            const isLocalhost = window.location.hostname === 'localhost' ||
-                window.location.hostname === '127.0.0.1';
-
-            if (isLocalhost) {
-                // Use popup for local development
-                const result = await signInWithPopup(auth, provider);
-                await saveUserToDjango(result.user);
-                return result;
-            } else {
-                // Use redirect for production (Render)
-                await signInWithRedirect(auth, provider);
-                // Note: redirect will reload the page, so saveUserToDjango 
-                // will be called in the useEffect handling redirect result
-                return null;
-            }
+            // Always use redirect (more reliable on all platforms)
+            await signInWithRedirect(auth, provider);
+            // Note: redirect will reload the page, so saveUserToDjango 
+            // will be called in the useEffect handling redirect result
+            return null;
         } catch (err) {
             setError(err.message);
             throw err;

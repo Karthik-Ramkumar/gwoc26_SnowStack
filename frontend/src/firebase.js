@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -22,6 +22,15 @@ let auth;
 if (isFirebaseConfigured()) {
   app = initializeApp(firebaseConfig);
   auth = getAuth(app);
+
+  // 🔴 CRITICAL: Force browser local persistence
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+      console.log('✅ Firebase persistence set to LOCAL');
+    })
+    .catch((error) => {
+      console.error('❌ Error setting persistence:', error);
+    });
 } else {
   console.warn('Firebase is not configured. Authentication features will be disabled.');
 }
