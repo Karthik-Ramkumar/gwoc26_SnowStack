@@ -6,6 +6,8 @@ import {
     onAuthStateChanged,
     GoogleAuthProvider,
     signInWithPopup,
+    signInWithRedirect,
+    getRedirectResult,
     sendPasswordResetEmail,
     updateProfile
 } from 'firebase/auth';
@@ -37,7 +39,7 @@ const saveUserToDjango = async (firebaseUser) => {
         console.log('📤 Sending user data to /api/create-user/:', userData);
 
         const response = await axios.post('/api/create-user/', userData);
-        
+
         console.log('✅ User saved to Django database:', response.data);
     } catch (error) {
         // Log detailed error information
@@ -67,7 +69,7 @@ export const AuthProvider = ({ children }) => {
             const response = await axios.post('/api/products/check-staff/', {
                 username: user.uid
             });
-            
+
             setIsStaff(response.data.is_staff || false);
             console.log('👤 Staff status:', response.data.is_staff);
         } catch (error) {
@@ -102,10 +104,10 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
-            
+
             // Sync user to Django database
             await saveUserToDjango(userCredential.user);
-            
+
             return userCredential;
         } catch (err) {
             setError(err.message);
@@ -118,12 +120,23 @@ export const AuthProvider = ({ children }) => {
         try {
             setError(null);
             const provider = new GoogleAuthProvider();
-            const result = await signInWithPopup(auth, provider);
-            
-            // Save Google user to Django database
-            await saveUserToDjango(result.user);
-            
-            return result;
+
+            // Use redirect on production (more reliable), popup on localhost
+            const isLocalhost = window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1';
+
+            if (isLocalhost) {
+                // Use popup for local development
+                const result = await signInWithPopup(auth, provider);
+                await saveUserToDjango(result.user);
+                return result;
+            } else {
+                // Use redirect for production (Render)
+                await signInWithRedirect(auth, provider);
+                // Note: redirect will reload the page, so saveUserToDjango 
+                // will be called in the useEffect handling redirect result
+                return null;
+            }
         } catch (err) {
             setError(err.message);
             throw err;
@@ -165,13 +178,27 @@ export const AuthProvider = ({ children }) => {
         }
     };
 
-    // Listen for auth state changes
+    // Listen for auth state changes and handle redirect results
     useEffect(() => {
         // Skip if auth is not initialized (Firebase not configured)
         if (!auth) {
             setLoading(false);
             return;
         }
+
+        // Handle redirect result from Google sign-in
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result && result.user) {
+                    console.log('✅ Redirect sign-in successful');
+                    // Save user to Django after redirect
+                    saveUserToDjango(result.user);
+                }
+            })
+            .catch((error) => {
+                console.error('❌ Redirect sign-in error:', error);
+                setError(error.message);
+            });
 
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
             setCurrentUser(user);
