@@ -21,4 +21,8 @@ python manage.py collectstatic --no-input
 echo "==> Running database migrations..."
 python manage.py migrate
 
+# Create superuser
+echo "==> Creating superuser..."
+python manage.py create_superuser --username karthik --email karthik@example.com --password admin123
+
 echo "==> Build completed successfully! 🎉"
