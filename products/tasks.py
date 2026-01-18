@@ -66,7 +66,7 @@ Login to admin panel: http://127.0.0.1:8000/admin/products/customorder/{order_id
             to=[settings.COMPANY_EMAIL]
         )
         msg.attach_alternative(html_content, "text/html")
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Admin email sent successfully for order {order_number}"
         
@@ -165,7 +165,7 @@ BASHO BY SHIVANGI
         if html_content:
             msg.attach_alternative(html_content, "text/html")
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Order confirmation email sent to {order.customer_email} for order {order.order_number}"
         
@@ -257,7 +257,7 @@ View in admin panel: http://127.0.0.1:8000/admin/products/order/{order_id}/
         if html_content:
             msg.attach_alternative(html_content, "text/html")
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Admin notification sent for order {order.order_number}"
         
@@ -330,7 +330,7 @@ BASHO BY SHIVANGI
                 img.add_header('Content-Disposition', 'inline', filename='header.jpg')
                 msg.attach(img)
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Customer email sent successfully to {email} for order {order_number}"
         
@@ -412,7 +412,7 @@ BASHO BY SHIVANGI
                 img.add_header('Content-Disposition', 'inline', filename='header.jpg')
                 msg.attach(img)
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Customer email sent successfully to {email} for inquiry {inquiry_number}"
         
@@ -486,7 +486,7 @@ Login to admin panel: http://127.0.0.1:8000/admin/products/corporateinquiry/{inq
             to=[settings.COMPANY_EMAIL]
         )
         msg.attach_alternative(html_content, "text/html")
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Admin email sent successfully for inquiry {inquiry_number}"
         
@@ -593,7 +593,7 @@ Basho By Shivangi Team
                 msg.attach(img)
         
         # Send email
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Order confirmation email sent to {order.customer_email} for order {order.order_number}"
         
@@ -656,7 +656,7 @@ Please process this order in the admin panel.
             to=[settings.COMPANY_EMAIL]
         )
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Admin notification sent for order {order.order_number}"
         
@@ -756,7 +756,7 @@ Team Basho By Shivangi
                 msg.attach(img)
         
         # Send email
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Workshop confirmation email sent to {registration.email} for {registration.registration_number}"
         
@@ -825,7 +825,7 @@ Please confirm the registration and prepare for the workshop.
             to=[settings.COMPANY_EMAIL]
         )
         
-        msg.send(fail_silently=False)
+        msg.send(fail_silently=True)
         
         return f"Admin notification sent for workshop registration {registration.registration_number}"
         

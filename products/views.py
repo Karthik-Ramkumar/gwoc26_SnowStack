@@ -61,15 +61,17 @@ class ProductViewSet(viewsets.ModelViewSet):
             )
         
         # Sort
-        sort = self.request.query_params.get('sort', 'featured')
+        sort = self.request.query_params.get('sort', 'newest')
         if sort == 'price-low':
             queryset = queryset.order_by('price')
         elif sort == 'price-high':
             queryset = queryset.order_by('-price')
         elif sort == 'newest':
             queryset = queryset.order_by('-created_at')
-        else:  # featured
+        elif sort == 'featured':
             queryset = queryset.order_by('-is_featured', '-created_at')
+        else:  # default to newest
+            queryset = queryset.order_by('-created_at')
         
         return queryset
 
