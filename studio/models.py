@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 
 class UpcomingExhibition(models.Model):
@@ -8,7 +9,7 @@ class UpcomingExhibition(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     description = models.TextField(max_length=500, help_text="Short description (max 500 chars)")
-    image = models.ImageField(upload_to='studio/exhibitions/', blank=True, null=True)
+    image = CloudinaryField('image', folder='studio/exhibitions/', blank=True, null=True)
     is_active = models.BooleanField(default=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,7 +29,7 @@ class PastPopup(models.Model):
     event_name = models.CharField(max_length=200)
     city = models.CharField(max_length=100)
     year = models.IntegerField()
-    image = models.ImageField(upload_to='studio/past-popups/', blank=True, null=True)
+    image = CloudinaryField('image', folder='studio/past-popups/', blank=True, null=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
     
@@ -43,7 +44,7 @@ class PastPopup(models.Model):
 
 class EventGalleryImage(models.Model):
     """Model for event gallery images"""
-    image = models.ImageField(upload_to='studio/gallery/')
+    image = CloudinaryField('image', folder='studio/gallery/')
     alt_text = models.CharField(max_length=200, blank=True, help_text="Optional alt text for accessibility")
     order = models.IntegerField(default=0, help_text="Display order (lower numbers first)")
     
@@ -60,7 +61,7 @@ class EventGalleryImage(models.Model):
 
 class StudioTourSettings(models.Model):
     """Model for 360 tour settings"""
-    image = models.ImageField(upload_to='studio/360-tour/', help_text="Upload 360 tour image here")
+    image = CloudinaryField('image', folder='studio/360-tour/', help_text="Upload 360 tour image here")
     active = models.BooleanField(default=True, help_text="If unchecked, component might use default or hide")
 
     class Meta:

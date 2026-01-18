@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 
 class GalleryImage(models.Model):
@@ -9,7 +10,7 @@ class GalleryImage(models.Model):
         ('studio', 'Studio & Events'),
     ]
     
-    image = models.ImageField(upload_to='media/gallery/')
+    image = CloudinaryField('image', folder='media/gallery/')
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
     caption = models.CharField(max_length=200, blank=True, help_text="Admin-only caption")
     order = models.IntegerField(default=0, help_text="Display order (lower numbers first)")
@@ -53,7 +54,7 @@ class VideoTestimonial(models.Model):
     description = models.TextField(max_length=300, help_text="Short description of the video")
     video_file = models.FileField(upload_to='media/videos/', blank=True, null=True)
     video_url = models.URLField(blank=True, help_text="YouTube or Vimeo embed URL")
-    thumbnail = models.ImageField(upload_to='media/thumbnails/', blank=True, null=True)
+    thumbnail = CloudinaryField('image', folder='media/thumbnails/', blank=True, null=True)
     is_featured = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     
@@ -70,7 +71,7 @@ class VideoTestimonial(models.Model):
 
 class CustomerExperience(models.Model):
     """Journal-style customer experience entries"""
-    image = models.ImageField(upload_to='media/experiences/')
+    image = CloudinaryField('image', folder='media/experiences/')
     title = models.CharField(max_length=200, help_text="Experience title/heading")
     paragraph = models.TextField(help_text="Short narrative paragraph")
     customer_name = models.CharField(max_length=100, blank=True)

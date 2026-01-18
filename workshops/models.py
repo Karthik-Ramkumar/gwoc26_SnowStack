@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth.models import User
 
@@ -29,7 +30,7 @@ class Workshop(models.Model):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     max_participants = models.IntegerField(validators=[MinValueValidator(1)])
     min_age = models.IntegerField(default=12)
-    image = models.ImageField(upload_to='workshops/', blank=True, null=True)
+    image = CloudinaryField('image', folder='workshops/', blank=True, null=True)
     image_url = models.URLField(blank=True, help_text="Alternative: external image URL")
     
     # Availability

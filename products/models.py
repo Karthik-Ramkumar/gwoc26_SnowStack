@@ -6,6 +6,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 
 # ====================
@@ -73,7 +74,7 @@ class Product(models.Model):
     is_bestseller = models.BooleanField(default=False)
     
     # Image
-    image = models.ImageField(upload_to='products/', blank=True, null=True, help_text="Product image")
+    image = CloudinaryField('image', folder='products', blank=True, null=True, help_text="Product image")
     image_url = models.URLField(blank=True, help_text="Alternative: external image URL")
     
     # Timestamps
@@ -150,7 +151,7 @@ class CustomOrder(models.Model):
     
     # Optional Fields
     gst_number = models.CharField(max_length=15, blank=True, help_text="For invoice generation")
-    reference_images = models.ImageField(upload_to='custom_orders/', blank=True, null=True)
+    reference_images = CloudinaryField('image', folder='custom_orders', blank=True, null=True)
     
     # Status & Tracking
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
