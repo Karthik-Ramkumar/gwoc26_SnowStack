@@ -25,4 +25,8 @@ python manage.py migrate
 echo "==> Creating superuser..."
 python manage.py create_superuser --username karthik --email karthik@example.com --password admin123
 
+# Check Cloudinary configuration
+echo "==> Checking Cloudinary configuration..."
+python manage.py check_cloudinary
+
 echo "==> Build completed successfully! 🎉"
