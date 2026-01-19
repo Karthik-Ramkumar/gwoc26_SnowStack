@@ -228,6 +228,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CORS settings - Allow all origins for development
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = ["https://gwoc26-snowstack-basho.onrender.com"]
 
 # REST Framework settings
 REST_FRAMEWORK = {
