@@ -5,7 +5,7 @@ from .models import Creation
 class CreationSerializer(serializers.ModelSerializer):
     """
     Serializer for Creation model.
-    Returns the full absolute URL for the image field.
+    Returns the full Cloudinary URL for the image field.
     """
     image_url = serializers.SerializerMethodField()
 
@@ -14,10 +14,8 @@ class CreationSerializer(serializers.ModelSerializer):
         fields = ['id', 'image_url', 'url', 'height', 'order', 'alt_text']
 
     def get_image_url(self, obj):
-        """Return full absolute URL for the image."""
-        request = self.context.get('request')
-        if obj.image and request:
-            return request.build_absolute_uri(obj.image.url)
-        elif obj.image:
+        """Return Cloudinary URL for the image."""
+        # CloudinaryField returns full URL, no need to build absolute URI
+        if obj.image:
             return obj.image.url
         return None
