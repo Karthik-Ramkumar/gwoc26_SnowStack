@@ -1,4 +1,5 @@
 from django.db import models
+from cloudinary.models import CloudinaryField
 
 
 class Creation(models.Model):
@@ -6,8 +7,9 @@ class Creation(models.Model):
     Model for gallery items displayed in the Masonry "Our Creations" section.
     Managed via Django Admin for easy content updates.
     """
-    image = models.ImageField(
-        upload_to='creations/',
+    image = CloudinaryField(
+        'image',
+        folder='creations/',
         help_text='Upload a high-quality image for the gallery'
     )
     url = models.URLField(

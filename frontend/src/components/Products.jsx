@@ -58,13 +58,8 @@ function Products() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
-      // Scroll to top of filter section
-      const filterSection = document.querySelector('.filter-section');
-      if (filterSection) {
-        filterSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        window.scrollTo({ top: 300, behavior: 'smooth' });
-      }
+      // Scroll to top of page
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
