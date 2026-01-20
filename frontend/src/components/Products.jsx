@@ -58,14 +58,7 @@ function Products() {
   const handlePageChange = (newPage) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
-      // Scroll to top of products section (Collections heading)
-      const productsSection = document.querySelector('.products-section');
-      if (productsSection) {
-        const offset = 80; // Account for fixed navbar
-        const elementPosition = productsSection.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - offset;
-        window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-      }
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
